@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
         slideModels.add((new SlideModel("https://wips.plug.it/cips/buonissimo.org/cms/2019/02/carbonara.jpg","Carbonara")));
         slideModels.add((new SlideModel("https://wips.plug.it/cips/buonissimo.org/cms/2019/03/ciambellone-classico.jpg","Ciambellone")));
         slideModels.add((new SlideModel("https://lacuocagalante.com/wp-content/uploads/2017/05/la-pasta-alla-amatriciana.jpg","Amatriciana")));
-        slideModels.add((new SlideModel("https://www.nudechatguys.com/wp-content/uploads/webcam-boy-big-cock.jpg","Rocco")));
 
 
 

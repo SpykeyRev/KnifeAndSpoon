@@ -159,7 +159,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void launchRegisterActivity(){
-        RegisterActivity.startActivity(this, user);
+        RegisterActivity.startActivity(this);
         finish();
     }
 

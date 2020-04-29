@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AndroidLayouts">
+    <shared>
+      <config />
+    </shared>
+  </component>
+  <component name="AndroidLogFilters">
+    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="727445dd-d534-4bd1-877c-3e78c8dd7dbc" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/lib/test.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/visual/Utils/Model/Team.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/visual/Utils/Model/VisualizerView.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/visual/Utils/SetViewerPsPortrait.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/assets/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/assets/LICENSE" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/flutter_service_worker.js" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/flutter_service_worker.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/main.dart.js" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/main.dart.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/main.dart.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/main.dart.js.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/HomePage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/HomePage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/testChewie.dart" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/visual/PlayerVanda/PlayerVanda.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/visual/PlayerVanda/PlayerVanda.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/visual/Utils/FilterToggle.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/visual/Utils/FilterToggle.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/visual/Utils/MatchInfoLandscape.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/visual/Utils/MatchInfoLandscape.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/visual/Utils/Model/Action.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/visual/Utils/Model/Action.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/visual/Utils/Model/Match.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/visual/Utils/Model/Match.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/visual/Utils/Model/PlayButton.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/visual/Utils/Model/PlayButton.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/visual/Utils/Model/Set.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/visual/Utils/Model/Set.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/visual/Utils/SetViewer.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/visual/Utils/SetViewer.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/visual/Utils/SetViewerLandscape.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/visual/Utils/SetViewerLandscape.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/visual/Utils/SetViewerPortrait.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/visual/Utils/SetViewerPortrait.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/visual/VandaVisual/MatchList.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/visual/VandaVisual/MatchList.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/visual/VandaVisual/MatchViewer.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/visual/VandaVisual/MatchViewer.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/visual/VandaVisual/VandaVisual.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/visual/VandaVisual/VandaVisual.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DefaultGradleProjectSettings">
+    <option name="isMigrated" value="true" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="Pixel_3_XL_API_29" />
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Dart File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
+  </component>
+  <component name="ProjectId" id="1ZltAvTsqT4KgUOIvQToph1gSbU" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="dart.analysis.tool.window.force.activate" value="false" />
+    <property name="io.flutter.reload.alreadyRun" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.17" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="dart.settings" />
+    <property name="show.migrate.to.gradle.popup" value="false" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Spykey\Documents\GitHub\vanda\spobble\assets\images" />
+      <recent name="C:\Users\Spykey\Documents\GitHub\vanda\spobble\web" />
+      <recent name="C:\Users\Spykey\Documents\GitHub\vanda\spobble\lib\visual\Utils" />
+      <recent name="C:\Users\Spykey\Documents\GitHub\vanda\spobble\lib\visual\PlayerVanda\Player" />
+      <recent name="C:\Users\Spykey\Documents\GitHub\vanda\spobble\assets" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Spykey\Documents\GitHub\vanda\spobble\assets" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Flutter.Web">
+    <configuration name="ProfileOverlay" type="FlutterRunConfigurationType" factoryName="Flutter">
+      <option name="additionalArgs" value="--profile" />
+      <option name="filePath" value="$PROJECT_DIR$/lib/main.dart" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Spobble Release" type="FlutterRunConfigurationType" factoryName="Flutter" singleton="false">
+      <option name="additionalArgs" value="--release" />
+      <option name="filePath" value="$PROJECT_DIR$/lib/main.dart" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Web" type="FlutterRunConfigurationType" factoryName="Flutter">
+      <option name="additionalArgs" value="--web-port=61993" />
+      <option name="filePath" value="$PROJECT_DIR$/lib/main.dart" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Flutter.main.dart" />
+      <item itemvalue="Flutter.Web" />
+      <item itemvalue="Flutter.ProfileOverlay" />
+      <item itemvalue="Flutter.Spobble Release" />
+    </list>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="727445dd-d534-4bd1-877c-3e78c8dd7dbc" name="Default Changelist" comment="" />
+      <created>1581522148959</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1581522148959</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          

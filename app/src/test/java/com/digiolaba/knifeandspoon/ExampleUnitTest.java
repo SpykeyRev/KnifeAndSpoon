@@ -1,4 +1,4 @@
-package com.digiolaba.knifespoon;
+package com.digiolaba.knifeandspoon;
 
 import org.junit.Test;
 

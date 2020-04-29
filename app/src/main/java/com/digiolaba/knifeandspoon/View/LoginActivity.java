@@ -24,11 +24,14 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int RC_SIGN_IN = 1001;
     private FirebaseAuth firebaseAuth;
+    private FirebaseUser user;
     GoogleSignInClient googleSignInClient;
 
     @Override
@@ -73,7 +76,8 @@ public class LoginActivity extends AppCompatActivity {
         if (currentUser != null) {
             Log.d(TAG, "Currently Signed in: " + currentUser.getEmail());
             showToastMessage("Currently Logged in: " + currentUser.getEmail());
-            launchMainActivity(currentUser);
+            user=currentUser;
+            checkIfUserExist(currentUser);
         }
     }
 
@@ -117,7 +121,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithCredential:success: currentUser: " + user.getEmail());
 
                             showToastMessage("Firebase Authentication Succeeded ");
-                            launchMainActivity(user);
+                            checkIfUserExist(user);
                         } else {
                             // If sign in fails, display a message to the user.
 
@@ -133,10 +137,34 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
     }
 
-    private void launchMainActivity(FirebaseUser user) {
+    private void checkIfUserExist(FirebaseUser user) {
         if (user != null) {
-            MainActivity.startActivity(this, user.getDisplayName().split(" ")[0]);
-            finish();
+            FirebaseFirestore storage=FirebaseFirestore.getInstance();
+            storage.collection("Utenti").whereEqualTo("Mail", user.getEmail())
+                    .limit(1).get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                boolean isEmpty = task.getResult().isEmpty();
+                                if(isEmpty){
+                                    launchRegisterActivity();
+                                }else{
+                                    launchMainActivity();
+                                }
+                            }
+                        }
+                    });
         }
+    }
+
+    private void launchRegisterActivity(){
+        RegisterActivity.startActivity(this, user);
+        finish();
+    }
+
+    private void launchMainActivity(){
+        MainActivity.startActivity(this, user);
+        finish();
     }
 }

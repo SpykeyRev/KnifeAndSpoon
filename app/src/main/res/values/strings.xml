@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Knife&amp;Spoon</string>
+    <string name="welcome_1">Ciao </string>
+    <string name="welcome_2">Benvenuto su </string>
+    <string name="register_1">È la prima volta che</string>
+    <string name="register_2">ti vediamo da queste parti</string>
+    <string name="register_3">Come ti chiami?</string>
+    <string name="continua">Continua</string>
+    <string name="register_4">Nome</string>
+    <string name="login_with_google">Entra con Google</string>
+    <string name="no_account_login">Entra senza account</string>
 </resources>

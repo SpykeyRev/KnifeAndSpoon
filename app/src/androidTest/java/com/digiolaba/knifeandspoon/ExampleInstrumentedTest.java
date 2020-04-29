@@ -1,4 +1,4 @@
-package com.digiolaba.knifespoon;
+package com.digiolaba.knifeandspoon;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.digiolaba.knifespoon", appContext.getPackageName());
+        assertEquals("com.digiolaba.knifeandspoon", appContext.getPackageName());
     }
 }

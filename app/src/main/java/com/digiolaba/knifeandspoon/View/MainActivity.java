@@ -18,6 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +28,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final String ARG_NAME = "username";
 
-    public static void startActivity(Context context, String username) {
+    public static void startActivity(Context context, FirebaseUser user) {
         Intent intent = new Intent(context, MainActivity.class);
-        intent.putExtra(ARG_NAME, username);
+        intent.putExtra(ARG_NAME, user.getDisplayName().split(" ")[0]);
         context.startActivity(intent);
     }
 

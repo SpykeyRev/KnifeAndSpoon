@@ -88,9 +88,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void launchMainActivity(){
-        FirebaseAuth firebaseAuth= FirebaseAuth.getInstance();
-        FirebaseUser fireUser = firebaseAuth.getCurrentUser();
-        MainActivity.startActivity(this,fireUser);
+        MainActivity.startActivity(this);
         finish();
     }
 

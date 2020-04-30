@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Knife&amp;Spoon</string>
-    <string name="welcome_1">Ciao </string>
+    <string name="welcome_1">Ciao&#160;</string>
     <string name="welcome_2">Benvenuto su </string>
     <string name="register_1">È la prima volta che</string>
     <string name="register_2">ti vediamo da queste parti</string>

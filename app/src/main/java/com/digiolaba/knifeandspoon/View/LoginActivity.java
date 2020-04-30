@@ -164,7 +164,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void launchMainActivity(){
-        MainActivity.startActivity(this, user);
+        MainActivity.startActivity(this);
         finish();
     }
 }

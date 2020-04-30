@@ -9,4 +9,6 @@
     <string name="register_4">Nome</string>
     <string name="login_with_google">Entra con Google</string>
     <string name="no_account_login">Entra senza account</string>
+    <string name="heading_search">Ricerca</string>
+    <string name="search_bar">Cerca...</string>
 </resources>

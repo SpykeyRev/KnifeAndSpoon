@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -22,10 +25,20 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.squareup.picasso.Picasso;
 
+import android.net.Uri;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,8 +62,20 @@ public class MainActivity extends AppCompatActivity {
         //Setting up firebase for userInfo
         googleSignInClient = GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN);
         firebaseAuth = FirebaseAuth.getInstance();
-        getUserInfo(firebaseAuth.getCurrentUser().getEmail());
-        System.out.println(firebaseAuth.getCurrentUser().getPhotoUrl());
+        try {
+            actualUser = (Utente) new Utente.getUserInfo(firebaseAuth.getCurrentUser().getEmail()).execute().get();
+            TextView userName=(TextView)findViewById(R.id.userName);
+            userName.setText(actualUser.getUserName());
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //Utente.getUserInfo(firebaseAuth.getCurrentUser().getEmail());
+        CircleImageView userImage=(CircleImageView)findViewById(R.id.profile_image);
+        FirebaseAuth firebaseAuth= FirebaseAuth.getInstance();
+        FirebaseUser fireUser = firebaseAuth.getCurrentUser();
+        Picasso.get().load(fireUser.getPhotoUrl()).into(userImage);
         //Setting up imageSlider
         ImageSlider imageSlider=(ImageSlider)findViewById(R.id.home_image_slider);
 
@@ -67,8 +92,7 @@ public class MainActivity extends AppCompatActivity {
     public void getUserInfo(String email){
         final List<Utente> users = new ArrayList();
         FirebaseFirestore storage=FirebaseFirestore.getInstance();
-        Task task=storage.collection("Utenti").whereEqualTo("Mail", email)
-                .limit(1).get()
+        Task task=storage.collection("Utenti").whereEqualTo("Mail", email).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -84,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+
     }
 
     /*@Override

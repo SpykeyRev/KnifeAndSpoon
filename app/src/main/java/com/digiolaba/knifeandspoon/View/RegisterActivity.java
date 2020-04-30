@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
         userImage=(CircleImageView)findViewById(R.id.profile_image);
         FirebaseAuth firebaseAuth= FirebaseAuth.getInstance();
         FirebaseUser fireUser = firebaseAuth.getCurrentUser();
-        userImage.setImageURI(fireUser.getPhotoUrl());
+        Picasso.get().load(fireUser.getPhotoUrl()).into(userImage);
         nome=(EditText)findViewById(R.id.Nome);
         continua=(Button)findViewById(R.id.Continua);
         continua.setOnClickListener(new View.OnClickListener() {

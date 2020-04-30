@@ -2,6 +2,14 @@ package com.digiolaba.knifeandspoon.Model;
 
 import android.os.AsyncTask;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.concurrent.ExecutionException;
+
 import static com.google.android.gms.tasks.Tasks.await;
 
 public class Utente {
@@ -17,35 +25,48 @@ public class Utente {
         this.nome=nome;
         this.image=image;
         this.isAdmin=isAdmin;
-
     }
 
-    /*public static Utente getUserInfo(String email){
-        final List<Utente> users=new ArrayList<Utente>();
-        FirebaseFirestore storage=FirebaseFirestore.getInstance();
+    /*
+        This class is made for getting a certain user (for a given e-mail) anywhere from the app (is a static class, but it has to be initialized anyway)
+        Usage:
         try {
-            await(storage.collection("Utenti").whereEqualTo("Mail", email)
-                    .limit(1).get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                String id=task.getResult().getDocuments().get(0).getId();
-                                String mail=task.getResult().getDocuments().get(0).get("Mail").toString();
-                                String nome=task.getResult().getDocuments().get(0).get("Nome").toString();
-                                String immagine=task.getResult().getDocuments().get(0).get("Immagine").toString();
-                                Boolean isAdmin=(Boolean)task.getResult().getDocuments().get(0).get("isAdmin");
-                                users.add(new Utente(id,mail,nome,immagine,isAdmin));
-                            }
-                        }
-                    }));
+            Utente actualUser = (Utente) new Utente.getUserInfo(firebaseAuth.getCurrentUser().getEmail()).execute().get();
+            //Do whatever the fuck you want
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return users.get(0);
-    }*/
+     */
+    public static class getUserInfo extends AsyncTask {
+        String email;
+
+        public getUserInfo(String email){
+            this.email=email;
+        }
+
+        @Override
+        protected Utente doInBackground(Object[] objects) {
+            Task<QuerySnapshot> documentSnapshotTask = FirebaseFirestore.getInstance().collection("Utenti").whereEqualTo("Mail", email).get();
+            Utente obj=null;
+            try {
+                QuerySnapshot documentSnapshot = Tasks.await(documentSnapshotTask);
+                obj=new Utente(
+                        documentSnapshot.getDocuments().get(0).getId(),
+                        documentSnapshot.getDocuments().get(0).get("Mail").toString(),
+                        documentSnapshot.getDocuments().get(0).get("Nome").toString(),
+                        documentSnapshot.getDocuments().get(0).get("Immagine").toString(),
+                        (Boolean)documentSnapshot.getDocuments().get(0).get("isAdmin")
+                        );
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return obj;
+        }
+    }
 
     public String getUserId(){
         return this.id;

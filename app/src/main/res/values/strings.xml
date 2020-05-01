@@ -15,4 +15,5 @@
     <string name="error_empty_name">Il tuo nome è vuoto. Per favore, inserisci un nome.</string>
     <string name="error_name_space">Controlla il tuo nome, ci sono degli spazi dove non dovrebbero esserci.</string>
     <string name="error_ok">OK</string>
+    <string name="error_name_already_taken">Questo nome è già stato usato. Per favore scegli un altro nome.</string>
 </resources>

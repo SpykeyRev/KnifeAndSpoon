@@ -14,11 +14,11 @@ public class Utils {
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
-    public static void noConnectionDialog(Context context){
+    public static void errorDialog(Context context,String message,String button){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage("Hey! Sei senza connessione...Scemo")
+        builder.setMessage(message)
                 .setCancelable(false)
-                .setPositiveButton("Scusa...", new DialogInterface.OnClickListener() {
+                .setPositiveButton(button, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //do things
                     }

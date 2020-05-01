@@ -107,10 +107,11 @@
                 android:layout_height="300dp"
                 app:auto_cycle="true"
                 app:corner_radius="20"
-                app:period="1000"
+                app:period="6000"
                 app:delay="0"
                 app:placeholder="@drawable/bg_grey"
-                app:error_image="@drawable/bg_grey"/>
+                app:error_image="@drawable/bg_grey"
+                />
 
         </LinearLayout>
     </ScrollView>

@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.digiolaba.knifeandspoon.Controller.Utils;
 import com.digiolaba.knifeandspoon.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -45,13 +46,29 @@ public class RegisterActivity extends AppCompatActivity {
         FirebaseAuth firebaseAuth= FirebaseAuth.getInstance();
         FirebaseUser fireUser = firebaseAuth.getCurrentUser();
         Picasso.get().load(fireUser.getPhotoUrl()).into(userImage);
-        nome=(EditText)findViewById(R.id.Nome);
-        continua=(Button)findViewById(R.id.Continua);
+        nome=(EditText)findViewById(R.id.txtNome);
+        continua=(Button)findViewById(R.id.btnContinua);
         continua.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                registerUser();
+                checkName(nome.getText().toString());
             }
         });
+    }
+
+    private void checkName(String n)
+    {
+        if(n.equals(""))
+        {
+            Utils.errorDialog(this,getResources().getString(R.string.error_empty_name),getResources().getString(R.string.error_ok));
+        }
+        else if(n.contains(" ")&&(n.startsWith(" ")&&n.endsWith(" ")))
+        {
+            Utils.errorDialog(this,getResources().getString(R.string.error_name_space),getResources().getString(R.string.error_ok));
+        }
+        else
+        {
+            registerUser();
+        }
     }
 
     private void registerUser(){

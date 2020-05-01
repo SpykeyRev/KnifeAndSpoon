@@ -48,7 +48,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
-        android:id="@+id/Nome"
+        android:id="@+id/txtNome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autofillHints=""
@@ -78,12 +78,12 @@
         app:layout_constraintVertical_bias="0.43" />
 
     <Button
-        android:id="@+id/Continua"
+        android:id="@+id/btnContinua"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/continua"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Nome" />
+        app:layout_constraintTop_toBottomOf="@+id/txtNome" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

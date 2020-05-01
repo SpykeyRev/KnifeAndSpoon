@@ -1,11 +1,16 @@
 package com.digiolaba.knifeandspoon.Controller;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 
 import androidx.appcompat.app.AlertDialog;
+
+import java.util.Random;
 
 public class Utils {
     public static boolean checkNetworkConnection(Context context){
@@ -25,5 +30,30 @@ public class Utils {
                 });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    public static class LoadSpinner
+    {
+        ProgressDialog nDialog;
+        public LoadSpinner(Context context){
+            nDialog = new ProgressDialog(context);
+            String[] texts={"Scolo la Pasta",
+                    "Affetto il Ciauscolo",
+                    "Friggo le Patatine",
+                    "Inforno la Pizza",
+                    "Preparo il Pane con l'olio",
+                    "Inforno i Vincisgrassi"};
+            nDialog.setMessage(texts[new Random().nextInt((5 - 0) + 1) + 0]);
+            nDialog.setIndeterminate(true);
+            nDialog.setCancelable(true);
+        }
+
+        public void show(){
+            nDialog.show();
+        }
+
+        public void close(){
+            nDialog.cancel();
+        }
     }
 }

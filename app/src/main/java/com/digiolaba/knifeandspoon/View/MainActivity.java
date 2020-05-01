@@ -5,17 +5,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.models.SlideModel;
 import com.digiolaba.knifeandspoon.Model.Utente;
 import com.digiolaba.knifeandspoon.R;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -27,15 +27,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
-import android.net.Uri;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -52,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
 
     FirebaseAuth firebaseAuth;
     GoogleSignInClient googleSignInClient;
-
+    FloatingActionButton bugo,intenzioni;
+    Boolean isBTNOpen=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +81,36 @@ public class MainActivity extends AppCompatActivity {
         slideModels.add((new SlideModel("https://lacuocagalante.com/wp-content/uploads/2017/05/la-pasta-alla-amatriciana.jpg","Amatriciana")));
 
         imageSlider.setImageList(slideModels,true);
+
+
+        FloatingActionMenu btnMenu=(FloatingActionMenu) findViewById(R.id.btnMenu);
+        bugo=(FloatingActionButton)findViewById(R.id.btnBugo);
+        intenzioni=(FloatingActionButton)findViewById(R.id.btnIntenzioni);
+        btnMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!isBTNOpen)
+                {
+                    showMenu();
+                }
+                else
+                {
+                    closeMenu();
+                }
+            }
+        });
+    }
+
+    private void showMenu(){
+        isBTNOpen=true;
+        bugo.animate().translationY(-getResources().getDimension(R.dimen.standard_55));
+        intenzioni.animate().translationY(-getResources().getDimension(R.dimen.standard_105));
+    }
+
+    private void closeMenu(){
+        isBTNOpen=false;
+        bugo.animate().translationY(0);
+        intenzioni.animate().translationY(0);
     }
 
     public void getUserInfo(String email){

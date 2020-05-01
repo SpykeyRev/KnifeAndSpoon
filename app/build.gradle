@@ -38,6 +38,5 @@ dependencies {
     implementation 'com.github.denzcoskun:ImageSlideshow:0.0.6'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
-    compile 'com.getbase:floatingactionbutton:1.10.1'
-
+    compile 'com.github.clans:fab:1.6.4'
 }

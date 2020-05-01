@@ -184,7 +184,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/fab_add"
                 fab:fab_size="normal"
-                fab:fab_label="Bugo" />
+                fab:fab_label="B" />
 
         </com.github.clans.fab.FloatingActionMenu>
 

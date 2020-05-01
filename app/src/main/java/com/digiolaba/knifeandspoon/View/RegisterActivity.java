@@ -50,20 +50,20 @@ public class RegisterActivity extends AppCompatActivity {
         continua=(Button)findViewById(R.id.btnContinua);
         continua.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                checkName(nome.getText().toString());
+                checkName();
             }
         });
     }
 
-    private void checkName(String n)
+    private void checkName()
     {
-        if(n.equals(""))
+        if(nome.getText().toString().equals(""))
         {
-            Utils.errorDialog(this,getResources().getString(R.string.error_empty_name),getResources().getString(R.string.error_ok));
+            Utils.errorDialog(this,R.string.error_empty_name,R.string.error_ok);
         }
-        else if(n.contains(" ")&&(n.startsWith(" ")&&n.endsWith(" ")))
+        else if(nome.getText().toString().contains(" ")&&(nome.getText().toString().startsWith(" ")&&nome.getText().toString().endsWith(" ")))
         {
-            Utils.errorDialog(this,getResources().getString(R.string.error_name_space),getResources().getString(R.string.error_ok));
+            Utils.errorDialog(this,R.string.error_name_space,R.string.error_ok);
         }
         else
         {

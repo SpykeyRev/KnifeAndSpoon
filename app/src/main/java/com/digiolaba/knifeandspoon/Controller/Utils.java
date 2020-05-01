@@ -14,11 +14,11 @@ public class Utils {
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
-    public static void errorDialog(Context context,String message,String button){
+    public static void errorDialog(Context context,int message,int button){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(message)
+        builder.setMessage(context.getResources().getString(message))
                 .setCancelable(false)
-                .setPositiveButton(button, new DialogInterface.OnClickListener() {
+                .setPositiveButton(context.getResources().getString(button), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //do things
                     }

@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".View.MainActivity">
 
+
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="0dp"
@@ -101,17 +102,19 @@
                 </LinearLayout>
 
             </LinearLayout>
+
             <com.denzcoskun.imageslider.ImageSlider
                 android:id="@+id/home_image_slider"
                 android:layout_width="wrap_content"
                 android:layout_height="300dp"
                 app:auto_cycle="true"
                 app:corner_radius="20"
-                app:period="6000"
                 app:delay="0"
-                app:placeholder="@drawable/bg_grey"
                 app:error_image="@drawable/bg_grey"
-                />
+                app:period="6000"
+                app:placeholder="@drawable/bg_grey">
+
+            </com.denzcoskun.imageslider.ImageSlider>
 
         </LinearLayout>
     </ScrollView>

@@ -6,7 +6,6 @@
     <string name="register_2">ti vediamo da queste parti</string>
     <string name="register_3">Come ti chiami?</string>
     <string name="continua">Continua</string>
-    <string name="register_4"></string>
     <string name="login_with_google">Entra con Google</string>
     <string name="no_account_login">Entra senza account</string>
     <string name="heading_search">Ricerca</string>
@@ -16,4 +15,5 @@
     <string name="error_name_space">Controlla il tuo nome, ci sono degli spazi dove non dovrebbero esserci.</string>
     <string name="error_ok">OK</string>
     <string name="error_name_already_taken">Questo nome è già stato usato. Per favore scegli un altro nome.</string>
+    <string name="error_lenght_name">Il tuo nome deve essere compreso tra 6 e 20 caratteri.</string>
 </resources>

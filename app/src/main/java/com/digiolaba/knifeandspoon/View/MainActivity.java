@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
             actualUser = (Utente) new Utente.getUserInfo(firebaseAuth.getCurrentUser().getEmail()).execute().get();
             TextView userName=(TextView)findViewById(R.id.userName);
             userName.setText(actualUser.getUserName());
+
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -81,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
 
         List<SlideModel>slideModels=new ArrayList<>();
         slideModels.add((new SlideModel(R.drawable.app_logo,"Prova1")));
-        slideModels.add((new SlideModel(R.drawable.ic_google,"Prova2")));
         slideModels.add((new SlideModel("https://wips.plug.it/cips/buonissimo.org/cms/2019/02/carbonara.jpg","Carbonara")));
         slideModels.add((new SlideModel("https://wips.plug.it/cips/buonissimo.org/cms/2019/03/ciambellone-classico.jpg","Ciambellone")));
         slideModels.add((new SlideModel("https://lacuocagalante.com/wp-content/uploads/2017/05/la-pasta-alla-amatriciana.jpg","Amatriciana")));

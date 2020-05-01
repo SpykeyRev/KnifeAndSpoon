@@ -8,6 +8,29 @@
     tools:context=".View.MainActivity">
 
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnGoogle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/btnAdd"
+        app:layout_constraintEnd_toEndOf="@+id/scrollView2"
+        fab:srcCompat="@drawable/app_logo" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/scrollView2"
+        fab:srcCompat="@drawable/ic_add_black_24dp" />
+
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="0dp"
@@ -113,38 +136,10 @@
                 app:delay="0"
                 app:error_image="@drawable/bg_grey"
                 app:period="6000"
-                app:placeholder="@drawable/bg_grey">
-
-            </com.denzcoskun.imageslider.ImageSlider>
+                app:placeholder="@drawable/bg_grey"/>
 
         </LinearLayout>
     </ScrollView>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginEnd="32dp"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnGoogle"
-            android:layout_width="99dp"
-            android:layout_height="99dp"
-            android:clickable="true"
-            android:visibility="invisible"
-            app:srcCompat="@drawable/app_logo"
-             />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnAdd"
-            android:layout_width="210dp"
-            android:layout_height="217dp"
-            android:layout_marginTop="@dimen/standard_105"
-            android:layout_marginBottom="16dp"
-            android:clickable="true"
-            android:visibility="visible"
-            fab:srcCompat="@drawable/ic_add_black_24dp" />
-    </RelativeLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

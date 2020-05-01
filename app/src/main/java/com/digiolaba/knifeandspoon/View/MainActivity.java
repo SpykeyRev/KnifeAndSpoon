@@ -8,19 +8,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.models.SlideModel;
 import com.digiolaba.knifeandspoon.Model.Utente;
 import com.digiolaba.knifeandspoon.R;
-import com.github.clans.fab.FloatingActionButton;
-import com.github.clans.fab.FloatingActionMenu;
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -45,8 +48,13 @@ public class MainActivity extends AppCompatActivity {
 
     FirebaseAuth firebaseAuth;
     GoogleSignInClient googleSignInClient;
-    FloatingActionButton bugo,intenzioni;
-    Boolean isBTNOpen=false;
+
+    private FloatingActionButton fab_main, fab1_mail;
+    private Animation fab_open, fab_close, fab_clock, fab_anticlock;
+
+
+    Boolean isOpen = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,36 +90,44 @@ public class MainActivity extends AppCompatActivity {
 
         imageSlider.setImageList(slideModels,true);
 
+        fab_main = (FloatingActionButton)findViewById(R.id.btnAdd);
+        fab1_mail =(FloatingActionButton) findViewById(R.id.btnGoogle);
+        fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
+        fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
+        fab_clock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_clock);
+        fab_anticlock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_antilock);
 
-        FloatingActionMenu btnMenu=(FloatingActionMenu) findViewById(R.id.btnMenu);
-        bugo=(FloatingActionButton)findViewById(R.id.btnBugo);
-        intenzioni=(FloatingActionButton)findViewById(R.id.btnIntenzioni);
-        btnMenu.setOnClickListener(new View.OnClickListener() {
+
+        fab_main.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isBTNOpen)
-                {
-                    showMenu();
-                }
-                else
-                {
-                    closeMenu();
+                if (isOpen) {
+                    fab1_mail.startAnimation(fab_close);
+                    fab_main.startAnimation(fab_anticlock);
+                    fab1_mail.setClickable(false);
+                    isOpen = false;
+                } else {
+                    fab1_mail.startAnimation(fab_open);
+                    fab_main.startAnimation(fab_clock);
+                    fab1_mail.setClickable(true);
+                    isOpen = true;
                 }
             }
         });
+        fab1_mail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Email", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+
+
     }
 
-    private void showMenu(){
-        isBTNOpen=true;
-        bugo.animate().translationY(-getResources().getDimension(R.dimen.standard_55));
-        intenzioni.animate().translationY(-getResources().getDimension(R.dimen.standard_105));
-    }
 
-    private void closeMenu(){
-        isBTNOpen=false;
-        bugo.animate().translationY(0);
-        intenzioni.animate().translationY(0);
-    }
+
 
     public void getUserInfo(String email){
         final List<Utente> users = new ArrayList();

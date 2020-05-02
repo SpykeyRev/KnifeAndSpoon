@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
         fab_main.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Utils.showSnackbar(v,"DIOCAN");
                 if (isOpen) {
                     fab_add.startAnimation(fab_close);
                     fab_search.startAnimation(fab_close);

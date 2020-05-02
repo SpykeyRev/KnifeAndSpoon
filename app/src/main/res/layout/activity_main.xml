@@ -120,74 +120,91 @@
         </LinearLayout>
     </ScrollView>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabOptions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="24dp"
-        android:clickable="true"
-        android:focusable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/scrollView2"
-        app:backgroundTint="@color/colorPrimary"
-        app:tint="@null"
-        fab:srcCompat="@drawable/pizza"
-        />
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:id="@+id/coordinateLayout"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/fabAdd"
-        style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:text="Aggiungi"
-        android:textColor="@color/white"
-        android:visibility="invisible"
-        app:icon="@drawable/pencil"
-        app:iconTint="@android:color/white"
-        app:backgroundTint="@color/colorPrimary"
-        app:layout_constraintBottom_toTopOf="@+id/fabOptions"
-        app:layout_constraintEnd_toEndOf="@+id/scrollView2" />
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/fabSettings"
-        style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="6dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:text="Impostazioni"
-        android:textColor="@color/white"
-        android:visibility="invisible"
-        app:icon="@drawable/ic_settings_black_24dp"
-        app:iconTint="@android:color/white"
-        app:backgroundTint="@color/colorPrimary"
-        app:layout_constraintBottom_toTopOf="@+id/fabSearch"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabOptions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:backgroundTint="@color/colorPrimary"
+            app:tint="@null"
+            fab:srcCompat="@drawable/pizza" />
+        <View
+            android:id="@+id/dummy"
+            android:layout_width="1dp"
+            android:layout_height="16dp"
+            app:layout_anchor="@id/fabOptions"
+            app:layout_anchorGravity="top|right|end" />
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/fabAdd"
+            style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|top"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Aggiungi"
+            android:textColor="@color/white"
+            android:visibility="invisible"
+            app:backgroundTint="@color/colorPrimary"
+            app:icon="@drawable/pencil"
+            app:iconTint="@android:color/white"
+            app:layout_anchor="@id/dummy"/>
+        <View
+            android:id="@+id/dummy2"
+            android:layout_width="1dp"
+            android:layout_height="16dp"
+            app:layout_anchor="@id/fabAdd"
+            app:layout_anchorGravity="top|right|end" />
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/fabSearch"
+            style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|top"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Cerca"
+            android:textColor="@color/white"
+            android:visibility="invisible"
+            app:backgroundTint="@color/colorPrimary"
+            app:icon="@drawable/ic_search_black_24dp"
+            app:iconTint="@android:color/white"
+            app:layout_anchor="@id/dummy2"/>
+        <View
+            android:id="@+id/dummy3"
+            android:layout_width="1dp"
+            android:layout_height="16dp"
+            app:layout_anchor="@id/fabSearch"
+            app:layout_anchorGravity="top|right|end" />
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/fabSettings"
+            style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|top"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Impostazioni"
+            android:textColor="@color/white"
+            android:visibility="invisible"
+            app:backgroundTint="@color/colorPrimary"
+            app:icon="@drawable/ic_settings_black_24dp"
+            app:iconTint="@android:color/white"
+            app:layout_anchor="@id/dummy3" />
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/fabSearch"
-        style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="6dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:text="Cerca"
-        android:textColor="@color/white"
-        android:visibility="invisible"
-        app:icon="@drawable/ic_search_black_24dp"
-        app:iconTint="@android:color/white"
-        app:backgroundTint="@color/colorPrimary"
-        app:layout_constraintBottom_toTopOf="@+id/fabAdd"
-        app:layout_constraintEnd_toEndOf="parent" />
-
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

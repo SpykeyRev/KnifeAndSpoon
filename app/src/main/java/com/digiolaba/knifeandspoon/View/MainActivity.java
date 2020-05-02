@@ -139,13 +139,15 @@ public class MainActivity extends AppCompatActivity {
         fab_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //intent per redirect ad activity inserimento ricetta
+                Intent intent=new Intent(MainActivity.this,InsertRicettaActivity.class);
+                startActivity(intent);
             }
         });
         fab_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //intent per redirect ad activity ricerca ricetta
+                Intent intent=new Intent(MainActivity.this,SearchActivity.class);
+                startActivity(intent);
             }
         });
         fab_settings.setOnClickListener(new View.OnClickListener() {

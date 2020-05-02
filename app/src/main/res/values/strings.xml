@@ -16,6 +16,11 @@
     <string name="menu">Menu</string>
     <string name="insert_foto">Inserisci una foto del piatto</string>
 
+    <string name="ingredienti">Ingredienti</string>
+    <string name="passaggi">Passaggi</string>
+    <string name="ingrediente">Ingrediente</string>
+    <string name="passaggio">Passaggio</string>
+
     <string name="error_empty_name">Il tuo nome è vuoto. Per favore, inserisci un nome.</string>
     <string name="error_name_space">Controlla il tuo nome, ci sono degli spazi dove non dovrebbero esserci.</string>
     <string name="error_ok">OK</string>

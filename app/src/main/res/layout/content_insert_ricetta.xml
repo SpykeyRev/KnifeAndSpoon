@@ -19,6 +19,65 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp"
             android:text="@string/title_activity_insert_ricetta" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/ingredienti"/>
+
+        <LinearLayout
+            android:id="@+id/listIngredienti"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:orientation="vertical"/>
+
+        <Button
+            android:id="@+id/addIngrediente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ingrediente"
+            android:layout_gravity="end"
+            android:layout_margin="16dp"
+            android:drawableLeft="@drawable/ic_add_black_24dp"
+            />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:text="@string/passaggi"/>
+
+        <LinearLayout
+            android:id="@+id/listPassaggi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:orientation="vertical"></LinearLayout>
+
+        <Button
+            android:id="@+id/addPassaggio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/passaggio"
+            android:layout_gravity="end"
+            android:layout_margin="16dp"
+            android:drawableLeft="@drawable/ic_add_black_24dp"
+            />
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

@@ -10,6 +10,10 @@
     <string name="no_account_login">Entra senza account</string>
     <string name="heading_search">Ricerca</string>
     <string name="search_bar">Cerca...</string>
+    <string name="add_ricetta">Aggiungi una ricetta</string>
+    <string name="search_ricetta">Cerca una ricetta</string>
+    <string name="settings">Impostazioni</string>
+    <string name="menu">Menu</string>
 
     <string name="error_empty_name">Il tuo nome è vuoto. Per favore, inserisci un nome.</string>
     <string name="error_name_space">Controlla il tuo nome, ci sono degli spazi dove non dovrebbero esserci.</string>

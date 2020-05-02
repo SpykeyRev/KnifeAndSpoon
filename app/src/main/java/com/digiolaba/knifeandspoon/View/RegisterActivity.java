@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 import com.digiolaba.knifeandspoon.Controller.Utils;
 import com.digiolaba.knifeandspoon.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,6 +35,7 @@ public class RegisterActivity extends AppCompatActivity {
     Button continua;
     String TAG="Register";
     CircleImageView userImage;
+    Context context=RegisterActivity.this;
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, RegisterActivity.class);
@@ -142,7 +142,5 @@ public class RegisterActivity extends AppCompatActivity {
         finish();
     }
 
-    private void showToastMessage(String message) {
-        Toast.makeText(RegisterActivity.this, message, Toast.LENGTH_LONG).show();
-    }
+
 }

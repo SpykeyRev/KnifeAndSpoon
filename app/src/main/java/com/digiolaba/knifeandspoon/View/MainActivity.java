@@ -11,10 +11,10 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.models.SlideModel;
+import com.digiolaba.knifeandspoon.Controller.Utils;
 import com.digiolaba.knifeandspoon.Model.Utente;
 import com.digiolaba.knifeandspoon.R;
 
@@ -49,11 +49,12 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     GoogleSignInClient googleSignInClient;
 
-    private FloatingActionButton fab_main, fab1_mail;
+    private FloatingActionButton fab_main, fab_add, fab_search, fab_settings;
     private Animation fab_open, fab_close, fab_clock, fab_anticlock;
-
+    private TextView txtAdd,txtSearch, txtSettings;
 
     Boolean isOpen = false;
+    Context context=MainActivity.this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,34 +91,89 @@ public class MainActivity extends AppCompatActivity {
 
         imageSlider.setImageList(slideModels,true);
 
-        fab_main = (FloatingActionButton)findViewById(R.id.btnAdd);
-        fab1_mail =(FloatingActionButton) findViewById(R.id.btnGoogle);
+        fab_main = (FloatingActionButton)findViewById(R.id.fabOptions);
+        fab_add =(FloatingActionButton) findViewById(R.id.fabAdd);
+        fab_search=(FloatingActionButton)findViewById(R.id.fabSearch);
+        fab_settings=(FloatingActionButton)findViewById(R.id.fabSettings);
         fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         fab_clock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_clock);
-        fab_anticlock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_antilock);
-
+        fab_anticlock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_anticlock);
+        txtAdd=(TextView)findViewById(R.id.txtAdd);
+        txtSearch=(TextView)findViewById(R.id.txtSearch);
+        txtSettings=(TextView)findViewById(R.id.txtSettings);
 
         fab_main.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isOpen) {
-                    fab1_mail.startAnimation(fab_close);
+                    fab_add.startAnimation(fab_close);
+                    fab_search.startAnimation(fab_close);
+                    fab_settings.startAnimation(fab_close);
                     fab_main.startAnimation(fab_anticlock);
-                    fab1_mail.setClickable(false);
+                    txtAdd.startAnimation(fab_close);
+                    txtSearch.startAnimation(fab_close);
+                    txtSettings.startAnimation(fab_close);
+                    fab_add.setClickable(false);
                     isOpen = false;
                 } else {
-                    fab1_mail.startAnimation(fab_open);
+                    fab_add.startAnimation(fab_open);
+                    fab_search.startAnimation(fab_open);
+                    fab_settings.startAnimation(fab_open);
                     fab_main.startAnimation(fab_clock);
-                    fab1_mail.setClickable(true);
+                    txtAdd.startAnimation(fab_open);
+                    txtSearch.startAnimation(fab_open);
+                    txtSettings.startAnimation(fab_open);
+                    fab_add.setClickable(true);
                     isOpen = true;
                 }
             }
         });
-        fab1_mail.setOnClickListener(new View.OnClickListener() {
+        fab_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Email", Toast.LENGTH_SHORT).show();
+                //intent per redirect ad activity inserimento ricetta
+            }
+        });
+        fab_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //intent per redirect ad activity ricerca ricetta
+            }
+        });
+        fab_settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //intent per redirect ad activity impostazioni
+            }
+        });
+
+        fab_main.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Utils.showToastMessage(context,getResources().getString(R.string.menu));
+                return false;
+            }
+        });
+        fab_add.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Utils.showToastMessage(context,getResources().getString(R.string.add_ricetta));
+                return false;
+            }
+        });
+        fab_search.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Utils.showToastMessage(context,getResources().getString(R.string.search_ricetta));
+                return false;
+            }
+        });
+        fab_settings.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Utils.showToastMessage(context,getResources().getString(R.string.settings));
+                return false;
             }
         });
 
@@ -192,5 +248,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+
 
 }

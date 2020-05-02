@@ -43,7 +43,12 @@ public class Utils {
 
     public static void showSnackbar(View view, String message)
     {
-        Snackbar.make(view,message,Snackbar.LENGTH_LONG).setAction(message,null).show();
+        Snackbar.make(view,message,Snackbar.LENGTH_LONG).setAction("Chiudi", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        }).show();
     }
 
     public static class LoadSpinner

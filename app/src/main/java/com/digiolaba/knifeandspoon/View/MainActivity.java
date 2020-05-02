@@ -2,6 +2,7 @@ package com.digiolaba.knifeandspoon.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import android.content.ClipData;
 import android.content.Context;
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     List<Ricetta> ricettas;
     Boolean isOpen = false;
     Context context=MainActivity.this;
+    CoordinatorLayout coordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,11 +117,11 @@ public class MainActivity extends AppCompatActivity {
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         fab_clock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_clock);
         fab_anticlock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_anticlock);
+        coordinatorLayout=(CoordinatorLayout)findViewById(R.id.coordinateLayout) ;
 
         fab_main.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utils.showSnackbar(v,"DIOCAN");
                 if (isOpen) {
                     fab_add.startAnimation(fab_close);
                     fab_search.startAnimation(fab_close);
@@ -161,29 +163,28 @@ public class MainActivity extends AppCompatActivity {
         fab_main.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Utils.showToastMessage(context,getResources().getString(R.string.menu));
+                Utils.showSnackbar(coordinatorLayout,getResources().getString(R.string.menu));
                 return false;
             }
         });
         fab_add.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Utils.showToastMessage(context,getResources().getString(R.string.add_ricetta));
+                Utils.showSnackbar(coordinatorLayout,getResources().getString(R.string.add_ricetta));
                 return false;
             }
         });
         fab_search.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Utils.showToastMessage(context,getResources().getString(R.string.search_ricetta));
+                Utils.showSnackbar(coordinatorLayout,getResources().getString(R.string.search_ricetta));
                 return false;
             }
         });
         fab_settings.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Utils.showToastMessage(context,"DIO");
-                new Ricetta.getRecipeInfo("CPcN2ONhMJ6EMw8DLGXl").execute();
+                Utils.showSnackbar(coordinatorLayout,getResources().getString(R.string.settings));
                 return false;
             }
         });

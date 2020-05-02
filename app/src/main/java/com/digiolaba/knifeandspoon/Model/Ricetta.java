@@ -1,28 +1,88 @@
 package com.digiolaba.knifeandspoon.Model;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public class Ricetta {
+    private String id;
     private String authorId;
     private String thumbnail;
     private String title;
-    private List ingredienti;
-    private List steps;
+    private String tempo;
+    private List<Map> ingredienti;
+    private List<Map> steps;
 
 
-    Ricetta(String id, String title,String thumbnail,List ingredienti, List steps){
-        this.authorId=id;
+    Ricetta(String id, String authorId, String title, String tempo, String thumbnail, List<Map<String, Object>> ingredienti, List<Map<String, Object>> steps){
+        this.id=id;
+        this.authorId=authorId;
         this.title=title;
         this.thumbnail=thumbnail;
-        this.ingredienti=ingredienti;
-        this.steps=steps;
+        //this.ingredienti= ingredienti;
+        //this.steps= steps;
+        this.tempo=tempo;
+    }
+
+    public class Ingrediente{
+        final String Nome;
+        final Double Quantità;
+        final String Ut;
+
+        public Ingrediente(String Nome,Double Quantità,String Ut) {
+            this.Nome=Nome;
+            this.Quantità=Quantità;
+            this.Ut=Ut;
+        }
+    }
+
+    public class Step{
+        final int Numero;
+        final String Testo;
+
+        public Step(int Numero,String Testo) {
+            this.Numero=Numero;
+            this.Testo=Testo;
+        }
+    }
+
+
+    public static class getFirstTenRecipe extends AsyncTask{
+        @Override
+        protected List<Ricetta> doInBackground(Object[] objects) {
+            Task<QuerySnapshot> documentSnapshotTask = FirebaseFirestore.getInstance().collection("Ricette").limit(10).get();
+            List<Ricetta> obj=new ArrayList();
+            try {
+                QuerySnapshot documentSnapshot = Tasks.await(documentSnapshotTask);
+                for(int i=0;i<documentSnapshot.size();i++){
+                    obj.add(new Ricetta(
+                            documentSnapshot.getDocuments().get(i).getId(),
+                            documentSnapshot.getDocuments().get(i).get("Autore").toString(),
+                            documentSnapshot.getDocuments().get(i).get("Titolo").toString(),
+                            documentSnapshot.getDocuments().get(i).get("Tempo di preparazione").toString(),
+                            documentSnapshot.getDocuments().get(i).get("Thumbnail").toString(),
+                            (List<Map<String,Object>>) documentSnapshot.getDocuments().get(i).get("Ingredienti"),
+                            (List<Map<String,Object>>) documentSnapshot.getDocuments().get(i).get("Passaggi")
+                    ));
+                }
+
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return obj;
+        }
     }
 
     public static class getRecipeInfo extends AsyncTask {
@@ -33,17 +93,21 @@ public class Ricetta {
         }
 
         @Override
-        protected Utente doInBackground(Object[] objects) {
-            Task<QuerySnapshot> documentSnapshotTask = FirebaseFirestore.getInstance().collection("Utenti").get();
-            Utente obj=null;
+        protected Ricetta doInBackground(Object[] objects) {
+            DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Ricette").document(id);
+            Task<DocumentSnapshot> documentSnapshotTask = documentReference.get();
+            Ricetta obj=null;
             try {
-                QuerySnapshot documentSnapshot = Tasks.await(documentSnapshotTask);
-                obj=new Utente(
-                        documentSnapshot.getDocuments().get(0).getId(),
-                        documentSnapshot.getDocuments().get(0).get("Mail").toString(),
-                        documentSnapshot.getDocuments().get(0).get("Nome").toString(),
-                        documentSnapshot.getDocuments().get(0).get("Immagine").toString(),
-                        (Boolean)documentSnapshot.getDocuments().get(0).get("isAdmin")
+                DocumentSnapshot documentSnapshot = Tasks.await(documentSnapshotTask);
+                Log.i("DIO", documentSnapshot.get("Ingredienti").toString());
+                obj=new Ricetta(
+                        documentSnapshot.getId(),
+                        documentSnapshot.get("Autore").toString(),
+                        documentSnapshot.get("Titolo").toString(),
+                        documentSnapshot.get("Tempo di preparazione").toString(),
+                        documentSnapshot.getString("Thumbnail"),
+                        (List<Map<String,Object>>) documentSnapshot.get("Ingredienti"),
+                        (List<Map<String,Object>>) documentSnapshot.get("Passaggi")
                 );
             } catch (ExecutionException e) {
                 e.printStackTrace();
@@ -66,11 +130,11 @@ public class Ricetta {
         return this.thumbnail;
     }
 
-    public List getSteps(){
+    public Object getSteps(){
         return this.steps;
     }
 
-    public List getIngredienti(){
+    public Object getIngredienti(){
         return this.ingredienti;
     }
 }

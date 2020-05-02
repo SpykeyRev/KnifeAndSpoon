@@ -3,6 +3,7 @@ package com.digiolaba.knifeandspoon.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,8 +14,10 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.denzcoskun.imageslider.ImageSlider;
+import com.denzcoskun.imageslider.interfaces.ItemClickListener;
 import com.denzcoskun.imageslider.models.SlideModel;
 import com.digiolaba.knifeandspoon.Controller.Utils;
+import com.digiolaba.knifeandspoon.Model.Ricetta;
 import com.digiolaba.knifeandspoon.Model.Utente;
 import com.digiolaba.knifeandspoon.R;
 
@@ -53,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton fab_main;
     private ExtendedFloatingActionButton fab_add, fab_search, fab_settings;
     private Animation fab_open, fab_close, fab_clock, fab_anticlock;
-
+    List<Ricetta> ricettas;
     Boolean isOpen = false;
     Context context=MainActivity.this;
 
@@ -84,13 +87,25 @@ public class MainActivity extends AppCompatActivity {
         //Setting up imageSlider
         ImageSlider imageSlider=(ImageSlider)findViewById(R.id.home_image_slider);
 
-        List<SlideModel>slideModels=new ArrayList<>();
-        slideModels.add((new SlideModel(R.drawable.app_logo,"Prova1")));
-        slideModels.add((new SlideModel("https://wips.plug.it/cips/buonissimo.org/cms/2019/02/carbonara.jpg","Carbonara")));
-        slideModels.add((new SlideModel("https://wips.plug.it/cips/buonissimo.org/cms/2019/03/ciambellone-classico.jpg","Ciambellone")));
-        slideModels.add((new SlideModel("https://lacuocagalante.com/wp-content/uploads/2017/05/la-pasta-alla-amatriciana.jpg","Amatriciana")));
-
-        imageSlider.setImageList(slideModels,true);
+        try {
+            ricettas=(List<Ricetta>) new Ricetta.getFirstTenRecipe().execute().get();
+            List<SlideModel>slideModels=new ArrayList<>();
+            for(int i=0;i<ricettas.size();i++){
+                System.out.println(ricettas.get(i).getThumbnail());
+                slideModels.add((new SlideModel(ricettas.get(i).getThumbnail(),ricettas.get(i).getTitle())));
+            }
+            imageSlider.setImageList(slideModels,true);
+            imageSlider.setItemClickListener(new ItemClickListener() {
+                @Override
+                public void onItemSelected(int i) {
+                    System.out.println(ricettas.get(i).getTitle());
+                }
+            });
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         fab_main = (FloatingActionButton)findViewById(R.id.fabOptions);
         fab_add =(ExtendedFloatingActionButton) findViewById(R.id.fabAdd);
@@ -164,7 +179,8 @@ public class MainActivity extends AppCompatActivity {
         fab_settings.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Utils.showToastMessage(context,getResources().getString(R.string.settings));
+                Utils.showToastMessage(context,"DIO");
+                new Ricetta.getRecipeInfo("CPcN2ONhMJ6EMw8DLGXl").execute();
                 return false;
             }
         });

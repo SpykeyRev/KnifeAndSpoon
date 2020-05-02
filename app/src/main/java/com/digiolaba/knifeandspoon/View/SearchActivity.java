@@ -55,6 +55,7 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
+
     }
 
     private void firebaseRicettaSearch(String searchText) {

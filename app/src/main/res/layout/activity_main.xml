@@ -8,100 +8,6 @@
     tools:context=".View.MainActivity">
 
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabSettings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="4dp"
-
-        android:clickable="true"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/fabSearch"
-        app:layout_constraintEnd_toEndOf="parent"
-        fab:srcCompat="@drawable/ic_settings_black_24dp" />
-
-    <TextView
-        android:id="@+id/txtSettings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
-        android:padding="8dp"
-        android:text="@string/settings"
-        android:textAlignment="center"
-        android:textColor="@android:color/black"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/fabSettings"
-        app:layout_constraintEnd_toStartOf="@+id/fabSettings" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabSearch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="4dp"
-        android:clickable="true"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/fabAdd"
-        app:layout_constraintEnd_toEndOf="parent"
-        fab:srcCompat="@drawable/ic_search_black_24dp" />
-
-    <TextView
-        android:id="@+id/txtSearch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
-        android:padding="8dp"
-        android:text="@string/search_ricetta"
-        android:textAlignment="center"
-        android:textColor="@android:color/black"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/fabSearch"
-        app:layout_constraintEnd_toStartOf="@+id/fabSearch" />
-
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAdd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:clickable="true"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/fabOptions"
-        app:layout_constraintEnd_toEndOf="@+id/scrollView2"
-        fab:srcCompat="@drawable/pencil" />
-
-    <TextView
-        android:id="@+id/txtAdd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
-        android:padding="8dp"
-        android:text="@string/add_ricetta"
-        android:textAlignment="center"
-        android:textColor="@android:color/black"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/fabAdd"
-        app:layout_constraintEnd_toStartOf="@+id/fabAdd" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabOptions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="24dp"
-        android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/scrollView2"
-        fab:srcCompat="@drawable/pizza" />
-
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="0dp"
@@ -213,6 +119,75 @@
 
         </LinearLayout>
     </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabOptions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/scrollView2"
+        app:backgroundTint="@color/colorPrimary"
+        app:tint="@null"
+        fab:srcCompat="@drawable/pizza"
+        />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fabAdd"
+        style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="Aggiungi"
+        android:textColor="@color/white"
+        android:visibility="invisible"
+        app:icon="@drawable/pencil"
+        app:iconTint="@android:color/white"
+        app:backgroundTint="@color/colorPrimary"
+        app:layout_constraintBottom_toTopOf="@+id/fabOptions"
+        app:layout_constraintEnd_toEndOf="@+id/scrollView2" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fabSettings"
+        style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="6dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="Impostazioni"
+        android:textColor="@color/white"
+        android:visibility="invisible"
+        app:icon="@drawable/ic_settings_black_24dp"
+        app:iconTint="@android:color/white"
+        app:backgroundTint="@color/colorPrimary"
+        app:layout_constraintBottom_toTopOf="@+id/fabSearch"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fabSearch"
+        style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="6dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="Cerca"
+        android:textColor="@color/white"
+        android:visibility="invisible"
+        app:icon="@drawable/ic_search_black_24dp"
+        app:iconTint="@android:color/white"
+        app:backgroundTint="@color/colorPrimary"
+        app:layout_constraintBottom_toTopOf="@+id/fabAdd"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

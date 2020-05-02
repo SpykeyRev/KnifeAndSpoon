@@ -23,6 +23,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -49,9 +50,9 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     GoogleSignInClient googleSignInClient;
 
-    private FloatingActionButton fab_main, fab_add, fab_search, fab_settings;
+    private FloatingActionButton fab_main;
+    private ExtendedFloatingActionButton fab_add, fab_search, fab_settings;
     private Animation fab_open, fab_close, fab_clock, fab_anticlock;
-    private TextView txtAdd,txtSearch, txtSettings;
 
     Boolean isOpen = false;
     Context context=MainActivity.this;
@@ -92,16 +93,13 @@ public class MainActivity extends AppCompatActivity {
         imageSlider.setImageList(slideModels,true);
 
         fab_main = (FloatingActionButton)findViewById(R.id.fabOptions);
-        fab_add =(FloatingActionButton) findViewById(R.id.fabAdd);
-        fab_search=(FloatingActionButton)findViewById(R.id.fabSearch);
-        fab_settings=(FloatingActionButton)findViewById(R.id.fabSettings);
+        fab_add =(ExtendedFloatingActionButton) findViewById(R.id.fabAdd);
+        fab_search=(ExtendedFloatingActionButton)findViewById(R.id.fabSearch);
+        fab_settings=(ExtendedFloatingActionButton)findViewById(R.id.fabSettings);
         fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         fab_clock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_clock);
         fab_anticlock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_anticlock);
-        txtAdd=(TextView)findViewById(R.id.txtAdd);
-        txtSearch=(TextView)findViewById(R.id.txtSearch);
-        txtSettings=(TextView)findViewById(R.id.txtSettings);
 
         fab_main.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,9 +109,6 @@ public class MainActivity extends AppCompatActivity {
                     fab_search.startAnimation(fab_close);
                     fab_settings.startAnimation(fab_close);
                     fab_main.startAnimation(fab_anticlock);
-                    txtAdd.startAnimation(fab_close);
-                    txtSearch.startAnimation(fab_close);
-                    txtSettings.startAnimation(fab_close);
                     fab_add.setClickable(false);
                     isOpen = false;
                 } else {
@@ -121,9 +116,6 @@ public class MainActivity extends AppCompatActivity {
                     fab_search.startAnimation(fab_open);
                     fab_settings.startAnimation(fab_open);
                     fab_main.startAnimation(fab_clock);
-                    txtAdd.startAnimation(fab_open);
-                    txtSearch.startAnimation(fab_open);
-                    txtSettings.startAnimation(fab_open);
                     fab_add.setClickable(true);
                     isOpen = true;
                 }

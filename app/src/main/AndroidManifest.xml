@@ -20,6 +20,9 @@
             android:name=".View.InsertRicettaActivity"
             android:label="@string/title_activity_insert_ricetta"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".View.SearchActivity"
+            android:label="SearchActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".View.ShowRicetta"
             android:label="@string/title_activity_show_ricetta"

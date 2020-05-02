@@ -8,10 +8,17 @@
     tools:context=".View.InsertRicettaActivity"
     tools:showIn="@layout/activity_insert_ricetta">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:text="@string/large_text" />
+        android:orientation="vertical">
 
+        <EditText
+            android:id="@+id/etTitolo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="@string/title_activity_insert_ricetta" />
+    </LinearLayout>
 </androidx.core.widget.NestedScrollView>

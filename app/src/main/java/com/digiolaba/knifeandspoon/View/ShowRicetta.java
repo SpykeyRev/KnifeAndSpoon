@@ -24,7 +24,7 @@ public class ShowRicetta extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_ricetta);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_ins_foto);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -45,4 +45,7 @@ public class ShowRicetta extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+
 }

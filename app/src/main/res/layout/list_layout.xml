@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/image_ricetta"
+        android:layout_width="160dp"
+        android:layout_height="119dp"
+        app:srcCompat="@drawable/pizza" />
+
+    <TextView
+        android:id="@+id/nome_ricetta"
+        android:layout_width="129dp"
+        android:layout_height="35dp"
+        android:layout_alignEnd="@+id/image_ricetta"
+        android:layout_marginEnd="-130dp"
+        android:text="TextView"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/tempo_preparazione"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nome_ricetta"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="5dp"
+        android:layout_toEndOf="@+id/image_ricetta"
+        android:text="15''"
+        android:textSize="18sp" />
+</RelativeLayout>

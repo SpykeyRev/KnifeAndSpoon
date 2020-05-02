@@ -7,11 +7,13 @@ import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
 import com.digiolaba.knifeandspoon.View.MainActivity;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Random;
 
@@ -37,6 +39,11 @@ public class Utils {
 
     public static void showToastMessage(Context context, String message) {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+    }
+
+    public static void showSnackbar(View view, String message)
+    {
+        Snackbar.make(view,message,Snackbar.LENGTH_LONG).setAction(message,null).show();
     }
 
     public static class LoadSpinner

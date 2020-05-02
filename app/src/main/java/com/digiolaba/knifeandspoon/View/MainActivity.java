@@ -49,10 +49,11 @@ public class MainActivity extends AppCompatActivity {
 
     FirebaseAuth firebaseAuth;
     GoogleSignInClient googleSignInClient;
+    View view;
 
     private FloatingActionButton fab_main;
     private ExtendedFloatingActionButton fab_add, fab_search, fab_settings;
-    private Animation fab_open, fab_close, fab_clock, fab_anticlock;
+    private Animation fab_open, fab_close, fab_clock, fab_anticlock,fab_jump;
 
     Boolean isOpen = false;
     Context context=MainActivity.this;
@@ -85,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
         ImageSlider imageSlider=(ImageSlider)findViewById(R.id.home_image_slider);
 
         List<SlideModel>slideModels=new ArrayList<>();
-        slideModels.add((new SlideModel(R.drawable.app_logo,"Prova1")));
         slideModels.add((new SlideModel("https://wips.plug.it/cips/buonissimo.org/cms/2019/02/carbonara.jpg","Carbonara")));
         slideModels.add((new SlideModel("https://wips.plug.it/cips/buonissimo.org/cms/2019/03/ciambellone-classico.jpg","Ciambellone")));
         slideModels.add((new SlideModel("https://lacuocagalante.com/wp-content/uploads/2017/05/la-pasta-alla-amatriciana.jpg","Amatriciana")));
@@ -96,11 +96,12 @@ public class MainActivity extends AppCompatActivity {
         fab_add =(ExtendedFloatingActionButton) findViewById(R.id.fabAdd);
         fab_search=(ExtendedFloatingActionButton)findViewById(R.id.fabSearch);
         fab_settings=(ExtendedFloatingActionButton)findViewById(R.id.fabSettings);
+
         fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         fab_clock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_clock);
         fab_anticlock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_anticlock);
-
+        fab_jump=AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_jump);
         fab_main.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,7 +125,8 @@ public class MainActivity extends AppCompatActivity {
         fab_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //intent per redirect ad activity inserimento ricetta
+                Intent intent=new Intent(MainActivity.this,InsertRicettaActivity.class);
+                startActivity(intent);
             }
         });
         fab_search.setOnClickListener(new View.OnClickListener() {
@@ -144,6 +146,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onLongClick(View v) {
                 Utils.showToastMessage(context,getResources().getString(R.string.menu));
+                //fab_main.startAnimation(fab_jump);
+                //Utils.showSnackbar(fab_main,getResources().getString(R.string.menu));
                 return false;
             }
         });

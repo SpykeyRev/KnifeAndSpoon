@@ -1,23 +1,19 @@
 package com.digiolaba.knifeandspoon.View;
 
 import android.Manifest;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 
 import com.digiolaba.knifeandspoon.Controller.Utils;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -28,12 +24,16 @@ import androidx.core.content.ContextCompat;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.digiolaba.knifeandspoon.R;
 
@@ -54,6 +54,13 @@ public class InsertRicettaActivity extends AppCompatActivity {
     private EditText etTitolo;
     private FloatingActionButton fab_foto;
     private Boolean textOK=false;
+    private LinearLayout ingredientiLayout;
+    private EditText newET;
+    private Button addIngrediente;
+    private int numeroPassaggio;
+    private Button addPassaggio;
+    private LinearLayout passaggiLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,12 +72,18 @@ public class InsertRicettaActivity extends AppCompatActivity {
         fab_foto = (FloatingActionButton) findViewById(R.id.fab_ins_foto);
         img_piatto=(ImageView)findViewById(R.id.img_piatto);
         etTitolo=(EditText)findViewById(R.id.etTitolo);
+        ingredientiLayout=(LinearLayout)findViewById(R.id.layoutIngredienti);
+        addIngrediente=(Button)findViewById(R.id.addIngrediente);
+        addPassaggio=(Button)findViewById(R.id.addPassaggio);
+        passaggiLayout=(LinearLayout)findViewById(R.id.listPassaggi);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         snackForInfoPhoto();
         checkPermissionAndPhoto();
         changeToolbatTitle();
         notifyUserifTitoloNotCorrect();
+        addIngrediente();
+        addPassaggio();
     }
 
     void snackForInfoPhoto()
@@ -245,5 +258,51 @@ public class InsertRicettaActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void addIngrediente()
+    {
+        addIngrediente.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                final View addView = layoutInflater.inflate(R.layout.add_ingrediente_layout, null);
+                //TextView textOut = (TextView)addView.findViewById(R.id.txtTitoloIngrediente);
+                //textOut.setText(getText(R.string.nuovo_ingrediente));
+                Button buttonRemove = (Button)addView.findViewById(R.id.remove_ingrediente);
+                buttonRemove.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ((LinearLayout)addView.getParent()).removeView(addView);
+                    }
+                });
+                ingredientiLayout.addView(addView);
+            }
+        });
+    }
+
+    private void addPassaggio()
+    {
+        numeroPassaggio++;
+        addPassaggio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                final View addView = layoutInflater.inflate(R.layout.add_passaggio_layout, null);
+                //TextView textOut=(TextView)addView.findViewById(R.id.txtTitoloPassaggio);
+                //textOut.setText(getText(R.string.nuovo_passaggio));
+                Button buttonRemove = (Button)addView.findViewById(R.id.remove_passaggio);
+                buttonRemove.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ((LinearLayout)addView.getParent()).removeView(addView);
+                    }
+                });
+                passaggiLayout.addView(addView);
+
+            }
+        });
+
+    }
+
 
 }

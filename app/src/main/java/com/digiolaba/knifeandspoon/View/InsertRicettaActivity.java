@@ -33,7 +33,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.digiolaba.knifeandspoon.R;
 
@@ -268,7 +267,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
                 final View addView = layoutInflater.inflate(R.layout.add_ingrediente_layout, null);
                 //TextView textOut = (TextView)addView.findViewById(R.id.txtTitoloIngrediente);
                 //textOut.setText(getText(R.string.nuovo_ingrediente));
-                Button buttonRemove = (Button)addView.findViewById(R.id.remove_ingrediente);
+                Button buttonRemove = (Button)addView.findViewById(R.id.btnRemoveIngrediente);
                 buttonRemove.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -290,7 +289,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
                 final View addView = layoutInflater.inflate(R.layout.add_passaggio_layout, null);
                 //TextView textOut=(TextView)addView.findViewById(R.id.txtTitoloPassaggio);
                 //textOut.setText(getText(R.string.nuovo_passaggio));
-                Button buttonRemove = (Button)addView.findViewById(R.id.remove_passaggio);
+                Button buttonRemove = (Button)addView.findViewById(R.id.btnRemovePassaggio);
                 buttonRemove.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

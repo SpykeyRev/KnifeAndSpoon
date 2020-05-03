@@ -31,11 +31,11 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RegisterActivity extends AppCompatActivity {
-    EditText nome;
-    Button continua;
-    String TAG="Register";
-    CircleImageView userImage;
-    Context context=RegisterActivity.this;
+    private EditText nome;
+    private Button continua;
+    private String TAG="Register";
+    private CircleImageView userImage;
+    private Context context=RegisterActivity.this;
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, RegisterActivity.class);

@@ -50,16 +50,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    FirebaseAuth firebaseAuth;
-    GoogleSignInClient googleSignInClient;
+    private FirebaseAuth firebaseAuth;
+    private GoogleSignInClient googleSignInClient;
 
     private FloatingActionButton fab_main;
     private ExtendedFloatingActionButton fab_add, fab_search, fab_settings;
     private Animation fab_open, fab_close, fab_clock, fab_anticlock;
-    List<Ricetta> ricettas;
-    Boolean isOpen = false;
-    Context context=MainActivity.this;
-    CoordinatorLayout coordinatorLayout;
+    private List<Ricetta> ricettas;
+    private Boolean isOpen = false;
+    private Context context=MainActivity.this;
+    private CoordinatorLayout coordinatorLayout;
+    private ImageSlider imageSlider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +68,26 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //findViewById(R.id.buttonLogout).setOnClickListener(this);
         //findViewById(R.id.buttonDisconnect).setOnClickListener(this);
+        fab_main = (FloatingActionButton)findViewById(R.id.fabOptions);
+        fab_add =(ExtendedFloatingActionButton) findViewById(R.id.fabAdd);
+        fab_search=(ExtendedFloatingActionButton)findViewById(R.id.fabSearch);
+        fab_settings=(ExtendedFloatingActionButton)findViewById(R.id.fabSettings);
+        fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
+        fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
+        fab_clock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_clock);
+        fab_anticlock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_anticlock);
+        coordinatorLayout=(CoordinatorLayout)findViewById(R.id.coordinateLayout) ;
         //Setting up firebase for userInfo
+        setUserInfo();
+        //Setting up imageSlider
+        imageSlider=(ImageSlider)findViewById(R.id.home_image_slider);
+        loadImageSliderWithRicette();
+        FABClickManagement();
+        FABLongClickManagement();
+    }
+
+    private void setUserInfo()
+    {
         googleSignInClient = GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN);
         firebaseAuth = FirebaseAuth.getInstance();
         try {
@@ -85,9 +105,10 @@ public class MainActivity extends AppCompatActivity {
         FirebaseAuth firebaseAuth= FirebaseAuth.getInstance();
         FirebaseUser fireUser = firebaseAuth.getCurrentUser();
         Picasso.get().load(fireUser.getPhotoUrl()).into(userImage);
-        //Setting up imageSlider
-        ImageSlider imageSlider=(ImageSlider)findViewById(R.id.home_image_slider);
+    }
 
+    private void loadImageSliderWithRicette()
+    {
         try {
             ricettas=(List<Ricetta>) new Ricetta.getFirstTenRecipe().execute().get();
             List<SlideModel>slideModels=new ArrayList<>();
@@ -107,17 +128,11 @@ public class MainActivity extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
 
-        fab_main = (FloatingActionButton)findViewById(R.id.fabOptions);
-        fab_add =(ExtendedFloatingActionButton) findViewById(R.id.fabAdd);
-        fab_search=(ExtendedFloatingActionButton)findViewById(R.id.fabSearch);
-        fab_settings=(ExtendedFloatingActionButton)findViewById(R.id.fabSettings);
-        fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
-        fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
-        fab_clock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_clock);
-        fab_anticlock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_anticlock);
-        coordinatorLayout=(CoordinatorLayout)findViewById(R.id.coordinateLayout) ;
 
+    private void FABClickManagement()
+    {
         fab_main.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,11 +173,10 @@ public class MainActivity extends AppCompatActivity {
                 //intent per redirect ad activity impostazioni
             }
         });
+    }
 
-
-
-
-
+    private void FABLongClickManagement()
+    {
         fab_main.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -192,12 +206,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-
-
-
     }
-
 
 
 

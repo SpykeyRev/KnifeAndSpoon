@@ -2,9 +2,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.digiolaba.knifeandspoon.View.InsertRicettaActivity">
+
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:id="@+id/publishRicetta"
+        android:icon="@drawable/done"
+        android:title="@string/pubblica_ricetta"
+        app:showAsAction="always" />
 </menu>

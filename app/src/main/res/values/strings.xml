@@ -28,6 +28,8 @@
     <string name="nuovo_ingrediente">Nuovo ingrediente</string>
     <string name="nuovo_passaggio">Nuovo Passaggio</string>
 
+    <string name="pubblica_ricetta">Pubblica la ricetta</string>
+
 
     <string name="error_empty_name">Il tuo nome è vuoto. Per favore, inserisci un nome.</string>
     <string name="error_name_space">Controlla il tuo nome, ci sono degli spazi dove non dovrebbero esserci.</string>

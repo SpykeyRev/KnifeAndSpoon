@@ -24,7 +24,10 @@ import androidx.core.content.ContextCompat;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -37,6 +40,7 @@ import android.widget.LinearLayout;
 import com.digiolaba.knifeandspoon.R;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class InsertRicettaActivity extends AppCompatActivity {
@@ -54,11 +58,14 @@ public class InsertRicettaActivity extends AppCompatActivity {
     private FloatingActionButton fab_foto;
     private Boolean textOK=false;
     private LinearLayout ingredientiLayout;
-    private EditText newET;
     private Button addIngrediente;
-    private int numeroPassaggio;
+    private int countIngrediente=0,countPassaggio=0;
     private Button addPassaggio;
     private LinearLayout passaggiLayout;
+    private List<EditText>allET;
+    private MenuInflater publishMI;
+
+
 
 
     @Override
@@ -85,7 +92,39 @@ public class InsertRicettaActivity extends AppCompatActivity {
         addPassaggio();
     }
 
-    void snackForInfoPhoto()
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_insert_ricetta,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch(item.getItemId())
+        {
+            case R.id.home:
+            {
+                Intent intent=new Intent(InsertRicettaActivity.this,MainActivity.class);
+                startActivity(intent);
+                return true;
+            }
+            case R.id.publishRicetta:
+            {
+                pubblicaRicetta();
+                return true;
+            }
+            default:
+            {
+                return super.onOptionsItemSelected(item);
+            }
+
+        }
+    }
+
+
+
+    private void snackForInfoPhoto()
     {
         fab_foto.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -178,15 +217,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            Intent intent=new Intent(InsertRicettaActivity.this,MainActivity.class);
-            startActivity(intent);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+
 
     private ArrayList findUnaskedPermissions(ArrayList<String> wanted) {
         ArrayList<String> result = new ArrayList<>();
@@ -263,14 +294,15 @@ public class InsertRicettaActivity extends AppCompatActivity {
         addIngrediente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                countIngrediente++;
                 LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View addView = layoutInflater.inflate(R.layout.add_ingrediente_layout, null);
-                //TextView textOut = (TextView)addView.findViewById(R.id.txtTitoloIngrediente);
-                //textOut.setText(getText(R.string.nuovo_ingrediente));
                 Button buttonRemove = (Button)addView.findViewById(R.id.btnRemoveIngrediente);
+                addView.setId(countIngrediente);
                 buttonRemove.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        countIngrediente--;
                         ((LinearLayout)addView.getParent()).removeView(addView);
                     }
                 });
@@ -281,27 +313,33 @@ public class InsertRicettaActivity extends AppCompatActivity {
 
     private void addPassaggio()
     {
-        numeroPassaggio++;
         addPassaggio.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View addView = layoutInflater.inflate(R.layout.add_passaggio_layout, null);
-                //TextView textOut=(TextView)addView.findViewById(R.id.txtTitoloPassaggio);
-                //textOut.setText(getText(R.string.nuovo_passaggio));
-                Button buttonRemove = (Button)addView.findViewById(R.id.btnRemovePassaggio);
-                buttonRemove.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        ((LinearLayout)addView.getParent()).removeView(addView);
-                    }
-                });
-                passaggiLayout.addView(addView);
-
-            }
-        });
+        @Override
+        public void onClick(View v) {
+            LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            final View addView = layoutInflater.inflate(R.layout.add_passaggio_layout, null);
+            Button buttonRemove = (Button)addView.findViewById(R.id.btnRemovePassaggio);
+            buttonRemove.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    ((LinearLayout)addView.getParent()).removeView(addView);
+                }
+            });
+            passaggiLayout.addView(addView);
+        }});
 
     }
 
 
+    private void pubblicaRicetta()
+    {
+        getInfoIngredienti();
+    }
+
+    private void getInfoIngredienti()
+    {
+
+    }
 }

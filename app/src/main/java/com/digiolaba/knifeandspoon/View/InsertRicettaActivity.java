@@ -36,11 +36,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.digiolaba.knifeandspoon.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class InsertRicettaActivity extends AppCompatActivity {
@@ -62,8 +65,10 @@ public class InsertRicettaActivity extends AppCompatActivity {
     private int countIngrediente=0,countPassaggio=0;
     private Button addPassaggio;
     private LinearLayout passaggiLayout;
-    private List<EditText>allET;
-    private MenuInflater publishMI;
+    private List<View>allDescrizione;
+    private Map<Integer,String> mappaDescrizione;
+
+
 
 
 
@@ -82,6 +87,8 @@ public class InsertRicettaActivity extends AppCompatActivity {
         addIngrediente=(Button)findViewById(R.id.addIngrediente);
         addPassaggio=(Button)findViewById(R.id.addPassaggio);
         passaggiLayout=(LinearLayout)findViewById(R.id.listPassaggi);
+        allDescrizione=new ArrayList<View>();
+        mappaDescrizione=new HashMap<>();
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         snackForInfoPhoto();
@@ -318,12 +325,14 @@ public class InsertRicettaActivity extends AppCompatActivity {
         public void onClick(View v) {
             LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             final View addView = layoutInflater.inflate(R.layout.add_passaggio_layout, null);
+            allDescrizione.add(addView);
             Button buttonRemove = (Button)addView.findViewById(R.id.btnRemovePassaggio);
             buttonRemove.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View v)
                 {
+                    allDescrizione.remove(addView);
                     ((LinearLayout)addView.getParent()).removeView(addView);
                 }
             });
@@ -336,10 +345,20 @@ public class InsertRicettaActivity extends AppCompatActivity {
     private void pubblicaRicetta()
     {
         getInfoIngredienti();
+        getInfoPassaggi();
     }
 
     private void getInfoIngredienti()
     {
 
+    }
+    private void getInfoPassaggi()
+    {
+        EditText e;
+        for(int i=0;i<allDescrizione.size();i++)
+        {
+            e= (EditText)((RelativeLayout)allDescrizione.get(i)).getChildAt(2);
+            mappaDescrizione.put(i,e.getText().toString());
+        }
     }
 }

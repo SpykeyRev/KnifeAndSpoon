@@ -27,7 +27,7 @@
         android:layout_toStartOf="@id/btnRemovePassaggio" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/etDescrizione"
         android:layout_width="315dp"
         android:layout_height="149dp"
         android:layout_below="@+id/txtTitoloPassaggio"

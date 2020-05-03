@@ -10,6 +10,7 @@ import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -22,12 +23,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -48,8 +52,8 @@ public class InsertRicettaActivity extends AppCompatActivity {
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private ImageView img_piatto;
     private EditText etTitolo;
-
-
+    private FloatingActionButton fab_foto;
+    private Boolean textOK=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,12 +62,19 @@ public class InsertRicettaActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         collapsingToolbarLayout=(CollapsingToolbarLayout)findViewById(R.id.toolbar_layout_ins);
-        final FloatingActionButton fab_foto = (FloatingActionButton) findViewById(R.id.fab_ins_foto);
+        fab_foto = (FloatingActionButton) findViewById(R.id.fab_ins_foto);
         img_piatto=(ImageView)findViewById(R.id.img_piatto);
         etTitolo=(EditText)findViewById(R.id.etTitolo);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        snackForInfoPhoto();
+        checkPermissionAndPhoto();
+        changeToolbatTitle();
+        notifyUserifTitoloNotCorrect();
+    }
 
+    void snackForInfoPhoto()
+    {
         fab_foto.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -71,12 +82,17 @@ public class InsertRicettaActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    private void checkPermissionAndPhoto()
+    {
         fab_foto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 permissions.add(Manifest.permission.CAMERA);
                 permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
                 permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+                permissions.add(Manifest.permission.INTERNET);
                 permissionsToRequest = findUnaskedPermissions(permissions);
                 if(permissionsToRequest.size() > 0)
                 {
@@ -88,28 +104,6 @@ public class InsertRicettaActivity extends AppCompatActivity {
                 }
             }
         });
-
-        //Dont forget to find your CoolapsingLayout first :)
-
-        etTitolo.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                collapsingToolbarLayout.setTitle(etTitolo.getText().toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-
-
     }
 
     private void selectImage(Context context) {
@@ -205,12 +199,51 @@ public class InsertRicettaActivity extends AppCompatActivity {
                    Utils.errorDialog(this,R.string.error_not_all_permissions,R.string.error_ok);
                 }
             }
-            else {
-
-            }
         }
     }
 
+    private void changeToolbatTitle()
+    {
+        etTitolo.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(etTitolo.getText().toString().length()==0||(etTitolo.getText().toString().contains(" ")&&(etTitolo.getText().toString().startsWith(" ")&&etTitolo.getText().toString().endsWith(" "))))
+                {
+                    collapsingToolbarLayout.setTitle(getResources().getString(R.string.title_activity_insert_ricetta));
+                    textOK=false;
+                }
+                else
+                {
+                    collapsingToolbarLayout.setTitle(etTitolo.getText().toString());
+                    textOK=true;
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+    }
+
+    void notifyUserifTitoloNotCorrect()
+    {
+        etTitolo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus)
+                {
+                    if(!textOK)
+                    {
+                        Animation shake = AnimationUtils.loadAnimation(InsertRicettaActivity.this, R.anim.shake);
+                        etTitolo.startAnimation(shake);
+                        etTitolo.setHintTextColor(ContextCompat.getColor(InsertRicettaActivity.this,R.color.colorPrimary));
+                    }
+                }
+            }
+        });
+    }
 
 }

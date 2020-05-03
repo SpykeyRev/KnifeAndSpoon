@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -160,6 +159,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
+
+
         fab_main.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -185,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onLongClick(View v) {
                 Utils.showSnackbar(coordinatorLayout,getResources().getString(R.string.settings));
+
                 return false;
             }
         });

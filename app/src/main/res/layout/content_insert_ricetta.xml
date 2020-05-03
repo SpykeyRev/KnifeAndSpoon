@@ -17,13 +17,15 @@
             android:id="@+id/etTitolo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
             android:layout_marginLeft="8dp"
+            android:layout_marginTop="16dp"
             android:layout_marginRight="8dp"
             android:layout_marginBottom="16dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/title_activity_insert_ricetta" />
+            android:backgroundTint="@color/colorPrimary"
+            android:ems="10"
+            android:hint="@string/title_activity_insert_ricetta"
+            android:inputType="textPersonName"
+            android:maxLength="30" />
 
         <TextView
             android:id="@+id/textView6"

@@ -217,4 +217,32 @@ public class Ricetta {
     public Object getIngredienti(){
         return this.ingredienti;
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setAuthorId(String authorId) {
+        this.authorId = authorId;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setTempo(String tempo) {
+        this.tempo = tempo;
+    }
+
+    public void setIngredienti(List<Map<String, Object>> ingredienti) {
+        this.ingredienti = ingredienti;
+    }
+
+    public void setSteps(List<String> steps) {
+        this.steps = steps;
+    }
 }

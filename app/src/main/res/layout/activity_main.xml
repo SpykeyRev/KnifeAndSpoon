@@ -8,49 +8,24 @@
     tools:context=".View.MainActivity">
 
 
-    <ScrollView
-        android:id="@+id/scrollView2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-
-        <LinearLayout
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+            <ScrollView
+                android:id="@+id/scrollView2"
+                android:layout_width="0dp"
+                android:layout_height="0dp">
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/profile_image"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:src="@drawable/pizza"
-                    app:civ_border_color="#FF000000"
-                    app:civ_border_width="2dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.43" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:clipToPadding="false"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -58,74 +33,105 @@
                         android:layout_height="match_parent"
                         android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/textView2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/profile_image"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
                             android:layout_marginStart="16dp"
-                            android:layout_marginTop="0dp"
-                            android:text="@string/welcome_1"
-                            android:textSize="20sp"
-                            app:autoSizeMaxTextSize="100sp"
-                            app:autoSizeStepGranularity="1sp"
-                            app:autoSizeTextType="uniform" />
+                            android:layout_marginTop="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:src="@drawable/pizza"
+                            app:civ_border_color="#FF000000"
+                            app:civ_border_width="2dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.43" />
 
-                        <TextView
-                            android:id="@+id/userName"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textSize="20sp" />
+                            android:layout_marginTop="16dp"
+                            android:clipToPadding="false"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/textView2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="16dp"
+                                    android:layout_marginTop="0dp"
+                                    android:text="@string/welcome_1"
+                                    android:textSize="20sp"
+                                    app:autoSizeMaxTextSize="100sp"
+                                    app:autoSizeStepGranularity="1sp"
+                                    app:autoSizeTextType="uniform" />
+
+                                <TextView
+                                    android:id="@+id/userName"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="20sp" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:clipToPadding="false"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/appName"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="16dp"
+                                    android:layout_marginTop="0dp"
+                                    android:text="@string/welcome_2"
+                                    app:autoSizeStepGranularity="1px"
+                                    app:autoSizeTextType="uniform" />
+
+                                <TextView
+                                    android:id="@+id/textView3"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="4dp"
+                                    android:layout_marginTop="0dp"
+                                    android:text="@string/app_name" />
+                            </LinearLayout>
+                        </LinearLayout>
 
                     </LinearLayout>
 
-                    <LinearLayout
+                    <com.denzcoskun.imageslider.ImageSlider
+                        android:id="@+id/home_image_slider"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:clipToPadding="false"
-                        android:orientation="horizontal">
+                        android:layout_height="300dp"
+                        android:layout_margin="16dp"
+                        app:auto_cycle="true"
+                        app:corner_radius="20"
+                        app:delay="0"
+                        app:error_image="@drawable/bg_grey"
+                        app:period="6000"
+                        app:placeholder="@drawable/bg_grey" />
 
-                        <TextView
-                            android:id="@+id/appName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="0dp"
-                            android:text="@string/welcome_2"
-                            app:autoSizeStepGranularity="1px"
-                            app:autoSizeTextType="uniform" />
-
-                        <TextView
-                            android:id="@+id/textView3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:layout_marginTop="0dp"
-                            android:text="@string/app_name" />
-                    </LinearLayout>
                 </LinearLayout>
+            </ScrollView>
 
-            </LinearLayout>
-
-            <com.denzcoskun.imageslider.ImageSlider
-                android:id="@+id/home_image_slider"
-                android:layout_width="wrap_content"
-                android:layout_height="300dp"
-                android:layout_margin="16dp"
-                app:auto_cycle="true"
-                app:corner_radius="20"
-                app:delay="0"
-                app:error_image="@drawable/bg_grey"
-                app:period="6000"
-                app:placeholder="@drawable/bg_grey" />
-
-        </LinearLayout>
-    </ScrollView>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </FrameLayout>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent"
         android:id="@+id/coordinateLayout"
-        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         tools:context=".View.MainActivity">
 
 
@@ -140,12 +146,14 @@
             app:backgroundTint="@color/colorPrimary"
             app:tint="@null"
             fab:srcCompat="@drawable/pizza" />
+
         <View
             android:id="@+id/dummy"
             android:layout_width="1dp"
             android:layout_height="16dp"
             app:layout_anchor="@id/fabOptions"
             app:layout_anchorGravity="top|right|end" />
+
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/fabAdd"
             style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
@@ -161,13 +169,15 @@
             app:backgroundTint="@color/colorPrimary"
             app:icon="@drawable/pencil"
             app:iconTint="@android:color/white"
-            app:layout_anchor="@id/dummy"/>
+            app:layout_anchor="@id/dummy" />
+
         <View
             android:id="@+id/dummy2"
             android:layout_width="1dp"
             android:layout_height="16dp"
             app:layout_anchor="@id/fabAdd"
             app:layout_anchorGravity="top|right|end" />
+
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/fabSearch"
             style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
@@ -183,13 +193,15 @@
             app:backgroundTint="@color/colorPrimary"
             app:icon="@drawable/ic_search_black_24dp"
             app:iconTint="@android:color/white"
-            app:layout_anchor="@id/dummy2"/>
+            app:layout_anchor="@id/dummy2" />
+
         <View
             android:id="@+id/dummy3"
             android:layout_width="1dp"
             android:layout_height="16dp"
             app:layout_anchor="@id/fabSearch"
             app:layout_anchorGravity="top|right|end" />
+
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/fabSettings"
             style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"

@@ -30,12 +30,14 @@ import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,6 +48,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.digiolaba.knifeandspoon.R;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -366,6 +369,24 @@ public class InsertRicettaActivity extends AppCompatActivity {
                 LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View addView = layoutInflater.inflate(R.layout.add_ingrediente_layout, null);
                 allIngredienti.add(addView);
+                final Spinner spinner=(Spinner)addView.findViewById(R.id.spinnerUnitaMisura);
+                final TextInputEditText etQuantita=(TextInputEditText)addView.findViewById(R.id.etQuantita);
+                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        if(spinner.getSelectedItem().toString().equals("q.b.")){
+                            Log.i("DII",spinner.getSelectedItem().toString());
+                            etQuantita.setEnabled(false);
+                        }else{
+                            etQuantita.setEnabled(true);
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
                 FloatingActionButton buttonRemove = (FloatingActionButton)addView.findViewById(R.id.btnRemovePassaggio);
                 loadSpinnerUnitaMisura(addView);
                 buttonRemove.setOnClickListener(new View.OnClickListener() {

@@ -333,7 +333,6 @@ public class InsertRicettaActivity extends AppCompatActivity {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         if (spinner.getSelectedItem().toString().equals("q.b.")) {
-                            Log.i("DII", spinner.getSelectedItem().toString());
                             etQuantita.setEnabled(false);
                         } else {
                             etQuantita.setEnabled(true);
@@ -422,43 +421,63 @@ public class InsertRicettaActivity extends AppCompatActivity {
     }
 
     private void pubblicaRicetta() {
-        List<Map>ingredienti=getInfoIngredienti();
-        List<String>passaggi=getInfoPassaggi();
-        if(ingredienti!=null&&passaggi!=null)
+        if(etTitolo.getText().toString().trim().equals(""))
         {
-            for(int i=0;i<passaggi.size();i++)
-            {
-                if(passaggi.get(i).toString().trim().equals(""))
-                {
-                    passaggi.remove(passaggi.get(i));
-                }
-            }
-            for(int i=0;i<ingredienti.size();i++)
-            {
-                if(ingredienti.get(i).get("Nome").toString().trim().equals("")&&ingredienti.get(i).get("Quantità").toString().trim().equals(""))
-                {
-                    ingredienti.remove(ingredienti.get(i));
-                }
-            }
-            if(passaggi.size()==0||ingredienti.size()==0)
-            {
-                Utils.errorDialog(InsertRicettaActivity.this,R.string.error_no_passaggi_ingredienti,R.string.error_ok);
-            }
-            else
-            {
-                Map<String, Object> ricettaToPush = new HashMap<>();
-                ricettaToPush.put("Autore", actualUser);
-                ricettaToPush.put("Titolo", etTitolo.getText().toString().trim());
-                ricettaToPush.put("Tempo di preparazione", tempoPreparazione.getText().toString());
-                ricettaToPush.put("Numero persone", numeroPersone.getText().toString());
-                ricettaToPush.put("Passaggi", getInfoPassaggi());
-                ricettaToPush.put("Ingredienti", getInfoIngredienti());
-                publishToFirebase(ricettaToPush);
-            }
+            Utils.errorDialog(InsertRicettaActivity.this,R.string.error_no_titolo,R.string.error_ok);
+        }
+        else if(tempoPreparazione.getText().toString().equals("")||tempoPreparazione.getText().toString().equals("0"))
+        {
+            Utils.errorDialog(InsertRicettaActivity.this,R.string.error_no_tempo,R.string.error_ok);
+        }
+        else if(numeroPersone.getText().toString().equals("")||numeroPersone.getText().toString().equals("0"))
+        {
+            Utils.errorDialog(InsertRicettaActivity.this,R.string.error_no_persone,R.string.error_ok);
         }
         else
         {
-            Utils.errorDialog(InsertRicettaActivity.this,R.string.error_no_passaggi_ingredienti,R.string.error_ok);
+            List<Map>ingredienti=getInfoIngredienti();
+            List<String>passaggi=getInfoPassaggi();
+            if(ingredienti!=null&&passaggi!=null)
+            {
+                for(int i=0;i<passaggi.size();i++)
+                {
+                    if(passaggi.get(i).toString().trim().equals(""))
+                    {
+                        passaggi.remove(passaggi.get(i));
+                    }
+                }
+                for(int i=0;i<ingredienti.size();i++)
+                {
+                    if(ingredienti.get(i).get("Nome").toString().trim().equals("")&&ingredienti.get(i).get("Quantità").toString().trim().equals(""))
+                    {
+                        ingredienti.remove(ingredienti.get(i));
+                    }
+                    if(ingredienti.get(i).get("Unità misura").toString().equals("q.b."))
+                    {
+                        //set quantità to 0
+                        ingredienti.get(i).put("Quantità",0);
+                    }
+                }
+                if(passaggi.size()==0||ingredienti.size()==0)
+                {
+                    Utils.errorDialog(InsertRicettaActivity.this,R.string.error_no_passaggi_ingredienti,R.string.error_ok);
+                }
+                else
+                {
+                    Map<String, Object> ricettaToPush = new HashMap<>();
+                    ricettaToPush.put("Autore", actualUser);
+                    ricettaToPush.put("Titolo", etTitolo.getText().toString().trim());
+                    ricettaToPush.put("Tempo di preparazione", tempoPreparazione.getText().toString());
+                    ricettaToPush.put("Numero persone", numeroPersone.getText().toString());
+                    ricettaToPush.put("Passaggi", getInfoPassaggi());
+                    ricettaToPush.put("Ingredienti", getInfoIngredienti());
+                    publishToFirebase(ricettaToPush);
+                }
+            }
+            else
+            {
+                Utils.errorDialog(InsertRicettaActivity.this,R.string.error_no_passaggi_ingredienti,R.string.error_ok);
+            }
         }
     }
 

@@ -33,6 +33,9 @@
     <string name="success_message">Operazione effettuata</string>
     <string name="error_empty_thing">Questo campo non può essere vuoto.</string>
     <string name="error_no_passaggi_ingredienti">Per favore inserisci almeno un ingrediente e un passsaggio.</string>
+    <string name="error_no_titolo">Per favore inserisci il titolo della ricetta.</string>
+    <string name="error_no_tempo">Per favore inserisci il tempo di preparazione in minuti.</string>
+    <string name="error_no_persone">Per favore inserisci il numero di porzioni.</string>
 
     <string-array name="categoria">
         <item>Antipasto</item>

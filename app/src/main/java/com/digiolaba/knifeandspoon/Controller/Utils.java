@@ -51,6 +51,16 @@ public class Utils {
         }).show();
     }
 
+    public static void staticShowSnackbar(View view, String message)
+    {
+        Snackbar.make(view,message,Snackbar.LENGTH_INDEFINITE).setAction("Chiudi", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        }).show();
+    }
+
     public static class LoadSpinner
     {
         ProgressDialog nDialog;

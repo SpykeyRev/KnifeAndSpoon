@@ -29,6 +29,10 @@
     <string name="nuovo_passaggio">Nuovo Passaggio</string>
     <string name="numero_persone_ask">Numero persone</string>
     <string name="tempo_preparazione_ask">Tempo in minuti</string>
+    <string name="error_empty_thing">Questo campo non può essere vuoto.</string>
+    <string name="error_no_passaggi_ingredienti">Per favore inserisci almeno un ingrediente e un passsaggio.</string>
+
+
 
    <string-array name="categoria">
        <item>Antipasto</item>

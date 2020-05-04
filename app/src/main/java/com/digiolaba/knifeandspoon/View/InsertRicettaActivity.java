@@ -147,8 +147,9 @@ public class InsertRicettaActivity extends AppCompatActivity {
         {
             case android.R.id.home:
             {
-                Intent intent=new Intent(InsertRicettaActivity.this,MainActivity.class);
-                startActivity(intent);
+                /*Intent intent=new Intent(InsertRicettaActivity.this,MainActivity.class);
+                startActivity(intent);*/
+                this.onBackPressed();
                 return true;
             }
             case R.id.publishRicetta:
@@ -223,7 +224,11 @@ public class InsertRicettaActivity extends AppCompatActivity {
                 }
             }
 
-            img_piatto.setImageBitmap(bitmap);
+            if(bitmap!=null)
+            {
+                img_piatto.setImageBitmap(bitmap);
+            }
+
         }
     }
 
@@ -303,7 +308,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
             }
             if(permissionsRejected.size() > 0) {
                 if(shouldShowRequestPermissionRationale(permissionsRejected.get(0))) {
-                    Toast.makeText(InsertRicettaActivity.this,"Approva tutto", Toast.LENGTH_SHORT).show();
+                    Utils.errorDialog(InsertRicettaActivity.this,R.string.error_not_all_permissions,R.string.error_ok);
                 }
             }
             else {
@@ -311,11 +316,6 @@ public class InsertRicettaActivity extends AppCompatActivity {
             }
         }
     }
-
-
-
-
-
 
     private void changeToolbatTitle()
     {

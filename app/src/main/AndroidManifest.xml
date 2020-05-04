@@ -19,7 +19,9 @@
         <activity
             android:name=".View.InsertRicettaActivity"
             android:label="@string/title_activity_insert_ricetta"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"></activity>
         <activity android:name=".View.SearchActivity"
             android:label="SearchActivity"
             android:parentActivityName=".View.MainActivity"></activity>

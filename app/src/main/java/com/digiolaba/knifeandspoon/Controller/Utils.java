@@ -1,5 +1,6 @@
 package com.digiolaba.knifeandspoon.Controller;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -7,11 +8,14 @@ import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.digiolaba.knifeandspoon.R;
 import com.digiolaba.knifeandspoon.View.MainActivity;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -51,28 +55,79 @@ public class Utils {
         }).show();
     }
 
-    public static class LoadSpinner
-    {
-        ProgressDialog nDialog;
-        public LoadSpinner(Context context){
-            nDialog = new ProgressDialog(context);
-            String[] texts={"Scolo la Pasta",
-                    "Affetto il Ciauscolo",
-                    "Friggo le Patatine",
-                    "Inforno la Pizza",
-                    "Preparo il Pane con l'olio",
-                    "Inforno i Vincisgrassi"};
-            nDialog.setMessage(texts[new Random().nextInt((5 - 0) + 1) + 0]);
-            nDialog.setIndeterminate(true);
-            nDialog.setCancelable(true);
+    public static class LoadingDialog {
+        private Activity activity;
+        private AlertDialog dialog;
+        private TextView text;
+        public LoadingDialog(Activity myActivity){
+            activity=myActivity;
         }
 
-        public void show(){
-            nDialog.show();
+        public void startLoadingDialog(){
+            AlertDialog.Builder builder=new AlertDialog.Builder(activity);
+            LayoutInflater inflater= activity.getLayoutInflater();
+            builder.setView(inflater.inflate(R.layout.loading_dialog,null));
+            builder.setCancelable(false);
+            dialog=builder.create();
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.show();
+            text = (TextView) dialog.findViewById(R.id.textLoading);
         }
 
-        public void close(){
-            nDialog.cancel();
+        public void updateText(String newText){
+            if(text!=null){
+                text.setText(newText);
+            }
+        }
+
+        public void dismissLoadingDialog(){
+            dialog.cancel();
+        }
+}
+
+    public static class SuccessDialog {
+        private Activity activity;
+        private AlertDialog dialog;
+        private TextView text;
+        public SuccessDialog(Activity myActivity){
+            activity=myActivity;
+        }
+
+        public void startLoadingDialog(){
+            AlertDialog.Builder builder=new AlertDialog.Builder(activity);
+            LayoutInflater inflater= activity.getLayoutInflater();
+            builder.setView(inflater.inflate(R.layout.success_dialog,null));
+            builder.setCancelable(true);
+            dialog=builder.create();
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.show();
+        }
+
+        public void dismissLoadingDialog(){
+            dialog.cancel();
+        }
+    }
+
+    public static class ErrorDialog {
+        private Activity activity;
+        private AlertDialog dialog;
+        private TextView text;
+        public ErrorDialog(Activity myActivity){
+            activity=myActivity;
+        }
+
+        public void startLoadingDialog(){
+            AlertDialog.Builder builder=new AlertDialog.Builder(activity);
+            LayoutInflater inflater= activity.getLayoutInflater();
+            builder.setView(inflater.inflate(R.layout.error_dialog,null));
+            builder.setCancelable(true);
+            dialog=builder.create();
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.show();
+        }
+
+        public void dismissLoadingDialog(){
+            dialog.cancel();
         }
     }
 }

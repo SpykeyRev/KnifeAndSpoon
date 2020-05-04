@@ -483,7 +483,6 @@ public class InsertRicettaActivity extends AppCompatActivity {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] imgData = baos.toByteArray();
-        LoadingDialog dialog=new LoadingDialog(InsertRicettaActivity.this);
-        new Ricetta.publishRecipe(InsertRicettaActivity.this,ricetta,imgData,dialog).execute();
+        new Ricetta.publishRecipe(InsertRicettaActivity.this,ricetta,imgData).execute();
     }
 }

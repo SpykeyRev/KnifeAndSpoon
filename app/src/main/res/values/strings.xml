@@ -29,7 +29,8 @@
     <string name="nuovo_passaggio">Nuovo Passaggio</string>
     <string name="numero_persone_ask">Numero persone</string>
     <string name="tempo_preparazione_ask">Tempo in minuti</string>
-
+    <string name="error_message">Oops, qualcosa è andato storto</string>
+    <string name="success_message">Operazione effettuata</string>
    <string-array name="categoria">
        <item>Antipasto</item>
        <item>Primo</item>

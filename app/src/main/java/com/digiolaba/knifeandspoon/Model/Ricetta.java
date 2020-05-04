@@ -6,7 +6,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.digiolaba.knifeandspoon.View.LoadingDialog;
+import com.digiolaba.knifeandspoon.Controller.Utils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -133,27 +133,30 @@ public class Ricetta {
         Activity activity;
         Map ricetta;
         byte[] imgData;
-        LoadingDialog dialog;
-        public publishRecipe(Activity activity,Map ricetta,byte[] imgData,LoadingDialog dialog){
+        Utils.LoadingDialog loadingDialog;
+        Utils.SuccessDialog successDialog;
+        Utils.ErrorDialog errorDialog;
+        public publishRecipe(Activity activity,Map ricetta,byte[] imgData){
             this.activity=activity;
             this.ricetta=ricetta;
             this.imgData=imgData;
-            this.dialog=dialog;
+            this.loadingDialog=new Utils.LoadingDialog(activity);
         }
 
         public void changeDialogText(String newText){
-            this.dialog.updateText(newText);
+            this.loadingDialog.updateText(newText);
         }
 
         @Override
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
-            this.dialog.dismissLoadingDialog();
+            this.loadingDialog.dismissLoadingDialog();
+            //activity.onBackPressed();
         }
 
         @Override
         protected void onPreExecute() {
-            this.dialog.startLoadingDialog();
+            this.loadingDialog.startLoadingDialog();
         }
 
         @Override
@@ -177,11 +180,15 @@ public class Ricetta {
                                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                         @Override
                                         public void onSuccess(DocumentReference documentReference) {
+                                            successDialog=new Utils.SuccessDialog(activity);
+                                            successDialog.startLoadingDialog();
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
+                                            errorDialog=new Utils.ErrorDialog(activity);
+                                            errorDialog.startLoadingDialog();
                                         }
                                     });
                         }
@@ -192,7 +199,14 @@ public class Ricetta {
                     int progress = (int) (100.0  * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
                     changeDialogText("Carico la Foto: "+progress+"%");
                 }
-            });
+            }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            errorDialog=new Utils.ErrorDialog(activity);
+                                            errorDialog.startLoadingDialog();
+                                        }
+                                    }
+            );
             try {
                 Tasks.await(uploadTask);
             } catch (ExecutionException e) {

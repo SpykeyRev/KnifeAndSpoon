@@ -149,6 +149,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void FABClickManagement()
     {
+        fab_add.setClickable(false);
+        fab_add.setEnabled(false);
+        fab_search.setClickable(false);
+        fab_search.setEnabled(false);
+        fab_settings.setClickable(false);
+        fab_settings.setEnabled(false);
         fab_main.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,6 +164,11 @@ public class MainActivity extends AppCompatActivity {
                     fab_settings.startAnimation(fab_close);
                     fab_main.startAnimation(fab_anticlock);
                     fab_add.setClickable(false);
+                    fab_add.setEnabled(false);
+                    fab_search.setClickable(false);
+                    fab_search.setEnabled(false);
+                    fab_settings.setClickable(false);
+                    fab_settings.setEnabled(false);
                     isOpen = false;
                 } else {
                     fab_add.startAnimation(fab_open);
@@ -165,6 +176,11 @@ public class MainActivity extends AppCompatActivity {
                     fab_settings.startAnimation(fab_open);
                     fab_main.startAnimation(fab_clock);
                     fab_add.setClickable(true);
+                    fab_add.setEnabled(true);
+                    fab_search.setClickable(true);
+                    fab_search.setEnabled(true);
+                    fab_settings.setClickable(true);
+                    fab_settings.setEnabled(true);
                     isOpen = true;
                 }
             }

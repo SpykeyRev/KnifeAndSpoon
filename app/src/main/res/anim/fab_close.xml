@@ -3,16 +3,11 @@
     android:fillAfter="true">
 
 
-    <scale
-        android:duration = "300"
-        android:fromXScale="0.8"
-        android:fromYScale="0.8"
-        android:toXScale="0.0"
-        android:toYScale="0.0"
-        android:interpolator="@android:anim/linear_interpolator"
-        android:pivotX="50%"
-        android:pivotY="50%">
-    </scale>
+    <translate
+        android:fromXDelta="0"
+        android:toXDelta="100"
+        android:duration="300"
+        ></translate>
 
     <alpha
         android:fromAlpha="1.0"

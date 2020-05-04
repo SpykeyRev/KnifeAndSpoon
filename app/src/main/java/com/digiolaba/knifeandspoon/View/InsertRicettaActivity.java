@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.digiolaba.knifeandspoon.Controller.Utils;
+import com.digiolaba.knifeandspoon.Model.Ricetta;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -41,6 +42,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -49,6 +51,7 @@ import android.widget.Toast;
 
 import com.digiolaba.knifeandspoon.R;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -435,44 +438,14 @@ public class InsertRicettaActivity extends AppCompatActivity {
 
     private void pubblicaRicetta()
     {
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference();
-        final StorageReference imageRef = storageRef.child(etTitolo.getText()+".jpg");
-        img_piatto.setDrawingCacheEnabled(true);
-        img_piatto.buildDrawingCache();
-        Bitmap bitmap = ((BitmapDrawable) img_piatto.getDrawable()).getBitmap();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] data = baos.toByteArray();
-        imageRef.putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
-            {
-                imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Uri downloadUrl = uri;
-                        Map<String, Object> ricettaToPush = new HashMap<>();
-                        ricettaToPush.put("Autore",actualUser);
-                        ricettaToPush.put("Titolo",etTitolo.getText().toString());
-                        ricettaToPush.put("Tempo di preparazione",tempoPreparazione.getText().toString());
-                        ricettaToPush.put("Numero persone",numeroPersone.getText().toString());
-                        ricettaToPush.put("Thumbnail",uri.toString());
-                        ricettaToPush.put("Passaggi",getInfoPassaggi());
-                        ricettaToPush.put("Ingredienti",getInfoIngredienti());
-                        publishToFirebase(ricettaToPush);
-                    }
-                });
-            }}).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                double progress
-                        = (100.0
-                        * taskSnapshot.getBytesTransferred()
-                        / taskSnapshot.getTotalByteCount());
-                System.out.println(progress);
-            }
-        });
+        Map<String, Object> ricettaToPush = new HashMap<>();
+        ricettaToPush.put("Autore",actualUser);
+        ricettaToPush.put("Titolo",etTitolo.getText().toString());
+        ricettaToPush.put("Tempo di preparazione",tempoPreparazione.getText().toString());
+        ricettaToPush.put("Numero persone",numeroPersone.getText().toString());
+        ricettaToPush.put("Passaggi",getInfoPassaggi());
+        ricettaToPush.put("Ingredienti",getInfoIngredienti());
+        publishToFirebase(ricettaToPush);
     }
 
     private List<Map> getInfoIngredienti()
@@ -481,9 +454,9 @@ public class InsertRicettaActivity extends AppCompatActivity {
         for(int i=0;i<allIngredienti.size();i++)
         {
             Map<String, String> mappaIngrediente = new HashMap<>();
-            mappaIngrediente.put("Nome",((EditText)((RelativeLayout)allIngredienti.get(i)).getChildAt(2)).getText().toString());
-            mappaIngrediente.put("Quantità",((EditText)((RelativeLayout)allIngredienti.get(i)).getChildAt(3)).getText().toString());
-            mappaIngrediente.put("Unità misura",(((Spinner)((RelativeLayout)allIngredienti.get(i)).getChildAt(4)).getSelectedItem().toString()));
+            mappaIngrediente.put("Nome",((TextInputEditText)((FrameLayout)((TextInputLayout)((LinearLayout)((LinearLayout)((RelativeLayout)allIngredienti.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(0)).getChildAt(0)).getChildAt(0)).getText().toString());
+            mappaIngrediente.put("Quantità",((EditText)((FrameLayout)((TextInputLayout)((LinearLayout)((LinearLayout)((LinearLayout)((RelativeLayout)allIngredienti.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(1)).getChildAt(0)).getChildAt(0)).getChildAt(0)).getText().toString());
+            mappaIngrediente.put("Unità misura",(((Spinner)((LinearLayout)((LinearLayout)((LinearLayout)((RelativeLayout)allIngredienti.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(1)).getChildAt(1)).getSelectedItem().toString()));
             ingredienti.add(mappaIngrediente);
         }
         return ingredienti;
@@ -494,27 +467,22 @@ public class InsertRicettaActivity extends AppCompatActivity {
         List<String> mappaDescrizione = new ArrayList<String>();
         for(int i=0;i<allDescrizione.size();i++)
         {
-            mappaDescrizione.add(((EditText)((RelativeLayout)allDescrizione.get(i)).getChildAt(2)).getText().toString());
+            mappaDescrizione.add(((EditText)((FrameLayout)((TextInputLayout)((LinearLayout)((RelativeLayout) allDescrizione.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(0)).getChildAt(0)).getText().toString());
         }
         return mappaDescrizione;
     }
 
     private void publishToFirebase(Map ricetta)
     {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        // Add a new document with a generated ID
-        db.collection("Ricette")
-                .add(ricetta)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Utils.errorDialog(InsertRicettaActivity.this,R.string.ricetta_in_pubblicazione,R.string.error_ok);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Utils.errorDialog(InsertRicettaActivity.this,R.string.ricetta_in_pubblicazione_error,R.string.error_ok);                    }
-                });
+        img_piatto.setDrawingCacheEnabled(true);
+        img_piatto.buildDrawingCache();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        final StorageReference imageRef = storageRef.child(ricetta.get("Titolo")+".jpg");
+        Bitmap bitmap = ((BitmapDrawable) img_piatto.getDrawable()).getBitmap();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imgData = baos.toByteArray();
+        new Ricetta.publishRecipe(this,ricetta,imgData).execute();
     }
 }

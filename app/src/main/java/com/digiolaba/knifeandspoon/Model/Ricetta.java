@@ -1,15 +1,32 @@
 package com.digiolaba.knifeandspoon.Model;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+
+import com.digiolaba.knifeandspoon.Controller.Utils;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -115,6 +132,69 @@ public class Ricetta {
                 e.printStackTrace();
             }
             return obj;
+        }
+    }
+
+    public static class publishRecipe extends AsyncTask{
+        Context context;
+        Map ricetta;
+        byte[] imgData;
+        ProgressDialog dialog;
+        public publishRecipe(Context context,Map ricetta,byte[] imgData){
+            this.context=context;
+            this.ricetta=ricetta;
+            this.imgData=imgData;
+        }
+
+        @Override
+        protected Ricetta doInBackground(Object[] objects) {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference();
+            final StorageReference imageRef = storageRef.child(ricetta.get("Titolo")+".jpg");
+            Task uploadTask=imageRef.putBytes(imgData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+                {
+                    imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            ricetta.put("Thumbnail",uri.toString());
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            // Add a new document with a generated ID
+                            db.collection("Ricette")
+                                    .add(ricetta)
+                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                        @Override
+                                        public void onSuccess(DocumentReference documentReference) {
+                                            Log.w("TAG","SCUCESCIJSCIJASCSAC");
+                                            //Utils.errorDialog(context,R.string.ricetta_in_pubblicazione,R.string.error_ok);
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            //Utils.errorDialog(context,R.string.ricetta_in_pubblicazione_error,R.string.error_ok);
+                                        }
+                                    });
+                        }
+                    });
+                }}).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                    double progress
+                            = (100.0
+                            * taskSnapshot.getBytesTransferred()
+                            / taskSnapshot.getTotalByteCount());
+                }
+            });
+            try {
+                Tasks.await(uploadTask);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
     }
 

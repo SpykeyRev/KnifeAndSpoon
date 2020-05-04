@@ -3,6 +3,7 @@ package com.digiolaba.knifeandspoon.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
 import android.content.Intent;
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
     private GoogleSignInClient googleSignInClient;
-
+    private SwipeRefreshLayout pullToRefresh;
     private FloatingActionButton fab_main;
     private ExtendedFloatingActionButton fab_add, fab_search, fab_settings;
     private Animation fab_open, fab_close, fab_clock, fab_anticlock;
@@ -67,6 +68,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        pullToRefresh = findViewById(R.id.swipeRefresh);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
         //findViewById(R.id.buttonLogout).setOnClickListener(this);
         //findViewById(R.id.buttonDisconnect).setOnClickListener(this);
         fab_main = (FloatingActionButton)findViewById(R.id.fabOptions);
@@ -106,6 +114,13 @@ public class MainActivity extends AppCompatActivity {
         FirebaseAuth firebaseAuth= FirebaseAuth.getInstance();
         FirebaseUser fireUser = firebaseAuth.getCurrentUser();
         Picasso.get().load(fireUser.getPhotoUrl()).into(userImage);
+    }
+
+    private void refresh(){
+        List<SlideModel>slideModels=new ArrayList<>();
+        imageSlider.setImageList(slideModels,true);
+        loadImageSliderWithRicette();
+        pullToRefresh.setRefreshing(false);
     }
 
     private void loadImageSliderWithRicette()

@@ -26,20 +26,28 @@
         android:layout_toStartOf="@id/btnRemovePassaggio"
         android:text="@string/nuovo_passaggio" />
 
-    <EditText
-        android:id="@+id/etDescrizione"
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="315dp"
         android:layout_height="149dp"
         android:layout_below="@+id/txtTitoloPassaggio"
-        android:layout_alignParentStart="true"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        android:layout_toStartOf="@+id/btnRemovePassaggio"
-        android:backgroundTint="@color/colorPrimary"
-        android:ems="10"
         android:gravity="start|top"
-        android:hint="@string/inserisci_descrizione_passaggio"
-        android:inputType="textMultiLine" />
+        android:layout_toStartOf="@+id/btnRemovePassaggio"
+        android:hint="@string/inserisci_descrizione_passaggio">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etDescrizione"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textMultiLine"
+            android:background="@color/fui_transparent"
+            android:gravity="bottom"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
 
 </RelativeLayout>

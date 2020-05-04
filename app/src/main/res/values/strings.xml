@@ -24,11 +24,11 @@
     <string name="rimuovi">Rimuovi</string>
     <string name="quantita">Quantità</string>
     <string name="unita_misura">Unità di misura</string>
-    <string name="inserisci_descrizione_passaggio">Inserisci la descrizione di questo passaggio…</string>
+    <string name="inserisci_descrizione_passaggio">Descrivi il passaggio</string>
     <string name="nuovo_ingrediente">Nuovo ingrediente</string>
     <string name="nuovo_passaggio">Nuovo Passaggio</string>
-    <string name="numero_persone_ask">Inserisci il numero delle persone…</string>
-    <string name="tempo_preparazione_ask">Inserisci il tempo di preparazione in minuti…</string>
+    <string name="numero_persone_ask">Numero persone</string>
+    <string name="tempo_preparazione_ask">Tempo in minuti</string>
 
    <string-array name="categoria">
        <item>Antipasto</item>
@@ -154,5 +154,5 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_insert_ricetta">Inserisci il nome della ricetta...</string>
+    <string name="title_activity_insert_ricetta">Nome Ricetta</string>
 </resources>

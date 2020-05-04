@@ -27,16 +27,17 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 
 import com.digiolaba.knifeandspoon.R;
 
@@ -53,8 +54,6 @@ public class InsertRicettaActivity extends AppCompatActivity {
     private ArrayList<String> permissionsRejected = new ArrayList<>();
     private ArrayList<String> permissions = new ArrayList<>();
     private final static int ALL_PERMISSIONS_RESULT = 107;
-    private final static int PICK_IMAGE = 200;
-    private Toolbar toolbar;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private ImageView img_piatto;
     private EditText etTitolo;
@@ -62,35 +61,39 @@ public class InsertRicettaActivity extends AppCompatActivity {
     private Boolean textOK=false;
     private LinearLayout ingredientiLayout;
     private Button addIngrediente;
-    private int countIngrediente=0,countPassaggio=0;
     private Button addPassaggio;
     private LinearLayout passaggiLayout;
-    private List<View>allDescrizione;
+    private List<View>allDescrizione,allIngredienti;
     private Map<Integer,String> mappaDescrizione;
-
-
-
-
+    private Spinner spCategoria;
+    private EditText numeroPersone;
+    private EditText tempoPreparazione;
+    private Map<String,Object> ricettaToPush;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_ricetta);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         collapsingToolbarLayout=(CollapsingToolbarLayout)findViewById(R.id.toolbar_layout_ins);
         fab_foto = (FloatingActionButton) findViewById(R.id.fab_ins_foto);
         img_piatto=(ImageView)findViewById(R.id.img_piatto);
         etTitolo=(EditText)findViewById(R.id.etTitolo);
+        numeroPersone=(EditText)findViewById(R.id.etNumeroPersone);
+        tempoPreparazione=(EditText)findViewById(R.id.etTempoPreparazione);
+        spCategoria=(Spinner)findViewById(R.id.spinnerCategoria);
         ingredientiLayout=(LinearLayout)findViewById(R.id.layoutIngredienti);
         addIngrediente=(Button)findViewById(R.id.addIngrediente);
         addPassaggio=(Button)findViewById(R.id.addPassaggio);
         passaggiLayout=(LinearLayout)findViewById(R.id.listPassaggi);
         allDescrizione=new ArrayList<View>();
+        allIngredienti=new ArrayList<View>();
         mappaDescrizione=new HashMap<>();
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        loadSpinnerCategoria();
         snackForInfoPhoto();
         checkPermissionAndPhoto();
         changeToolbatTitle();
@@ -110,10 +113,11 @@ public class InsertRicettaActivity extends AppCompatActivity {
 
         switch(item.getItemId())
         {
-            case R.id.home:
+            case android.R.id.home:
             {
                 Intent intent=new Intent(InsertRicettaActivity.this,MainActivity.class);
                 startActivity(intent);
+                Log.i("CI ","SONO");
                 return true;
             }
             case R.id.publishRicetta:
@@ -129,6 +133,12 @@ public class InsertRicettaActivity extends AppCompatActivity {
         }
     }
 
+    private void loadSpinnerCategoria()
+    {
+        ArrayAdapter<String>items=new ArrayAdapter<String>(InsertRicettaActivity.this,android.R.layout.simple_list_item_1,getResources().getStringArray(R.array.categoria));
+        items.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spCategoria.setAdapter(items);
+    }
 
 
     private void snackForInfoPhoto()
@@ -301,21 +311,29 @@ public class InsertRicettaActivity extends AppCompatActivity {
         addIngrediente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                countIngrediente++;
                 LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View addView = layoutInflater.inflate(R.layout.add_ingrediente_layout, null);
+                allIngredienti.add(addView);
                 Button buttonRemove = (Button)addView.findViewById(R.id.btnRemoveIngrediente);
-                addView.setId(countIngrediente);
+                loadSpinnerUnitaMisura(addView);
                 buttonRemove.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        countIngrediente--;
+                        allIngredienti.remove(addView);
                         ((LinearLayout)addView.getParent()).removeView(addView);
                     }
                 });
                 ingredientiLayout.addView(addView);
             }
         });
+    }
+
+    private void loadSpinnerUnitaMisura(View addView)
+    {
+        Spinner spUnitMisura = (Spinner) addView.findViewById(R.id.spinnerUnitaMisura);
+        ArrayAdapter<String>items=new ArrayAdapter<String>(InsertRicettaActivity.this,android.R.layout.simple_list_item_1,getResources().getStringArray(R.array.unita_misura));
+        items.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spUnitMisura.setAdapter(items);
     }
 
     private void addPassaggio()
@@ -344,21 +362,33 @@ public class InsertRicettaActivity extends AppCompatActivity {
 
     private void pubblicaRicetta()
     {
+        /*ricettaToPush=new HashMap<>();
+        ricettaToPush.put("Titolo",etTitolo.getText().toString());
+        ricettaToPush.put("Tempo di preparazione",)*/
         getInfoIngredienti();
         getInfoPassaggi();
     }
 
     private void getInfoIngredienti()
     {
-
+        EditText etNome,etQuantita;
+        Spinner spUM;
+        for(int i=0;i<allIngredienti.size();i++)
+        {
+            etNome=((EditText)((RelativeLayout)allIngredienti.get(i)).getChildAt(2));
+            etQuantita=(EditText)((RelativeLayout)allIngredienti.get(i)).getChildAt(3);
+            spUM=((Spinner)((RelativeLayout)allIngredienti.get(i)).getChildAt(4));
+            Log.i("Ciao",((EditText)((RelativeLayout)allIngredienti.get(i)).getChildAt(2)).getText().toString());
+            Log.i("CIAONE",((EditText)((RelativeLayout)allIngredienti.get(i)).getChildAt(3)).getText().toString());
+            Log.i("RISPONDONE",(((Spinner)((RelativeLayout)allIngredienti.get(i)).getChildAt(4)).getSelectedItem().toString()));
+        }
     }
+
     private void getInfoPassaggi()
     {
-        EditText e;
         for(int i=0;i<allDescrizione.size();i++)
         {
-            e= (EditText)((RelativeLayout)allDescrizione.get(i)).getChildAt(2);
-            mappaDescrizione.put(i,e.getText().toString());
+            mappaDescrizione.put(i,((EditText)((RelativeLayout)allDescrizione.get(i)).getChildAt(2)).getText().toString());
         }
     }
 }

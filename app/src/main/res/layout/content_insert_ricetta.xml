@@ -27,6 +27,38 @@
             android:inputType="textPersonName"
             android:maxLength="30" />
 
+        <EditText
+            android:id="@+id/etNumeroPersone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:ems="10"
+            android:hint="@string/numero_persone_ask"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/etTempoPreparazione"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:ems="10"
+            android:hint="@string/tempo_preparazione_ask"
+            android:inputType="number" />
+
+        <Spinner
+            android:id="@+id/spinnerCategoria"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="16dp" />
+
         <TextView
             android:id="@+id/textView6"
             android:layout_width="match_parent"

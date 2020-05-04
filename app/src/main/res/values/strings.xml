@@ -24,9 +24,30 @@
     <string name="rimuovi">Rimuovi</string>
     <string name="quantita">Quantità</string>
     <string name="unita_misura">Unità di misura</string>
-    <string name="inserisci_descrizione_passaggio">Inserisci la descrizione di questo passaggio...</string>
+    <string name="inserisci_descrizione_passaggio">Inserisci la descrizione di questo passaggio…</string>
     <string name="nuovo_ingrediente">Nuovo ingrediente</string>
     <string name="nuovo_passaggio">Nuovo Passaggio</string>
+    <string name="numero_persone_ask">Inserisci il numero delle persone…</string>
+    <string name="tempo_preparazione_ask">Inserisci il tempo di preparazione in minuti…</string>
+
+   <string-array name="categoria">
+       <item>Antipasto</item>
+       <item>Primo</item>
+       <item>Secondo</item>
+       <item>Contorno</item>
+       <item>Dolce</item>
+   </string-array>
+
+
+    <string-array name="unita_misura">
+        <item>grammi</item>
+        <item>kg</item>
+        <item>bicchiere</item>
+        <item>litri</item>
+        <item>cucchiaio</item>
+        <item>cucchiaino</item>
+        <item>q.b.</item>
+    </string-array>
 
     <string name="pubblica_ricetta">Pubblica la ricetta</string>
 

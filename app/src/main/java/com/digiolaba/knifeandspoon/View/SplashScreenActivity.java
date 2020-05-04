@@ -1,11 +1,11 @@
 package com.digiolaba.knifeandspoon.View;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.digiolaba.knifeandspoon.Controller.Utils;
 import com.digiolaba.knifeandspoon.R;
@@ -18,29 +18,29 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
-    String TAG="SplashScreenActivity";
-    Context context=SplashScreenActivity.this;
+    String TAG = "SplashScreenActivity";
+    Context context = SplashScreenActivity.this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-        if(Utils.checkNetworkConnection(this)){
+        if (Utils.checkNetworkConnection(this)) {
             launchCorrectActivity();
-        }else{
-            Utils.showToastMessage(context,"Turn on your internet connection you KNOB");
-            while(!Utils.checkNetworkConnection(this)){
+        } else {
+            Utils.showToastMessage(context, "Turn on your internet connection you KNOB");
+            while (!Utils.checkNetworkConnection(this)) {
 
             }
             launchCorrectActivity();
         }
     }
 
-    private void launchCorrectActivity(){
+    private void launchCorrectActivity() {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
-            FirebaseFirestore storage=FirebaseFirestore.getInstance();
+            FirebaseFirestore storage = FirebaseFirestore.getInstance();
             storage.collection("Utenti").whereEqualTo("Mail", currentUser.getEmail())
                     .limit(1).get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -48,12 +48,12 @@ public class SplashScreenActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
                                 boolean isEmpty = task.getResult().isEmpty();
-                                if(isEmpty){
+                                if (isEmpty) {
                                     Intent intent = new Intent(getApplicationContext(),
                                             RegisterActivity.class);
                                     startActivity(intent);
                                     finish();
-                                }else{
+                                } else {
                                     Intent intent = new Intent(getApplicationContext(),
                                             MainActivity.class);
                                     startActivity(intent);
@@ -62,7 +62,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                             }
                         }
                     });
-        }else{
+        } else {
             Intent intent = new Intent(getApplicationContext(),
                     LoginActivity.class);
             startActivity(intent);

@@ -110,7 +110,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
-            android:orientation="vertical"/>
+            android:orientation="vertical" />
 
         <Button
             android:id="@+id/addIngrediente"
@@ -119,8 +119,7 @@
             android:text="@string/ingrediente"
             android:layout_gravity="end"
             android:layout_margin="16dp"
-            android:drawableLeft="@drawable/ic_add_black_24dp"
-            />
+            android:drawableLeft="@drawable/ic_add_black_24dp" />
 
         <TextView
             android:id="@+id/textView7"
@@ -129,7 +128,7 @@
             android:layout_marginBottom="16dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
-            android:text="@string/passaggi"/>
+            android:text="@string/passaggi" />
 
         <LinearLayout
             android:id="@+id/listPassaggi"
@@ -146,8 +145,7 @@
             android:text="@string/passaggio"
             android:layout_gravity="end"
             android:layout_margin="16dp"
-            android:drawableLeft="@drawable/ic_add_black_24dp"
-            />
+            android:drawableLeft="@drawable/ic_add_black_24dp" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

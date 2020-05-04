@@ -2,18 +2,16 @@ package com.digiolaba.knifeandspoon.View;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.view.MenuItem;
-import android.view.View;
-
 import com.digiolaba.knifeandspoon.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 public class ShowRicetta extends AppCompatActivity {
 
@@ -39,13 +37,12 @@ public class ShowRicetta extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            Intent intent=new Intent(ShowRicetta.this,MainActivity.class);
+            Intent intent = new Intent(ShowRicetta.this, MainActivity.class);
             startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 
 }

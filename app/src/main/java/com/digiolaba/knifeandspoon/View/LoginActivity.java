@@ -1,14 +1,14 @@
 package com.digiolaba.knifeandspoon.View;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.digiolaba.knifeandspoon.Controller.Utils;
 import com.digiolaba.knifeandspoon.R;
@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseUser user;
     GoogleSignInClient googleSignInClient;
-    Context context=LoginActivity.this;
+    Context context = LoginActivity.this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         SignInButton signInButton = findViewById(R.id.btnLogin);
         signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
+            @Override
+            public void onClick(View view) {
                 signInToGoogle();
             }
         });
@@ -67,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
         signInButton.setSize(SignInButton.SIZE_WIDE);
 
         // Initialize Firebase Auth
-        firebaseAuth=FirebaseAuth.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -77,8 +78,8 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
             Log.d(TAG, "Currently Signed in: " + currentUser.getEmail());
-            Utils.showToastMessage(context,"Currently Logged in: " + currentUser.getEmail());
-            user=currentUser;
+            Utils.showToastMessage(context, "Currently Logged in: " + currentUser.getEmail());
+            user = currentUser;
             checkIfUserExist(currentUser);
         }
     }
@@ -97,12 +98,12 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                Utils.showToastMessage(context,"Google Sign in Succeeded");
+                Utils.showToastMessage(context, "Google Sign in Succeeded");
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
-                Utils.showToastMessage(context,"Google Sign in Failed " + e);
+                Utils.showToastMessage(context, "Google Sign in Failed " + e);
             }
         }
     }
@@ -122,14 +123,14 @@ public class LoginActivity extends AppCompatActivity {
 
                             Log.d(TAG, "signInWithCredential:success: currentUser: " + user.getEmail());
 
-                            Utils.showToastMessage(context,"Firebase Authentication Succeeded ");
+                            Utils.showToastMessage(context, "Firebase Authentication Succeeded ");
                             checkIfUserExist(user);
                         } else {
                             // If sign in fails, display a message to the user.
 
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
 
-                            Utils.showToastMessage(context,"Firebase Authentication failed:" + task.getException());
+                            Utils.showToastMessage(context, "Firebase Authentication failed:" + task.getException());
                         }
                     }
                 });
@@ -137,7 +138,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void checkIfUserExist(FirebaseUser user) {
         if (user != null) {
-            FirebaseFirestore storage=FirebaseFirestore.getInstance();
+            FirebaseFirestore storage = FirebaseFirestore.getInstance();
             storage.collection("Utenti").whereEqualTo("Mail", user.getEmail())
                     .limit(1).get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -145,9 +146,9 @@ public class LoginActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
                                 boolean isEmpty = task.getResult().isEmpty();
-                                if(isEmpty){
+                                if (isEmpty) {
                                     launchRegisterActivity();
-                                }else{
+                                } else {
                                     launchMainActivity();
                                 }
                             }
@@ -156,12 +157,12 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void launchRegisterActivity(){
+    private void launchRegisterActivity() {
         RegisterActivity.startActivity(this);
         finish();
     }
 
-    private void launchMainActivity(){
+    private void launchMainActivity() {
         MainActivity.startActivity(this);
         finish();
     }

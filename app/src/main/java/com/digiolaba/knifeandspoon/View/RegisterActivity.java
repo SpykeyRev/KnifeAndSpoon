@@ -1,8 +1,5 @@
 package com.digiolaba.knifeandspoon.View;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +7,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.digiolaba.knifeandspoon.Controller.Utils;
 import com.digiolaba.knifeandspoon.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,6 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,9 +35,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class RegisterActivity extends AppCompatActivity {
     private EditText nome;
     private Button continua;
-    private String TAG="Register";
+    private String TAG = "Register";
     private CircleImageView userImage;
-    private Context context=RegisterActivity.this;
+    private Context context = RegisterActivity.this;
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, RegisterActivity.class);
@@ -46,69 +48,57 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        userImage=(CircleImageView)findViewById(R.id.profile_image);
-        FirebaseAuth firebaseAuth= FirebaseAuth.getInstance();
+        userImage = (CircleImageView) findViewById(R.id.profile_image);
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser fireUser = firebaseAuth.getCurrentUser();
         Picasso.get().load(fireUser.getPhotoUrl()).into(userImage);
-        nome=(EditText)findViewById(R.id.txtNome);
-        continua=(Button)findViewById(R.id.btnContinua);
+        nome = (EditText) findViewById(R.id.txtNome);
+        continua = (Button) findViewById(R.id.btnContinua);
         continua.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
+            @Override
+            public void onClick(View view) {
                 checkName();
             }
         });
     }
 
-    private void checkName()
-    {
-        if(nome.getText().toString().equals(""))
-        {
-            Utils.errorDialog(this,R.string.error_empty_name,R.string.error_ok);
-        }
-        else if(nome.getText().toString().contains(" ")&&(nome.getText().toString().startsWith(" ")&&nome.getText().toString().endsWith(" ")))
-        {
-            Utils.errorDialog(this,R.string.error_name_space,R.string.error_ok);
-        }
-        else if(nome.getText().toString().length()<=6||nome.getText().toString().length()>=20)
-        {
-            Utils.errorDialog(this, R.string.error_lenght_name,R.string.error_ok);
-        }
-        else
-        {
+    private void checkName() {
+        if (nome.getText().toString().equals("")) {
+            Utils.errorDialog(this, R.string.error_empty_name, R.string.error_ok);
+        } else if (nome.getText().toString().contains(" ") && (nome.getText().toString().startsWith(" ") && nome.getText().toString().endsWith(" "))) {
+            Utils.errorDialog(this, R.string.error_name_space, R.string.error_ok);
+        } else if (nome.getText().toString().length() <= 6 || nome.getText().toString().length() >= 20) {
+            Utils.errorDialog(this, R.string.error_lenght_name, R.string.error_ok);
+        } else {
             checkIfNameExists();
         }
     }
 
 
-    private void checkIfNameExists()
-    {
-        final Context context=this;
-        FirebaseFirestore rootRef=FirebaseFirestore.getInstance();
-        CollectionReference utentiRef=rootRef.collection("Utenti");
-        Query queryNome=utentiRef.whereEqualTo("Nome",nome.getText().toString());
+    private void checkIfNameExists() {
+        final Context context = this;
+        FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+        CollectionReference utentiRef = rootRef.collection("Utenti");
+        Query queryNome = utentiRef.whereEqualTo("Nome", nome.getText().toString());
         queryNome.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful())
-                {
-                    for(DocumentSnapshot documentSnapshot:task.getResult())
-                    {
-                        if(documentSnapshot.exists())
-                        {
-                            Utils.errorDialog(context, R.string.error_name_already_taken,R.string.error_ok);
+                if (task.isSuccessful()) {
+                    for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                        if (documentSnapshot.exists()) {
+                            Utils.errorDialog(context, R.string.error_name_already_taken, R.string.error_ok);
                         }
                     }
                 }
-                if(task.getResult().size()==0)
-                {
+                if (task.getResult().size() == 0) {
                     registerUser();
                 }
             }
         });
     }
 
-    private void registerUser(){
-        FirebaseAuth firebaseAuth= FirebaseAuth.getInstance();
+    private void registerUser() {
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser fireUser = firebaseAuth.getCurrentUser();
         Log.d(TAG, "SHIIIT");
         Map<String, Object> user = new HashMap<>();
@@ -137,7 +127,7 @@ public class RegisterActivity extends AppCompatActivity {
                 });
     }
 
-    private void launchMainActivity(){
+    private void launchMainActivity() {
         MainActivity.startActivity(this);
         finish();
     }

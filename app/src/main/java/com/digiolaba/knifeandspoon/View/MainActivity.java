@@ -1,19 +1,18 @@
 package com.digiolaba.knifeandspoon.View;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.interfaces.ItemClickListener;
@@ -22,7 +21,6 @@ import com.digiolaba.knifeandspoon.Controller.Utils;
 import com.digiolaba.knifeandspoon.Model.Ricetta;
 import com.digiolaba.knifeandspoon.Model.Utente;
 import com.digiolaba.knifeandspoon.R;
-
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -46,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private Utente actualUser;
+
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
         context.startActivity(intent);
@@ -60,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private Animation fab_open, fab_close, fab_clock, fab_anticlock;
     private List<Ricetta> ricettas;
     private Boolean isOpen = false;
-    private Context context=MainActivity.this;
+    private Context context = MainActivity.this;
     private CoordinatorLayout coordinatorLayout;
     private ImageSlider imageSlider;
 
@@ -77,31 +76,30 @@ public class MainActivity extends AppCompatActivity {
         });
         //findViewById(R.id.buttonLogout).setOnClickListener(this);
         //findViewById(R.id.buttonDisconnect).setOnClickListener(this);
-        fab_main = (FloatingActionButton)findViewById(R.id.fabOptions);
-        fab_add =(ExtendedFloatingActionButton) findViewById(R.id.fabAdd);
-        fab_search=(ExtendedFloatingActionButton)findViewById(R.id.fabSearch);
-        fab_settings=(ExtendedFloatingActionButton)findViewById(R.id.fabSettings);
+        fab_main = (FloatingActionButton) findViewById(R.id.fabOptions);
+        fab_add = (ExtendedFloatingActionButton) findViewById(R.id.fabAdd);
+        fab_search = (ExtendedFloatingActionButton) findViewById(R.id.fabSearch);
+        fab_settings = (ExtendedFloatingActionButton) findViewById(R.id.fabSettings);
         fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         fab_clock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_clock);
         fab_anticlock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_anticlock);
-        coordinatorLayout=(CoordinatorLayout)findViewById(R.id.coordinateLayout);
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinateLayout);
         //Setting up firebase for userInfo
         setUserInfo();
         //Setting up imageSlider
-        imageSlider=(ImageSlider)findViewById(R.id.home_image_slider);
+        imageSlider = (ImageSlider) findViewById(R.id.home_image_slider);
         loadImageSliderWithRicette();
         FABClickManagement();
         FABLongClickManagement();
     }
 
-    private void setUserInfo()
-    {
+    private void setUserInfo() {
         googleSignInClient = GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN);
         firebaseAuth = FirebaseAuth.getInstance();
         try {
             actualUser = (Utente) new Utente.getUserInfo(firebaseAuth.getCurrentUser().getEmail()).execute().get();
-            TextView userName=(TextView)findViewById(R.id.userName);
+            TextView userName = (TextView) findViewById(R.id.userName);
             userName.setText(actualUser.getUserName());
 
         } catch (ExecutionException e) {
@@ -110,29 +108,28 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         //Utente.getUserInfo(firebaseAuth.getCurrentUser().getEmail());
-        CircleImageView userImage=(CircleImageView)findViewById(R.id.profile_image);
-        FirebaseAuth firebaseAuth= FirebaseAuth.getInstance();
+        CircleImageView userImage = (CircleImageView) findViewById(R.id.profile_image);
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser fireUser = firebaseAuth.getCurrentUser();
         Picasso.get().load(fireUser.getPhotoUrl()).into(userImage);
     }
 
-    private void refresh(){
-        List<SlideModel>slideModels=new ArrayList<>();
-        imageSlider.setImageList(slideModels,true);
+    private void refresh() {
+        List<SlideModel> slideModels = new ArrayList<>();
+        imageSlider.setImageList(slideModels, true);
         loadImageSliderWithRicette();
         pullToRefresh.setRefreshing(false);
     }
 
-    private void loadImageSliderWithRicette()
-    {
+    private void loadImageSliderWithRicette() {
         try {
-            ricettas=(List<Ricetta>) new Ricetta.getFirstTenRecipe().execute().get();
-            List<SlideModel>slideModels=new ArrayList<>();
-            for(int i=0;i<ricettas.size();i++){
+            ricettas = (List<Ricetta>) new Ricetta.getFirstTenRecipe().execute().get();
+            List<SlideModel> slideModels = new ArrayList<>();
+            for (int i = 0; i < ricettas.size(); i++) {
                 System.out.println(ricettas.get(i).getThumbnail());
-                slideModels.add((new SlideModel(ricettas.get(i).getThumbnail(),ricettas.get(i).getTitle())));
+                slideModels.add((new SlideModel(ricettas.get(i).getThumbnail(), ricettas.get(i).getTitle())));
             }
-            imageSlider.setImageList(slideModels,true);
+            imageSlider.setImageList(slideModels, true);
             imageSlider.setItemClickListener(new ItemClickListener() {
                 @Override
                 public void onItemSelected(int i) {
@@ -147,8 +144,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void FABClickManagement()
-    {
+    private void FABClickManagement() {
         fab_add.setClickable(false);
         fab_add.setEnabled(false);
         fab_search.setClickable(false);
@@ -188,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
         fab_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(MainActivity.this,InsertRicettaActivity.class);
+                Intent intent = new Intent(MainActivity.this, InsertRicettaActivity.class);
                 intent.putExtra("actualUseridentifier", actualUser.getUserId());
                 startActivity(intent);
             }
@@ -196,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
         fab_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(MainActivity.this,SearchActivity.class);
+                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                 startActivity(intent);
             }
         });
@@ -208,33 +204,32 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void FABLongClickManagement()
-    {
+    private void FABLongClickManagement() {
         fab_main.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Utils.showSnackbar(coordinatorLayout,getResources().getString(R.string.menu));
+                Utils.showSnackbar(coordinatorLayout, getResources().getString(R.string.menu));
                 return false;
             }
         });
         fab_add.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Utils.showSnackbar(coordinatorLayout,getResources().getString(R.string.add_ricetta));
+                Utils.showSnackbar(coordinatorLayout, getResources().getString(R.string.add_ricetta));
                 return false;
             }
         });
         fab_search.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Utils.showSnackbar(coordinatorLayout,getResources().getString(R.string.search_ricetta));
+                Utils.showSnackbar(coordinatorLayout, getResources().getString(R.string.search_ricetta));
                 return false;
             }
         });
         fab_settings.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Utils.showSnackbar(coordinatorLayout,getResources().getString(R.string.settings));
+                Utils.showSnackbar(coordinatorLayout, getResources().getString(R.string.settings));
 
                 return false;
             }
@@ -242,21 +237,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-    public void getUserInfo(String email){
+    public void getUserInfo(String email) {
         final List<Utente> users = new ArrayList();
-        FirebaseFirestore storage=FirebaseFirestore.getInstance();
-        Task task=storage.collection("Utenti").whereEqualTo("Mail", email).get()
+        FirebaseFirestore storage = FirebaseFirestore.getInstance();
+        Task task = storage.collection("Utenti").whereEqualTo("Mail", email).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            String id=task.getResult().getDocuments().get(0).getId();
-                            String mail=task.getResult().getDocuments().get(0).get("Mail").toString();
-                            String nome=task.getResult().getDocuments().get(0).get("Nome").toString();
-                            String immagine=task.getResult().getDocuments().get(0).get("Immagine").toString();
-                            Boolean isAdmin=(Boolean)task.getResult().getDocuments().get(0).get("isAdmin");
-                            actualUser=new Utente(id,mail,nome,immagine,isAdmin);
+                            String id = task.getResult().getDocuments().get(0).getId();
+                            String mail = task.getResult().getDocuments().get(0).get("Mail").toString();
+                            String nome = task.getResult().getDocuments().get(0).get("Nome").toString();
+                            String immagine = task.getResult().getDocuments().get(0).get("Immagine").toString();
+                            Boolean isAdmin = (Boolean) task.getResult().getDocuments().get(0).get("isAdmin");
+                            actualUser = new Utente(id, mail, nome, immagine, isAdmin);
                             TextView textView = findViewById(R.id.userName);
                             textView.setText(actualUser.getUserName());
                         }

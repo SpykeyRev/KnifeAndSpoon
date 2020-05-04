@@ -422,42 +422,62 @@ public class InsertRicettaActivity extends AppCompatActivity {
     }
 
     private void pubblicaRicetta() {
-        /*List<Map>ingredienti=getInfoIngredienti();
+        List<Map>ingredienti=getInfoIngredienti();
         List<String>passaggi=getInfoPassaggi();
-        if(passaggi.size()==0||ingredienti.size()==0)
+        Log.i("AO", String.valueOf(ingredienti.size()));
+        if(ingredienti!=null||passaggi!=null)
         {
-            Utils.errorDialog(InsertRicettaActivity.this,R.string.error_no_passaggi_ingredienti,R.string.error_ok);
+            for(int i=0;i<passaggi.size();i++)
+            {
+                if(passaggi.get(i).toString().trim().equals(""))
+                {
+                    passaggi.remove(passaggi.get(i));
+                }
+            }
+            for(int i=0;i<ingredienti.size();i++)
+            {
+                if(ingredienti.get(i).get("Nome").toString().trim().equals("")&&ingredienti.get(i).get("Quantità").toString().trim().equals(""))
+                {
+                    ingredienti.remove(ingredienti.get(i));
+                }
+            }
+            if(passaggi.size()==0||ingredienti.size()==0)
+            {
+                Utils.errorDialog(InsertRicettaActivity.this,R.string.error_no_passaggi_ingredienti,R.string.error_ok);
+            }
+            else
+            {
+                Map<String, Object> ricettaToPush = new HashMap<>();
+                ricettaToPush.put("Autore", actualUser);
+                ricettaToPush.put("Titolo", etTitolo.getText().toString().trim());
+                ricettaToPush.put("Tempo di preparazione", tempoPreparazione.getText().toString());
+                ricettaToPush.put("Numero persone", numeroPersone.getText().toString());
+                ricettaToPush.put("Passaggi", getInfoPassaggi());
+                ricettaToPush.put("Ingredienti", getInfoIngredienti());
+                publishToFirebase(ricettaToPush);
+            }
         }
         else
         {
-            boolean found=false;
-            for(int i=0;i<ingredienti.size();i++)
-            {
-                if(ingredienti.get(i).toString().trim().equals(""))
-                {
-
-                }
-
-            }
+            Utils.errorDialog(InsertRicettaActivity.this,R.string.error_no_passaggi_ingredienti,R.string.error_ok);
         }
-*/
-        Map<String, Object> ricettaToPush = new HashMap<>();
-        ricettaToPush.put("Autore", actualUser);
-        ricettaToPush.put("Titolo", etTitolo.getText().toString().trim());
-        ricettaToPush.put("Tempo di preparazione", tempoPreparazione.getText().toString());
-        ricettaToPush.put("Numero persone", numeroPersone.getText().toString());
-        ricettaToPush.put("Passaggi", getInfoPassaggi());
-        ricettaToPush.put("Ingredienti", getInfoIngredienti());
-        publishToFirebase(ricettaToPush);
     }
 
     private List<Map> getInfoIngredienti() {
         List<Map> ingredienti = new ArrayList<Map>();
         for (int i = 0; i < allIngredienti.size(); i++) {
             Map<String, String> mappaIngrediente = new HashMap<>();
-            mappaIngrediente.put("Nome", ((TextInputEditText) ((FrameLayout) ((TextInputLayout) ((LinearLayout) ((LinearLayout) ((RelativeLayout) allIngredienti.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(0)).getChildAt(0)).getChildAt(0)).getText().toString().trim());
-            mappaIngrediente.put("Quantità", ((TextInputEditText) ((FrameLayout) ((TextInputLayout) ((LinearLayout) ((LinearLayout) ((LinearLayout) ((RelativeLayout) allIngredienti.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(1)).getChildAt(0)).getChildAt(0)).getChildAt(0)).getText().toString().trim());
-            mappaIngrediente.put("Unità misura", (((Spinner) ((LinearLayout) ((LinearLayout) ((LinearLayout) ((RelativeLayout) allIngredienti.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(1)).getChildAt(1)).getSelectedItem().toString().trim()));
+            try {
+                mappaIngrediente.put("Nome", ((TextInputEditText) ((FrameLayout) ((TextInputLayout) ((LinearLayout) ((LinearLayout) ((RelativeLayout) allIngredienti.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(0)).getChildAt(0)).getChildAt(0)).getText().toString().trim());
+                mappaIngrediente.put("Quantità", ((TextInputEditText) ((FrameLayout) ((TextInputLayout) ((LinearLayout) ((LinearLayout) ((LinearLayout) ((RelativeLayout) allIngredienti.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(1)).getChildAt(0)).getChildAt(0)).getChildAt(0)).getText().toString().trim());
+                mappaIngrediente.put("Unità misura", (((Spinner) ((LinearLayout) ((LinearLayout) ((LinearLayout) ((RelativeLayout) allIngredienti.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(1)).getChildAt(1)).getSelectedItem().toString().trim()));
+            }
+            catch(Exception e)
+            {
+                return null;
+            }
+
+
             ingredienti.add(mappaIngrediente);
         }
         return ingredienti;
@@ -466,7 +486,14 @@ public class InsertRicettaActivity extends AppCompatActivity {
     private List<String> getInfoPassaggi() {
         List<String> mappaDescrizione = new ArrayList<String>();
         for (int i = 0; i < allDescrizione.size(); i++) {
-            mappaDescrizione.add(((EditText) ((FrameLayout) ((TextInputLayout) ((LinearLayout) ((RelativeLayout) allDescrizione.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(0)).getChildAt(0)).getText().toString().trim());
+
+            try {
+                mappaDescrizione.add(((EditText) ((FrameLayout) ((TextInputLayout) ((LinearLayout) ((RelativeLayout) allDescrizione.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(0)).getChildAt(0)).getText().toString().trim());
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
         return mappaDescrizione;
     }

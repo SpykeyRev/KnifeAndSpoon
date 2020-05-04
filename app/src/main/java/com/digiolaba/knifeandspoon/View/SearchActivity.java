@@ -3,6 +3,7 @@ package com.digiolaba.knifeandspoon.View;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -19,8 +20,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.digiolaba.knifeandspoon.Model.Ricetta;
 import com.digiolaba.knifeandspoon.R;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.Objects;
 
@@ -58,11 +67,16 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
-    private void firebaseRicettaSearch(String searchText) {
+    public void firebaseRicettaSearch(String ricetta) {
 
         Toast.makeText(SearchActivity.this, "Started Search", Toast.LENGTH_LONG).show();
 
-        //FirestoreRecyclerOptions<Ricetta, RicettaViewHolder> options = new FirestoreRecyclerOptions.Builder<Ricetta>().setQuery(query, RicettaViewHolder.class).build();
+        FirebaseFirestore storage= FirebaseFirestore.getInstance();
+        Query search = storage.collection("Ricette").orderBy("Titolo").startAt(ricetta);
+
+        FirestoreRecyclerOptions.Builder<SearchActivity> options = new FirestoreRecyclerOptions.Builder<SearchActivity>().setQuery(search, SearchActivity.class);
+
+
 
     }
 
@@ -74,7 +88,7 @@ public class SearchActivity extends AppCompatActivity {
             super(itemView);
             mView = itemView;
         }
-        public void setDetails(Context ctx, String Ricetta, String imageRicetta){
+        public void setDetails(String imageRicetta){
 
             ImageView image_Ricetta = (ImageView) mView.findViewById(R.id.immagineRicetta);
             TextView nome_ricetta = (TextView) mView.findViewById(R.id.nomeRicetta);
@@ -84,6 +98,26 @@ public class SearchActivity extends AppCompatActivity {
 
 
     }
+
+    private FirestoreRecyclerAdapter<SearchActivity,RicettaViewHolder > adapter;
+
+    adapter = new FirestoreRecyclerAdapter<SearchActivity,RicettaViewHolder>() {
+        @Override
+        protected void onBindViewHolder(@NonNull holder RicettaViewHolder, int position, @NonNull SearchActivity productModel) {
+
+        }
+
+        @NonNull
+        @Override
+        public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_product, parent, false);
+            return new ProductViewHolder(view);
+        }
+    };
+recyclerView.setAdapter(adapter);
+
+
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

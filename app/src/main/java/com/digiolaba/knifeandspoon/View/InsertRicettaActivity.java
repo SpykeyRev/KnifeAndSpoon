@@ -1,10 +1,12 @@
 package com.digiolaba.knifeandspoon.View;
 
 import android.Manifest;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,6 +26,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -40,6 +43,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.digiolaba.knifeandspoon.R;
 import com.google.firebase.firestore.DocumentReference;
@@ -50,6 +54,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,6 +83,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
     private EditText numeroPersone;
     private EditText tempoPreparazione;
     private String actualUser;
+    private final static int PICK_IMAGE = 200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +104,6 @@ public class InsertRicettaActivity extends AppCompatActivity {
         passaggiLayout=(LinearLayout)findViewById(R.id.listPassaggi);
         allDescrizione=new ArrayList<View>();
         allIngredienti=new ArrayList<View>();
-        ;
         if (savedInstanceState == null)
         {
             Bundle extras = getIntent().getExtras();
@@ -189,87 +195,103 @@ public class InsertRicettaActivity extends AppCompatActivity {
                     requestPermissions(permissionsToRequest.toArray(new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
                 }
                 else
-                {
-                    selectImage(InsertRicettaActivity.this);
+                    {
+                    startActivityForResult(getPickImageChooserIntent(), PICK_IMAGE);
                 }
             }
         });
     }
-
-    private void selectImage(Context context) {
-        final CharSequence[] options = { "Fai una foto", "Scegli dalla galleria","Annulla" };
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Scegli la foto per il piatto");
-
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-
-                if (options[item].equals("Fai una foto")) {
-                    Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(takePicture, 0);
-
-                } else if (options[item].equals("Scegli dalla galleria")) {
-                    Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(pickPhoto , 1);
-
-                } else if (options[item].equals("Annulla")) {
-                    dialog.dismiss();
-                }
-            }
-        });
-        builder.show();
-    }
-
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != RESULT_CANCELED) {
-            switch (requestCode) {
-                case 0:
-                    if (resultCode == RESULT_OK && data != null) {
-                        Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
-                        img_piatto.setImageBitmap(selectedImage);
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == PICK_IMAGE) {
+            Bitmap bitmap = null;
+            if (resultCode == RESULT_OK) {
+                if (getPickImageResultUri(intent) != null) {
+                    Uri picUri = getPickImageResultUri(intent);
+                    try {
+                        bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), picUri);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    break;
-                case 1:
-                    if (resultCode == RESULT_OK && data != null) {
-                        Uri selectedImage = data.getData();
-                        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                        if (selectedImage != null) {
-                            Cursor cursor = getContentResolver().query(selectedImage,
-                                    filePathColumn, null, null, null);
-                            if (cursor != null) {
-                                cursor.moveToFirst();
-
-                                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                                String picturePath = cursor.getString(columnIndex);
-                                img_piatto.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-                                cursor.close();
-                            }
-                        }
-                    }
-                    break;
+                } else {
+                    bitmap = (Bitmap) intent.getExtras().get("data");
+                }
             }
+
+            img_piatto.setImageBitmap(bitmap);
         }
     }
 
+    private Uri getPickImageResultUri(Intent data) {
+        boolean isCamera = true;
+        if (data != null) {
+            String action = data.getAction();
+            isCamera = action != null && action.equals(MediaStore.ACTION_IMAGE_CAPTURE);
+        }
 
+        return isCamera ? getCaptureImageOutputUri() : data.getData();
+    }
+
+    private Intent getPickImageChooserIntent() {
+        Uri outputFileUri = getCaptureImageOutputUri();
+        List<Intent> allIntents = new ArrayList<>();
+        PackageManager packageManager = getPackageManager();
+        Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        List<ResolveInfo> listCam = packageManager.queryIntentActivities(captureIntent, 0);
+        for(ResolveInfo res : listCam) {
+            Intent intent = new Intent(captureIntent);
+            intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+            intent.setPackage(res.activityInfo.packageName);
+            if(outputFileUri != null) {
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+            }
+            allIntents.add(intent);
+        }
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        List<ResolveInfo> listGallery = packageManager.queryIntentActivities(galleryIntent, 0);
+        for(ResolveInfo res : listGallery) {
+            Intent intent = new Intent(galleryIntent);
+            intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+            intent.setPackage(res.activityInfo.packageName);
+            allIntents.add(intent);
+        }
+        Intent mainIntent = allIntents.get(allIntents.size()-1);
+        for(Intent intent : allIntents) {
+            if(intent.getComponent().getClassName().equals("com.android.documentsui.DocumentsActivity")) {
+                mainIntent = intent;
+                break;
+            }
+        }
+        allIntents.remove(mainIntent);
+        Intent chooserIntent = Intent.createChooser(mainIntent, getString(R.string.selsorgente));
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, allIntents.toArray(new Parcelable[allIntents.size()]));
+        return chooserIntent;
+    }
+
+    public Uri getCaptureImageOutputUri() {
+        Uri outputFileUri = null;
+        File getImage = getExternalCacheDir();
+        if(getImage != null) {
+            outputFileUri = Uri.fromFile(new File(getImage.getPath(), "propic.png"));
+        }
+        return outputFileUri;
+    }
 
     private ArrayList findUnaskedPermissions(ArrayList<String> wanted) {
         ArrayList<String> result = new ArrayList<>();
+
         for(String perm : wanted) {
             if(!(checkSelfPermission(perm) == PackageManager.PERMISSION_GRANTED)) {
                 result.add(perm);
             }
         }
+
         return result;
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if(requestCode == ALL_PERMISSIONS_RESULT) {
             for(String perm: permissionsToRequest) {
                 if(!(checkSelfPermission(perm)==PackageManager.PERMISSION_GRANTED)) {
@@ -278,11 +300,19 @@ public class InsertRicettaActivity extends AppCompatActivity {
             }
             if(permissionsRejected.size() > 0) {
                 if(shouldShowRequestPermissionRationale(permissionsRejected.get(0))) {
-                   Utils.errorDialog(this,R.string.error_not_all_permissions,R.string.error_ok);
+                    Toast.makeText(InsertRicettaActivity.this,"Approva tutto", Toast.LENGTH_SHORT).show();
                 }
+            }
+            else {
+                startActivityForResult(getPickImageChooserIntent(), PICK_IMAGE);
             }
         }
     }
+
+
+
+
+
 
     private void changeToolbatTitle()
     {

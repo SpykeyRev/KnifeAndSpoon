@@ -20,17 +20,17 @@ public class Ricetta {
     private String thumbnail;
     private String title;
     private String tempo;
-    private List<Map> ingredienti;
-    private List<Map> steps;
+    private List<Map<String,Object>> ingredienti;
+    private List<String> steps;
 
 
-    Ricetta(String id, String authorId, String title, String tempo, String thumbnail, List<Map<String, Object>> ingredienti, List<Map<String, Object>> steps){
+    Ricetta(String id, String authorId, String title, String tempo, String thumbnail, List<Map<String,Object>> ingredienti, List<String> steps){
         this.id=id;
         this.authorId=authorId;
         this.title=title;
         this.thumbnail=thumbnail;
-        //this.ingredienti= ingredienti;
-        //this.steps= steps;
+        this.ingredienti= ingredienti;
+        this.steps= steps;
         this.tempo=tempo;
     }
 
@@ -72,7 +72,7 @@ public class Ricetta {
                             documentSnapshot.getDocuments().get(i).get("Tempo di preparazione").toString(),
                             documentSnapshot.getDocuments().get(i).get("Thumbnail").toString(),
                             (List<Map<String,Object>>) documentSnapshot.getDocuments().get(i).get("Ingredienti"),
-                            (List<Map<String,Object>>) documentSnapshot.getDocuments().get(i).get("Passaggi")
+                            (List<String>) documentSnapshot.getDocuments().get(i).get("Passaggi")
                     ));
                 }
 
@@ -107,7 +107,7 @@ public class Ricetta {
                         documentSnapshot.get("Tempo di preparazione").toString(),
                         documentSnapshot.getString("Thumbnail"),
                         (List<Map<String,Object>>) documentSnapshot.get("Ingredienti"),
-                        (List<Map<String,Object>>) documentSnapshot.get("Passaggi")
+                        (List<String>) documentSnapshot.get("Passaggi")
                 );
             } catch (ExecutionException e) {
                 e.printStackTrace();

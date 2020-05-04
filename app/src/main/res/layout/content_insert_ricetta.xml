@@ -29,45 +29,68 @@
                 />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/numero_persone_ask"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/etNumeroPersone"
-                android:background="@color/fui_transparent"
-                android:inputType="number"
-                />
-        </com.google.android.material.textfield.TextInputLayout>
+            android:orientation="horizontal">
 
-        <com.google.android.material.textfield.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:hint="@string/tempo_preparazione_ask">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etTempoPreparazione"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/fui_transparent"
+                    android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:hint="@string/numero_persone_ask">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etNumeroPersone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/fui_transparent"
+                    android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/tempo_preparazione_ask"
-            android:layout_marginTop="16dp"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp">
-            <com.google.android.material.textfield.TextInputEditText
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/Categoria"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Categoria" />
+
+            <Spinner
+                android:id="@+id/spinnerCategoria"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/etTempoPreparazione"
-                android:background="@color/fui_transparent"
-                android:inputType="number"
-                />
-        </com.google.android.material.textfield.TextInputLayout>
-
-
-        <Spinner
-            android:id="@+id/spinnerCategoria"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="16dp" />
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="0dp" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/textView6"
@@ -76,7 +99,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginBottom="16dp"
-            android:text="@string/ingredienti"/>
+            android:text="@string/ingredienti" />
 
         <LinearLayout
             android:id="@+id/layoutIngredienti"

@@ -4,50 +4,51 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnRemovePassaggio"
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="8dp"
-        android:background="@color/colorPrimary"
-        android:text="@string/rimuovi"
-        android:textColor="@android:color/white" />
-
-    <TextView
-        android:id="@+id/txtTitoloPassaggio"
-        android:layout_width="138dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="176dp"
-        android:layout_toStartOf="@id/btnRemovePassaggio"
-        android:text="@string/nuovo_passaggio" />
-
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="315dp"
-        android:layout_height="149dp"
-        android:layout_below="@+id/txtTitoloPassaggio"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:gravity="start|top"
-        android:layout_toStartOf="@+id/btnRemovePassaggio"
-        android:hint="@string/inserisci_descrizione_passaggio">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etDescrizione"
-            android:layout_width="match_parent"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:inputType="textMultiLine"
-            android:background="@color/fui_transparent"
-            android:gravity="bottom"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:gravity="center_vertical"
+            android:orientation="vertical">
 
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btnRemovePassaggio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="0dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                app:tint="@color/white"
+                app:backgroundTint="@color/colorPrimary"
+                app:srcCompat="@drawable/baseline_remove_black_48dp" />
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="start|top"
+            android:hint="@string/inserisci_descrizione_passaggio">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etDescrizione"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/fui_transparent"
+                android:gravity="top"
+                android:inputType="textMultiLine" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
 
 
 </RelativeLayout>

@@ -4,70 +4,89 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnRemoveIngrediente"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="8dp"
-        android:background="@color/colorPrimary"
-        android:text="@string/rimuovi"
-        android:textColor="@android:color/white" />
-
-    <TextView
-        android:id="@+id/txtTitoloIngrediente"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="8dp"
-        android:layout_toStartOf="@id/btnRemoveIngrediente"
-        android:text="@string/nuovo_ingrediente" />
+        android:orientation="horizontal">
 
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/layout_nome_ingrediente"
-        android:layout_width="209dp"
-        android:layout_height="60dp"
-        android:layout_below="@+id/txtTitoloIngrediente"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:hint="@string/nome_ingrediente">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etNomeIngrediente"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="@color/fui_transparent"
-            android:maxLength="25" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:gravity="center_vertical"
+            android:orientation="vertical">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/layout_quantita"
-        android:layout_width="209dp"
-        android:layout_height="60dp"
-        android:layout_below="@+id/layout_nome_ingrediente"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:hint="@string/quantita">
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btnRemovePassaggio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="0dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                app:tint="@color/white"
+                app:backgroundTint="@color/colorPrimary"
+                app:srcCompat="@drawable/baseline_remove_black_48dp" />
+        </LinearLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etQuantita"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/fui_transparent"
-            android:maxLength="25" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_nome_ingrediente"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:hint="@string/nome_ingrediente">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etNomeIngrediente"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/fui_transparent"
+                    android:maxLength="25" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_quantita"
+                    android:layout_width="105dp"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="8dp"
+                    android:hint="@string/quantita">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etQuantita"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/fui_transparent"
+                        android:inputType="number"
+                        android:maxLength="25" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Spinner
+                    android:id="@+id/spinnerUnitaMisura"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="11dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="0dp" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
 
 
-
-    <Spinner
-        android:id="@+id/spinnerUnitaMisura"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_quantita"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp" />
 </RelativeLayout>

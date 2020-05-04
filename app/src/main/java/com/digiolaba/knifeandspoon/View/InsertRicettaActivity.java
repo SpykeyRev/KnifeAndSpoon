@@ -13,7 +13,6 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.digiolaba.knifeandspoon.Controller.Utils;
-import com.digiolaba.knifeandspoon.Model.Utente;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -28,7 +27,6 @@ import androidx.core.content.ContextCompat;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -338,7 +336,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
                 LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View addView = layoutInflater.inflate(R.layout.add_ingrediente_layout, null);
                 allIngredienti.add(addView);
-                Button buttonRemove = (Button)addView.findViewById(R.id.btnRemoveIngrediente);
+                FloatingActionButton buttonRemove = (FloatingActionButton)addView.findViewById(R.id.btnRemovePassaggio);
                 loadSpinnerUnitaMisura(addView);
                 buttonRemove.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -368,7 +366,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
             LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             final View addView = layoutInflater.inflate(R.layout.add_passaggio_layout, null);
             allDescrizione.add(addView);
-            Button buttonRemove = (Button)addView.findViewById(R.id.btnRemovePassaggio);
+            FloatingActionButton buttonRemove = (FloatingActionButton)addView.findViewById(R.id.btnRemovePassaggio);
             buttonRemove.setOnClickListener(new View.OnClickListener()
             {
                 @Override

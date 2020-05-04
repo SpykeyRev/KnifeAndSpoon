@@ -34,13 +34,13 @@
     <string name="error_empty_thing">Questo campo non può essere vuoto.</string>
     <string name="error_no_passaggi_ingredienti">Per favore inserisci almeno un ingrediente e un passsaggio.</string>
 
-   <string-array name="categoria">
-       <item>Antipasto</item>
-       <item>Primo</item>
-       <item>Secondo</item>
-       <item>Contorno</item>
-       <item>Dolce</item>
-   </string-array>
+    <string-array name="categoria">
+        <item>Antipasto</item>
+        <item>Primo</item>
+        <item>Secondo</item>
+        <item>Contorno</item>
+        <item>Dolce</item>
+    </string-array>
 
 
     <string-array name="unita_misura">
@@ -64,7 +64,6 @@
     <string name="error_lenght_name">Il tuo nome deve essere compreso tra 6 e 20 caratteri.</string>
     <string name="error_not_all_permissions">Per favore, approva tutto.</string>
     <string name="selsorgente">Seleziona la sorgente.</string>
-
 
 
     <string name="title_activity_show_ricetta">Ricetta</string>

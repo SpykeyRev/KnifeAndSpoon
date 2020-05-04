@@ -55,6 +55,7 @@ public class Utils {
         }).show();
     }
 
+
     public static class LoadingDialog {
         private Activity activity;
         private AlertDialog dialog;
@@ -83,7 +84,7 @@ public class Utils {
         public void dismissLoadingDialog(){
             dialog.cancel();
         }
-}
+    }
 
     public static class SuccessDialog {
         private Activity activity;

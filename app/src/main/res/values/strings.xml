@@ -31,6 +31,9 @@
     <string name="tempo_preparazione_ask">Tempo in minuti</string>
     <string name="error_message">Oops, qualcosa è andato storto</string>
     <string name="success_message">Operazione effettuata</string>
+    <string name="error_empty_thing">Questo campo non può essere vuoto.</string>
+    <string name="error_no_passaggi_ingredienti">Per favore inserisci almeno un ingrediente e un passsaggio.</string>
+
    <string-array name="categoria">
        <item>Antipasto</item>
        <item>Primo</item>

@@ -79,7 +79,6 @@ public class InsertRicettaActivity extends AppCompatActivity {
     private ImageView img_piatto;
     private EditText etTitolo;
     private FloatingActionButton fab_foto;
-    private Boolean textOK=false;
     private LinearLayout ingredientiLayout;
     private Button addIngrediente;
     private Button addPassaggio;
@@ -108,8 +107,13 @@ public class InsertRicettaActivity extends AppCompatActivity {
         addIngrediente=(Button)findViewById(R.id.addIngrediente);
         addPassaggio=(Button)findViewById(R.id.addPassaggio);
         passaggiLayout=(LinearLayout)findViewById(R.id.listPassaggi);
+        TextInputLayout tiLTitolo=(TextInputLayout)findViewById(R.id.layoutTitoloInserimento);
+        TextInputLayout tiLPersone=(TextInputLayout)findViewById(R.id.layoutNumeroPersone);
+        TextInputLayout tiLTempo=(TextInputLayout)findViewById(R.id.layoutTempo);
         allDescrizione=new ArrayList<View>();
         allIngredienti=new ArrayList<View>();
+        EditText persone=(EditText)findViewById(R.id.etNumeroPersone);
+        EditText tempo=(EditText)findViewById(R.id.etTempoPreparazione);
         if (savedInstanceState == null)
         {
             Bundle extras = getIntent().getExtras();
@@ -132,7 +136,9 @@ public class InsertRicettaActivity extends AppCompatActivity {
         snackForInfoPhoto();
         checkPermissionAndPhoto();
         changeToolbatTitle();
-        notifyUserifTitoloNotCorrect();
+        checkEmptyMainEditText(persone,tiLPersone);
+        checkEmptyMainEditText(tempo,tiLTempo);
+        checkEmptyMainEditText(etTitolo,tiLTitolo);
         addIngrediente();
         addPassaggio();
     }
@@ -150,8 +156,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
         {
             case android.R.id.home:
             {
-                /*Intent intent=new Intent(InsertRicettaActivity.this,MainActivity.class);
-                startActivity(intent);*/
+
                 this.onBackPressed();
                 return true;
             }
@@ -329,15 +334,13 @@ public class InsertRicettaActivity extends AppCompatActivity {
             }
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(etTitolo.getText().toString().length()==0||(etTitolo.getText().toString().contains(" ")&&(etTitolo.getText().toString().startsWith(" ")&&etTitolo.getText().toString().endsWith(" "))))
-                {
+                if(etTitolo.getText().toString().length()==0||(etTitolo.getText().toString().contains(" ")&&(etTitolo.getText().toString().startsWith(" ")&&etTitolo.getText().toString().endsWith(" ")))) {
                     collapsingToolbarLayout.setTitle(getResources().getString(R.string.title_activity_insert_ricetta));
-                    textOK=false;
                 }
                 else
                 {
                     collapsingToolbarLayout.setTitle(etTitolo.getText().toString());
-                    textOK=true;
+
                 }
             }
             @Override
@@ -346,23 +349,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
         });
     }
 
-    void notifyUserifTitoloNotCorrect()
-    {
-        etTitolo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus)
-                {
-                    if(!textOK)
-                    {
-                        Animation shake = AnimationUtils.loadAnimation(InsertRicettaActivity.this, R.anim.shake);
-                        etTitolo.startAnimation(shake);
-                        etTitolo.setHintTextColor(ContextCompat.getColor(InsertRicettaActivity.this,R.color.colorPrimary));
-                    }
-                }
-            }
-        });
-    }
+
 
     private void addIngrediente()
     {
@@ -374,6 +361,8 @@ public class InsertRicettaActivity extends AppCompatActivity {
                 allIngredienti.add(addView);
                 final Spinner spinner=(Spinner)addView.findViewById(R.id.spinnerUnitaMisura);
                 final TextInputEditText etQuantita=(TextInputEditText)addView.findViewById(R.id.etQuantita);
+                checkEmptyEditText(addView,R.id.etNomeIngrediente,R.layout.add_ingrediente_layout);
+                checkEmptyEditText(addView,R.id.etQuantita,R.layout.add_ingrediente_layout);
                 spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -420,6 +409,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
             LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             final View addView = layoutInflater.inflate(R.layout.add_passaggio_layout, null);
             allDescrizione.add(addView);
+            checkEmptyEditText(addView,R.id.etDescrizione,R.layout.add_passaggio_layout);
             FloatingActionButton buttonRemove = (FloatingActionButton)addView.findViewById(R.id.btnRemovePassaggio);
             buttonRemove.setOnClickListener(new View.OnClickListener()
             {
@@ -432,15 +422,72 @@ public class InsertRicettaActivity extends AppCompatActivity {
             });
             passaggiLayout.addView(addView);
         }});
+    }
 
+    private void checkEmptyMainEditText(final EditText e, TextInputLayout t)
+    {
+
+            e.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if(!hasFocus)
+                    {
+                        if(e.getText().toString().length()==0||e.getText().toString().trim().equals(""))
+                        {
+                            Animation shake = AnimationUtils.loadAnimation(InsertRicettaActivity.this, R.anim.shake);
+                            v.setAnimation(shake);
+                            e.setError(getString(R.string.error_empty_thing));
+                        }
+                    }
+                }
+            });
     }
 
 
+    private void checkEmptyEditText(View v,int id_et,int id_layout)
+    {
+        final EditText e=(EditText)v.findViewById(id_et);
+        TextInputLayout t=(TextInputLayout)v.findViewById(id_layout);
+        e.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus)
+                {
+                    if(e.getText().toString().length()==0||e.getText().toString().trim().equals(""))
+                    {
+                        Animation shake = AnimationUtils.loadAnimation(InsertRicettaActivity.this, R.anim.shake);
+                        v.setAnimation(shake);
+                        e.setError(getString(R.string.error_empty_thing));
+                    }
+                }
+            }
+        });
+    }
+
     private void pubblicaRicetta()
     {
+        /*List<Map>ingredienti=getInfoIngredienti();
+        List<String>passaggi=getInfoPassaggi();
+        if(passaggi.size()==0||ingredienti.size()==0)
+        {
+            Utils.errorDialog(InsertRicettaActivity.this,R.string.error_no_passaggi_ingredienti,R.string.error_ok);
+        }
+        else
+        {
+            boolean found=false;
+            for(int i=0;i<ingredienti.size();i++)
+            {
+                if(ingredienti.get(i).toString().trim().equals(""))
+                {
+
+                }
+
+            }
+        }
+*/
         Map<String, Object> ricettaToPush = new HashMap<>();
         ricettaToPush.put("Autore",actualUser);
-        ricettaToPush.put("Titolo",etTitolo.getText().toString());
+        ricettaToPush.put("Titolo",etTitolo.getText().toString().trim());
         ricettaToPush.put("Tempo di preparazione",tempoPreparazione.getText().toString());
         ricettaToPush.put("Numero persone",numeroPersone.getText().toString());
         ricettaToPush.put("Passaggi",getInfoPassaggi());
@@ -454,9 +501,9 @@ public class InsertRicettaActivity extends AppCompatActivity {
         for(int i=0;i<allIngredienti.size();i++)
         {
             Map<String, String> mappaIngrediente = new HashMap<>();
-            mappaIngrediente.put("Nome",((TextInputEditText)((FrameLayout)((TextInputLayout)((LinearLayout)((LinearLayout)((RelativeLayout)allIngredienti.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(0)).getChildAt(0)).getChildAt(0)).getText().toString());
-            mappaIngrediente.put("Quantità",((TextInputEditText)((FrameLayout)((TextInputLayout)((LinearLayout)((LinearLayout)((LinearLayout)((RelativeLayout)allIngredienti.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(1)).getChildAt(0)).getChildAt(0)).getChildAt(0)).getText().toString());
-            mappaIngrediente.put("Unità misura",(((Spinner)((LinearLayout)((LinearLayout)((LinearLayout)((RelativeLayout)allIngredienti.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(1)).getChildAt(1)).getSelectedItem().toString()));
+            mappaIngrediente.put("Nome",((TextInputEditText)((FrameLayout)((TextInputLayout)((LinearLayout)((LinearLayout)((RelativeLayout)allIngredienti.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(0)).getChildAt(0)).getChildAt(0)).getText().toString().trim());
+            mappaIngrediente.put("Quantità",((TextInputEditText)((FrameLayout)((TextInputLayout)((LinearLayout)((LinearLayout)((LinearLayout)((RelativeLayout)allIngredienti.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(1)).getChildAt(0)).getChildAt(0)).getChildAt(0)).getText().toString().trim());
+            mappaIngrediente.put("Unità misura",(((Spinner)((LinearLayout)((LinearLayout)((LinearLayout)((RelativeLayout)allIngredienti.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(1)).getChildAt(1)).getSelectedItem().toString().trim()));
             ingredienti.add(mappaIngrediente);
         }
         return ingredienti;
@@ -467,7 +514,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
         List<String> mappaDescrizione = new ArrayList<String>();
         for(int i=0;i<allDescrizione.size();i++)
         {
-            mappaDescrizione.add(((EditText)((FrameLayout)((TextInputLayout)((LinearLayout)((RelativeLayout) allDescrizione.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(0)).getChildAt(0)).getText().toString());
+            mappaDescrizione.add(((EditText)((FrameLayout)((TextInputLayout)((LinearLayout)((RelativeLayout) allDescrizione.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(0)).getChildAt(0)).getText().toString().trim());
         }
         return mappaDescrizione;
     }

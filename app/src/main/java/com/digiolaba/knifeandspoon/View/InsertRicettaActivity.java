@@ -12,6 +12,9 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.digiolaba.knifeandspoon.Controller.Utils;
+import com.digiolaba.knifeandspoon.Model.Utente;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -40,6 +43,8 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
 import com.digiolaba.knifeandspoon.R;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,12 +69,10 @@ public class InsertRicettaActivity extends AppCompatActivity {
     private Button addPassaggio;
     private LinearLayout passaggiLayout;
     private List<View>allDescrizione,allIngredienti;
-    private Map<Integer,String> mappaDescrizione;
     private Spinner spCategoria;
     private EditText numeroPersone;
     private EditText tempoPreparazione;
-    private Map<String,Object> ricettaToPush;
-
+    private String actualUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +93,23 @@ public class InsertRicettaActivity extends AppCompatActivity {
         passaggiLayout=(LinearLayout)findViewById(R.id.listPassaggi);
         allDescrizione=new ArrayList<View>();
         allIngredienti=new ArrayList<View>();
-        mappaDescrizione=new HashMap<>();
+        ;
+        if (savedInstanceState == null)
+        {
+            Bundle extras = getIntent().getExtras();
+            if(extras == null)
+            {
+                actualUser= null;
+            }
+            else
+            {
+                actualUser= extras.getString("actualUseridentifier");
+            }
+        }
+        else
+        {
+            actualUser= (String) savedInstanceState.getSerializable("actualUseridentifier");
+        }
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         loadSpinnerCategoria();
@@ -117,7 +136,6 @@ public class InsertRicettaActivity extends AppCompatActivity {
             {
                 Intent intent=new Intent(InsertRicettaActivity.this,MainActivity.class);
                 startActivity(intent);
-                Log.i("CI ","SONO");
                 return true;
             }
             case R.id.publishRicetta:
@@ -362,33 +380,58 @@ public class InsertRicettaActivity extends AppCompatActivity {
 
     private void pubblicaRicetta()
     {
-        /*ricettaToPush=new HashMap<>();
+        Map<String, Object> ricettaToPush = new HashMap<>();
+        ricettaToPush.put("Autore",actualUser);
         ricettaToPush.put("Titolo",etTitolo.getText().toString());
-        ricettaToPush.put("Tempo di preparazione",)*/
-        getInfoIngredienti();
-        getInfoPassaggi();
+        ricettaToPush.put("Tempo di preparazione",tempoPreparazione.getText().toString());
+        ricettaToPush.put("Numero persone",numeroPersone.getText().toString());
+        ricettaToPush.put("Thumbnail","");
+        ricettaToPush.put("Passaggi",getInfoPassaggi());
+        ricettaToPush.put("Ingredienti",getInfoIngredienti());
+        publishToFirebase(ricettaToPush);
     }
 
-    private void getInfoIngredienti()
+    private List<Map> getInfoIngredienti()
     {
-        EditText etNome,etQuantita;
-        Spinner spUM;
+        List<Map> ingredienti=new ArrayList<Map>();
+
         for(int i=0;i<allIngredienti.size();i++)
         {
-            etNome=((EditText)((RelativeLayout)allIngredienti.get(i)).getChildAt(2));
-            etQuantita=(EditText)((RelativeLayout)allIngredienti.get(i)).getChildAt(3);
-            spUM=((Spinner)((RelativeLayout)allIngredienti.get(i)).getChildAt(4));
-            Log.i("Ciao",((EditText)((RelativeLayout)allIngredienti.get(i)).getChildAt(2)).getText().toString());
-            Log.i("CIAONE",((EditText)((RelativeLayout)allIngredienti.get(i)).getChildAt(3)).getText().toString());
-            Log.i("RISPONDONE",(((Spinner)((RelativeLayout)allIngredienti.get(i)).getChildAt(4)).getSelectedItem().toString()));
+            Map<String, String> mappaIngrediente = new HashMap<>();
+            mappaIngrediente.put("Nome",((EditText)((RelativeLayout)allIngredienti.get(i)).getChildAt(2)).getText().toString());
+            mappaIngrediente.put("Quantità",((EditText)((RelativeLayout)allIngredienti.get(i)).getChildAt(3)).getText().toString());
+            mappaIngrediente.put("Unità misura",(((Spinner)((RelativeLayout)allIngredienti.get(i)).getChildAt(4)).getSelectedItem().toString()));
+            ingredienti.add(mappaIngrediente);
         }
+        return ingredienti;
     }
 
-    private void getInfoPassaggi()
+    private List<String> getInfoPassaggi()
     {
+        List<String> mappaDescrizione = new ArrayList<String>();
         for(int i=0;i<allDescrizione.size();i++)
         {
-            mappaDescrizione.put(i,((EditText)((RelativeLayout)allDescrizione.get(i)).getChildAt(2)).getText().toString());
+            mappaDescrizione.add(((EditText)((RelativeLayout)allDescrizione.get(i)).getChildAt(2)).getText().toString());
         }
+        return mappaDescrizione;
+    }
+
+    private void publishToFirebase(Map ricetta)
+    {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        // Add a new document with a generated ID
+        db.collection("Ricette")
+                .add(ricetta)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Utils.errorDialog(InsertRicettaActivity.this,R.string.ricetta_in_pubblicazione,R.string.error_ok);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Utils.errorDialog(InsertRicettaActivity.this,R.string.ricetta_in_pubblicazione_error,R.string.error_ok);                    }
+                });
     }
 }

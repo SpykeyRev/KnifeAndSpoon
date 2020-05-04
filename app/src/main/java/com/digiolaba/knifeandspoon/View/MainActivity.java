@@ -7,6 +7,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         fab_clock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_clock);
         fab_anticlock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_anticlock);
-        coordinatorLayout=(CoordinatorLayout)findViewById(R.id.coordinateLayout) ;
+        coordinatorLayout=(CoordinatorLayout)findViewById(R.id.coordinateLayout);
         //Setting up firebase for userInfo
         setUserInfo();
         //Setting up imageSlider
@@ -157,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(MainActivity.this,InsertRicettaActivity.class);
+                intent.putExtra("actualUseridentifier", actualUser.getUserId());
                 startActivity(intent);
             }
         });

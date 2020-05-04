@@ -53,7 +53,7 @@ public class Utente {
             try {
                 QuerySnapshot documentSnapshot = Tasks.await(documentSnapshotTask);
                 obj=new Utente(
-                        documentSnapshot.getDocuments().get(0).getId(),
+                        documentSnapshot.getDocuments().get(0).getReference().getPath(),
                         documentSnapshot.getDocuments().get(0).get("Mail").toString(),
                         documentSnapshot.getDocuments().get(0).get("Nome").toString(),
                         documentSnapshot.getDocuments().get(0).get("Immagine").toString(),

@@ -50,7 +50,8 @@
     </string-array>
 
     <string name="pubblica_ricetta">Pubblica la ricetta</string>
-
+    <string name="ricetta_in_pubblicazione">La tua ricetta è stata inviata agli admin per la revisione</string>
+    <string name="ricetta_in_pubblicazione_error">Si è verificato un errore nell\'invio della ricetta</string>
 
     <string name="error_empty_name">Il tuo nome è vuoto. Per favore, inserisci un nome.</string>
     <string name="error_name_space">Controlla il tuo nome, ci sono degli spazi dove non dovrebbero esserci.</string>

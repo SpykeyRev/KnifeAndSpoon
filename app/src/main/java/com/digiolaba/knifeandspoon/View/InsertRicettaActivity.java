@@ -424,8 +424,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
     private void pubblicaRicetta() {
         List<Map>ingredienti=getInfoIngredienti();
         List<String>passaggi=getInfoPassaggi();
-        Log.i("AO", String.valueOf(ingredienti.size()));
-        if(ingredienti!=null||passaggi!=null)
+        if(ingredienti!=null&&passaggi!=null)
         {
             for(int i=0;i<passaggi.size();i++)
             {

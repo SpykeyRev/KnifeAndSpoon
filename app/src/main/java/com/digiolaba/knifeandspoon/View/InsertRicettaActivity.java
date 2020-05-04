@@ -455,7 +455,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
         {
             Map<String, String> mappaIngrediente = new HashMap<>();
             mappaIngrediente.put("Nome",((TextInputEditText)((FrameLayout)((TextInputLayout)((LinearLayout)((LinearLayout)((RelativeLayout)allIngredienti.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(0)).getChildAt(0)).getChildAt(0)).getText().toString());
-            mappaIngrediente.put("Quantità",((EditText)((FrameLayout)((TextInputLayout)((LinearLayout)((LinearLayout)((LinearLayout)((RelativeLayout)allIngredienti.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(1)).getChildAt(0)).getChildAt(0)).getChildAt(0)).getText().toString());
+            mappaIngrediente.put("Quantità",((TextInputEditText)((FrameLayout)((TextInputLayout)((LinearLayout)((LinearLayout)((LinearLayout)((RelativeLayout)allIngredienti.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(1)).getChildAt(0)).getChildAt(0)).getChildAt(0)).getText().toString());
             mappaIngrediente.put("Unità misura",(((Spinner)((LinearLayout)((LinearLayout)((LinearLayout)((RelativeLayout)allIngredienti.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(1)).getChildAt(1)).getSelectedItem().toString()));
             ingredienti.add(mappaIngrediente);
         }
@@ -483,6 +483,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] imgData = baos.toByteArray();
-        new Ricetta.publishRecipe(this,ricetta,imgData).execute();
+        LoadingDialog dialog=new LoadingDialog(InsertRicettaActivity.this);
+        new Ricetta.publishRecipe(InsertRicettaActivity.this,ricetta,imgData,dialog).execute();
     }
 }

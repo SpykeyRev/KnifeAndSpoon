@@ -1,16 +1,12 @@
 package com.digiolaba.knifeandspoon.Model;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.app.Activity;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
-import com.digiolaba.knifeandspoon.Controller.Utils;
+import com.digiolaba.knifeandspoon.View.LoadingDialog;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -24,9 +20,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -135,19 +129,35 @@ public class Ricetta {
         }
     }
 
-    public static class publishRecipe extends AsyncTask{
-        Context context;
+    public static class publishRecipe extends AsyncTask<Boolean, Void, Boolean> {
+        Activity activity;
         Map ricetta;
         byte[] imgData;
-        ProgressDialog dialog;
-        public publishRecipe(Context context,Map ricetta,byte[] imgData){
-            this.context=context;
+        LoadingDialog dialog;
+        public publishRecipe(Activity activity,Map ricetta,byte[] imgData,LoadingDialog dialog){
+            this.activity=activity;
             this.ricetta=ricetta;
             this.imgData=imgData;
+            this.dialog=dialog;
+        }
+
+        public void changeDialogText(String newText){
+            this.dialog.updateText(newText);
         }
 
         @Override
-        protected Ricetta doInBackground(Object[] objects) {
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            this.dialog.dismissLoadingDialog();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            this.dialog.startLoadingDialog();
+        }
+
+        @Override
+        protected Boolean doInBackground(Boolean... booleans) {
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReference();
             final StorageReference imageRef = storageRef.child(ricetta.get("Titolo")+".jpg");
@@ -158,6 +168,7 @@ public class Ricetta {
                     imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
+                            changeDialogText("Carico la ricetta");
                             ricetta.put("Thumbnail",uri.toString());
                             FirebaseFirestore db = FirebaseFirestore.getInstance();
                             // Add a new document with a generated ID
@@ -166,14 +177,11 @@ public class Ricetta {
                                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                         @Override
                                         public void onSuccess(DocumentReference documentReference) {
-                                            Log.w("TAG","SCUCESCIJSCIJASCSAC");
-                                            //Utils.errorDialog(context,R.string.ricetta_in_pubblicazione,R.string.error_ok);
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
-                                            //Utils.errorDialog(context,R.string.ricetta_in_pubblicazione_error,R.string.error_ok);
                                         }
                                     });
                         }
@@ -181,20 +189,20 @@ public class Ricetta {
                 }}).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                    double progress
-                            = (100.0
-                            * taskSnapshot.getBytesTransferred()
-                            / taskSnapshot.getTotalByteCount());
+                    int progress = (int) (100.0  * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                    changeDialogText("Carico la Foto: "+progress+"%");
                 }
             });
             try {
                 Tasks.await(uploadTask);
             } catch (ExecutionException e) {
                 e.printStackTrace();
+                return false;
             } catch (InterruptedException e) {
                 e.printStackTrace();
+                return false;
             }
-            return null;
+            return true;
         }
     }
 

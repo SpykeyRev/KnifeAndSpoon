@@ -3,29 +3,106 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
+
     <ImageView
-        android:id="@+id/image_ricetta"
-        android:layout_width="160dp"
-        android:layout_height="119dp"
-        app:srcCompat="@drawable/pizza" />
+        android:id="@+id/immagineRicetta"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:foregroundGravity="left"
+        android:adjustViewBounds="true"
+        app:srcCompat="@drawable/app_logo" />
 
     <TextView
-        android:id="@+id/nome_ricetta"
-        android:layout_width="129dp"
-        android:layout_height="35dp"
-        android:layout_alignEnd="@+id/image_ricetta"
-        android:layout_marginEnd="-130dp"
-        android:text="TextView"
-        android:textSize="24sp" />
-
-    <TextView
-        android:id="@+id/tempo_preparazione"
+        android:id="@+id/nomeRicetta"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/nome_ricetta"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="5dp"
-        android:layout_toEndOf="@+id/image_ricetta"
-        android:text="15''"
-        android:textSize="18sp" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="140dp"
+        android:layout_marginTop="20dp"
+        android:textSize="22dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:text="Risotto con le erbette" />
+
+    <TextView
+        android:id="@+id/tempoPreparazione"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="140dp"
+        android:layout_marginTop="55dp"
+        android:textSize="14dp"
+        android:text="15 minuti" />
+
+
+    <TextView
+        android:id="@+id/autoreRicetta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="140dp"
+        android:layout_marginTop="75dp"
+        android:textSize="14dp"
+        android:text="Inviata da: DioScalzo05" />
+
+
+
+
+
+
+
+    <ImageView
+        android:id="@+id/immagineRicetta2"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="150dp"
+        android:foregroundGravity="left"
+        android:adjustViewBounds="true"
+        app:srcCompat="@drawable/ic_google" />
+
+    <TextView
+        android:id="@+id/nomeRicetta2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="140dp"
+        android:layout_marginTop="150dp"
+        android:textSize="22dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:text="Carbonara" />
+
+    <TextView
+        android:id="@+id/tempoPreparazione2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="140dp"
+        android:layout_marginTop="185dp"
+        android:textSize="14dp"
+        android:text="15 minuti" />
+
+
+    <TextView
+        android:id="@+id/autoreRicetta2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="140dp"
+        android:layout_marginTop="205dp"
+        android:textSize="14dp"
+        android:text="Inviata da: MariaMaddalena07" />
+
+
 </RelativeLayout>

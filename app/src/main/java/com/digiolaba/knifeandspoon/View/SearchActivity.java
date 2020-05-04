@@ -41,8 +41,8 @@ public class SearchActivity extends AppCompatActivity {
 
         mSearchBar = (EditText) findViewById(R.id.search_bar);
         mSearchBtn = (ImageButton) findViewById(R.id.btn_search);
-
         mResultList = (RecyclerView) findViewById(R.id.result_list);
+
         mResultList.setHasFixedSize(true);
         mResultList.setLayoutManager(new LinearLayoutManager(this));
         mSearchBtn.setOnClickListener(new View.OnClickListener() {
@@ -75,11 +75,11 @@ public class SearchActivity extends AppCompatActivity {
             mView = itemView;
         }
         public void setDetails(Context ctx, String Ricetta, String imageRicetta){
-            TextView nome_ricetta = (TextView) mView.findViewById(R.id.nome_ricetta);
-            TextView tempo_preparazione = (TextView) mView.findViewById(R.id.tempo_preparazione);
-            ImageView image_Ricetta = (ImageView) mView.findViewById(R.id.image_ricetta);
 
-
+            ImageView image_Ricetta = (ImageView) mView.findViewById(R.id.immagineRicetta);
+            TextView nome_ricetta = (TextView) mView.findViewById(R.id.nomeRicetta);
+            TextView tempo_preparazione = (TextView) mView.findViewById(R.id.tempoPreparazione);
+            TextView autore_ricetta = (TextView) mView.findViewById(R.id.autoreRicetta);
         }
 
 

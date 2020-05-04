@@ -97,7 +97,7 @@ public class SearchActivity extends AppCompatActivity {
         FirebaseFirestore storage= FirebaseFirestore.getInstance();
         Query search = storage.collection("Ricette").orderBy("Titolo").startAt(ricetta);
 
-        FirestoreRecyclerOptions.Builder<SearchActivity> options = new FirestoreRecyclerOptions.Builder<SearchActivity>().setQuery(search, SearchActivity.class);
+        /*FirestoreRecyclerOptions.Builder<SearchActivity> options = new FirestoreRecyclerOptions.Builder<SearchActivity>().setQuery(search, SearchActivity.class);
 
 
             adapter = new FirestoreRecyclerAdapter<Ricetta, RicettaViewHolder>(options) {
@@ -115,7 +115,7 @@ public class SearchActivity extends AppCompatActivity {
             };
             mResultList.setAdapter(adapter);
 
-
+        */
 
     }
 

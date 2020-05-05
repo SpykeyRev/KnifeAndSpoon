@@ -79,8 +79,7 @@ public class ShowRicetta extends AppCompatActivity {
     {
         try {
             Utente userRecipe = (Utente) new Utente.getUserInfoByReference(autore).execute().get();
-            Log.i("HEY",userRecipe.getUserId());
-            return userRecipe.getUserId();
+            return userRecipe.getUserName();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

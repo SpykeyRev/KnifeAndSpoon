@@ -36,7 +36,7 @@
     <string name="error_no_titolo">Per favore inserisci il titolo della ricetta.</string>
     <string name="error_no_tempo">Per favore inserisci il tempo di preparazione in minuti.</string>
     <string name="error_no_persone">Per favore inserisci il numero di porzioni.</string>
-    <string name="made_by">Scritto da:&#160;</string>
+    <string name="made_by">Autore</string>
     <string name="tempo_di_preparazione_text">Tempo di preparazione:&#160;</string>
     <string name="numero_di_persone_text">Per:&#160;</string>
 

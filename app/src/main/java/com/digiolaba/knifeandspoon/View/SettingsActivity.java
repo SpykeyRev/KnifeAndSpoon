@@ -1,8 +1,8 @@
 package com.digiolaba.knifeandspoon.View;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.digiolaba.knifeandspoon.R;
 

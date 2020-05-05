@@ -14,7 +14,6 @@ import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -134,8 +133,8 @@ public class InsertRicettaActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case android.R.id.home: {
-
                 this.onBackPressed();
+                this.finish();
                 return true;
             }
             case R.id.publishRicetta: {
@@ -327,9 +326,9 @@ public class InsertRicettaActivity extends AppCompatActivity {
                 allIngredienti.add(addView);
                 final Spinner spinner = (Spinner) addView.findViewById(R.id.spinnerUnitaMisura);
                 final TextInputEditText etQuantita = (TextInputEditText) addView.findViewById(R.id.etQuantita);
-                final TextInputLayout t=(TextInputLayout)addView.findViewById(R.id.layout_quantita);
+                final TextInputLayout t = (TextInputLayout) addView.findViewById(R.id.layout_quantita);
                 checkEmptyEditText(addView, R.id.etNomeIngrediente);
-                loadSpinnerUnitaMisura(addView,spinner);
+                loadSpinnerUnitaMisura(addView, spinner);
                 checkEmptyQuantitaEditText(addView, R.id.etQuantita, spinner);
                 spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
@@ -421,19 +420,15 @@ public class InsertRicettaActivity extends AppCompatActivity {
         });
     }
 
-    private void checkEmptyQuantitaEditText(View v, int id_et, final Spinner spinner)
-    {
+    private void checkEmptyQuantitaEditText(View v, int id_et, final Spinner spinner) {
 
         final EditText e = (EditText) v.findViewById(id_et);
         e.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(spinner.getSelectedItem().toString().equals("q.b."))
-                {
+                if (spinner.getSelectedItem().toString().equals("q.b.")) {
                     e.setText("");
-                }
-                else
-                {
+                } else {
                     if (!hasFocus) {
                         if (e.getText().toString().length() == 0 || e.getText().toString().trim().equals("")) {
                             Animation shake = AnimationUtils.loadAnimation(InsertRicettaActivity.this, R.anim.shake);
@@ -447,44 +442,29 @@ public class InsertRicettaActivity extends AppCompatActivity {
     }
 
     private void pubblicaRicetta() {
-        if(etTitolo.getText().toString().trim().equals(""))
-        {
-            Utils.errorDialog(InsertRicettaActivity.this,R.string.error_no_titolo,R.string.error_ok);
-        }
-        else if(tempoPreparazione.getText().toString().equals("")||tempoPreparazione.getText().toString().equals("0"))
-        {
-            Utils.errorDialog(InsertRicettaActivity.this,R.string.error_no_tempo,R.string.error_ok);
-        }
-        else if(numeroPersone.getText().toString().equals("")||numeroPersone.getText().toString().equals("0"))
-        {
-            Utils.errorDialog(InsertRicettaActivity.this,R.string.error_no_persone,R.string.error_ok);
-        }
-        else
-        {
-            List<Map>ingredienti=getInfoIngredienti();
-            List<String>passaggi=getInfoPassaggi();
-            if(ingredienti!=null&&passaggi!=null)
-            {
-                for(int i=0;i<passaggi.size();i++)
-                {
-                    if(passaggi.get(i).toString().trim().equals(""))
-                    {
+        if (etTitolo.getText().toString().trim().equals("")) {
+            Utils.errorDialog(InsertRicettaActivity.this, R.string.error_no_titolo, R.string.error_ok);
+        } else if (tempoPreparazione.getText().toString().equals("") || tempoPreparazione.getText().toString().equals("0")) {
+            Utils.errorDialog(InsertRicettaActivity.this, R.string.error_no_tempo, R.string.error_ok);
+        } else if (numeroPersone.getText().toString().equals("") || numeroPersone.getText().toString().equals("0")) {
+            Utils.errorDialog(InsertRicettaActivity.this, R.string.error_no_persone, R.string.error_ok);
+        } else {
+            List<Map> ingredienti = getInfoIngredienti();
+            List<String> passaggi = getInfoPassaggi();
+            if (ingredienti != null && passaggi != null) {
+                for (int i = 0; i < passaggi.size(); i++) {
+                    if (passaggi.get(i).toString().trim().equals("")) {
                         passaggi.remove(passaggi.get(i));
                     }
                 }
-                for(int i=0;i<ingredienti.size();i++)
-                {
-                    if(ingredienti.get(i).get("Nome").toString().trim().equals("")&&ingredienti.get(i).get("Quantità").toString().trim().equals(""))
-                    {
+                for (int i = 0; i < ingredienti.size(); i++) {
+                    if (ingredienti.get(i).get("Nome").toString().trim().equals("") && ingredienti.get(i).get("Quantità").toString().trim().equals("")) {
                         ingredienti.remove(ingredienti.get(i));
                     }
                 }
-                if(passaggi.size()==0||ingredienti.size()==0)
-                {
-                    Utils.errorDialog(InsertRicettaActivity.this,R.string.error_no_passaggi_ingredienti,R.string.error_ok);
-                }
-                else
-                {
+                if (passaggi.size() == 0 || ingredienti.size() == 0) {
+                    Utils.errorDialog(InsertRicettaActivity.this, R.string.error_no_passaggi_ingredienti, R.string.error_ok);
+                } else {
                     Map<String, Object> ricettaToPush = new HashMap<>();
                     ricettaToPush.put("Autore", actualUser);
                     ricettaToPush.put("Titolo", etTitolo.getText().toString().trim());
@@ -494,10 +474,8 @@ public class InsertRicettaActivity extends AppCompatActivity {
                     ricettaToPush.put("Ingredienti", getInfoIngredienti());
                     publishToFirebase(ricettaToPush);
                 }
-            }
-            else
-            {
-                Utils.errorDialog(InsertRicettaActivity.this,R.string.error_no_passaggi_ingredienti,R.string.error_ok);
+            } else {
+                Utils.errorDialog(InsertRicettaActivity.this, R.string.error_no_passaggi_ingredienti, R.string.error_ok);
             }
         }
     }
@@ -510,9 +488,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
                 mappaIngrediente.put("Nome", ((TextInputEditText) ((FrameLayout) ((TextInputLayout) ((LinearLayout) ((LinearLayout) ((RelativeLayout) allIngredienti.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(0)).getChildAt(0)).getChildAt(0)).getText().toString().trim());
                 mappaIngrediente.put("Quantità", ((TextInputEditText) ((FrameLayout) ((TextInputLayout) ((LinearLayout) ((LinearLayout) ((LinearLayout) ((RelativeLayout) allIngredienti.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(1)).getChildAt(0)).getChildAt(0)).getChildAt(0)).getText().toString().trim());
                 mappaIngrediente.put("Unità misura", (((Spinner) ((LinearLayout) ((LinearLayout) ((LinearLayout) ((RelativeLayout) allIngredienti.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(1)).getChildAt(1)).getSelectedItem().toString().trim()));
-            }
-            catch(Exception e)
-            {
+            } catch (Exception e) {
                 return null;
             }
 
@@ -528,9 +504,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
 
             try {
                 mappaDescrizione.add(((EditText) ((FrameLayout) ((TextInputLayout) ((LinearLayout) ((RelativeLayout) allDescrizione.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(0)).getChildAt(0)).getText().toString().trim());
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 return null;
             }
         }

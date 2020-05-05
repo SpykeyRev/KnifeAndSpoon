@@ -36,9 +36,9 @@ public class SliderAdapter extends
         this.context = context;
     }
 
-    public void renewItems(List<SliderItem> sliderItems,List<Ricetta> ricettas) {
+    public void renewItems(List<SliderItem> sliderItems, List<Ricetta> ricettas) {
         this.mSliderItems = sliderItems;
-        this.ricettas=ricettas;
+        this.ricettas = ricettas;
         notifyDataSetChanged();
     }
 
@@ -48,7 +48,7 @@ public class SliderAdapter extends
         notifyDataSetChanged();
     }
 
-    public void addItem(SliderItem sliderItem,Ricetta ricetta) {
+    public void addItem(SliderItem sliderItem, Ricetta ricetta) {
         this.mSliderItems.add(sliderItem);
         this.ricettas.add(ricetta);
         notifyDataSetChanged();
@@ -74,22 +74,22 @@ public class SliderAdapter extends
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(context, ShowRicettaActivity.class);
-                Bundle bundle=new Bundle();
-                bundle.putString("Autore",ricettas.get(position).getAuthorId());
+                Intent intent = new Intent(context, ShowRicettaActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("Autore", ricettas.get(position).getAuthorId());
                 //Casting from imageSlider to Drawable and conversion into byteArray
-                Drawable d=viewHolder.imageViewBackground.getDrawable();
-                Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
+                Drawable d = viewHolder.imageViewBackground.getDrawable();
+                Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                 byte[] bitmapdata = stream.toByteArray();
-                bundle.putByteArray("Thumbnail",bitmapdata);
-                bundle.putString("Titolo",ricettas.get(position).getTitle());
+                bundle.putByteArray("Thumbnail", bitmapdata);
+                bundle.putString("Titolo", ricettas.get(position).getTitle());
                 bundle.putSerializable("Passaggi", (Serializable) ricettas.get(position).getSteps());
                 bundle.putSerializable("Ingredienti", (Serializable) ricettas.get(position).getIngredienti());
-                bundle.putString("Tempo",ricettas.get(position).getTempo());
-                bundle.putString("Persone",ricettas.get(position).getPersone());
-                bundle.putString("Autore",ricettas.get(position).getAuthorId());
+                bundle.putString("Tempo", ricettas.get(position).getTempo());
+                bundle.putString("Persone", ricettas.get(position).getPersone());
+                bundle.putString("Autore", ricettas.get(position).getAuthorId());
                 intent.putExtras(bundle);
                 context.startActivity(intent);
             }

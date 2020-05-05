@@ -37,7 +37,7 @@ public class Ricetta {
     private List<String> steps;
 
 
-    Ricetta(String id, String authorId, String title, String tempo, String persone,String thumbnail, List<Map<String, Object>> ingredienti, List<String> steps) {
+    Ricetta(String id, String authorId, String title, String tempo, String persone, String thumbnail, List<Map<String, Object>> ingredienti, List<String> steps) {
         this.id = id;
         this.authorId = authorId;
         this.title = title;
@@ -45,7 +45,7 @@ public class Ricetta {
         this.ingredienti = ingredienti;
         this.steps = steps;
         this.tempo = tempo;
-        this.persone=persone;
+        this.persone = persone;
     }
 
     public class Ingrediente {
@@ -278,8 +278,8 @@ public class Ricetta {
         this.ingredienti = ingredienti;
     }
 
-    public void setPersone(String persone){
-        this.persone=persone;
+    public void setPersone(String persone) {
+        this.persone = persone;
     }
 
     public void setSteps(List<String> steps) {

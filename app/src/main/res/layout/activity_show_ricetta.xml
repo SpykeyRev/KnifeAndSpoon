@@ -24,12 +24,23 @@
             app:toolbarId="@+id/toolbar_ricetta"
             android:background="@drawable/pizza">
 
-            <ImageView
-                android:id="@+id/img_piatto_show"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                app:srcCompat="@drawable/pizza" />
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/img_piatto_show"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/pizza" />
+
+                <View
+                    android:id="@+id/view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/image_gradient" />
+            </FrameLayout>
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar_ricetta"
@@ -50,6 +61,8 @@
         android:layout_margin="@dimen/fab_margin"
         app:layout_anchor="@id/app_bar_ricetta"
         app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        app:srcCompat="@android:drawable/ic_dialog_email"
+        app:backgroundTint="@color/colorPrimary"
+        app:tint="@android:color/white" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

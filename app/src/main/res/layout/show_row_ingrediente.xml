@@ -1,28 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
 
     <LinearLayout
+        android:gravity="left|center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/txtBeginRowIngrediente"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="-"
-            android:textSize="15sp" />
+        <FrameLayout
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:background="@android:color/white"
+            android:gravity=""
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtNumeroPassaggioShow"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_gravity="bottom|center"
+                android:background="@drawable/circle"
+                android:gravity="center"
+                android:shadowColor="@android:color/white"
+                android:shadowRadius="10.0"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
+
+        </FrameLayout>
 
         <TextView
+            android:layout_marginLeft="8dp"
             android:id="@+id/txtNomeIngrediente"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -34,14 +47,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15sp"
-            android:text=""/>
+            android:text="" />
 
         <TextView
             android:id="@+id/txtUnitaMisuraIngrediente"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15sp"
-            android:text=""/>
+            android:text="" />
     </LinearLayout>
 
 </RelativeLayout>

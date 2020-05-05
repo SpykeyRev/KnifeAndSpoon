@@ -2,25 +2,18 @@ package com.digiolaba.knifeandspoon.View;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager.widget.ViewPager;
 
 import com.digiolaba.knifeandspoon.Controller.SliderAdapter;
 import com.digiolaba.knifeandspoon.Controller.Utils;
@@ -100,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         setUserInfo();
 
         //Setting up imageSlider
-         sliderView = findViewById(R.id.imageSlider);
+        sliderView = findViewById(R.id.imageSlider);
 
         adapter = new SliderAdapter(this);
 
@@ -138,9 +131,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refresh() {
-        for(int i=0;i<adapter.getCount();i++){
-            adapter.deleteItem(i);
-        }
         loadImageSliderWithRicette();
         pullToRefresh.setRefreshing(false);
     }
@@ -148,11 +138,22 @@ public class MainActivity extends AppCompatActivity {
     private void loadImageSliderWithRicette() {
         try {
             ricettas = (List<Ricetta>) new Ricetta.getFirstTenRecipe().execute().get();
-            for (int i = 0; i < ricettas.size(); i++) {
-                SliderItem sliderItem = new SliderItem();
-                sliderItem.setDescription(ricettas.get(i).getTitle());
-                sliderItem.setImageUrl(ricettas.get(i).getThumbnail());
-                adapter.addItem(sliderItem,ricettas.get(i));
+            List<SliderItem> sliderItems = new ArrayList<SliderItem>();
+            if (adapter.getCount() != 0) {
+                for (int i = 0; i < ricettas.size(); i++) {
+                    SliderItem sliderItem = new SliderItem();
+                    sliderItem.setDescription(ricettas.get(i).getTitle());
+                    sliderItem.setImageUrl(ricettas.get(i).getThumbnail());
+                    sliderItems.add(sliderItem);
+                }
+                adapter.renewItems(sliderItems, ricettas);
+            } else {
+                for (int i = 0; i < ricettas.size(); i++) {
+                    SliderItem sliderItem = new SliderItem();
+                    sliderItem.setDescription(ricettas.get(i).getTitle());
+                    sliderItem.setImageUrl(ricettas.get(i).getThumbnail());
+                    adapter.addItem(sliderItem, ricettas.get(i));
+                }
             }
         } catch (ExecutionException e) {
             e.printStackTrace();

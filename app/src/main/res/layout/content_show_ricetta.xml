@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".View.ShowRicetta"
+    tools:context=".View.ShowRicettaActivity"
     tools:showIn="@layout/activity_show_ricetta">
 
     <LinearLayout
@@ -13,10 +13,11 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:orientation="horizontal">
 
             <TextView
@@ -69,6 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
             android:orientation="horizontal">
 
             <TextView
@@ -90,6 +92,29 @@
                 android:textSize="15sp" />
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtShowIngredienti"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/ingredienti"
+            android:textSize="15sp" />
+
+        <LinearLayout
+            android:id="@+id/layoutIngredientiShow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutPassaggiShow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"></LinearLayout>
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

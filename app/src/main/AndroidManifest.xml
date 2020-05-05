@@ -30,7 +30,7 @@
             android:label="SearchActivity"
             android:parentActivityName=".View.MainActivity" />
         <activity
-            android:name=".View.ShowRicetta"
+            android:name=".View.ShowRicettaActivity"
             android:label="@string/title_activity_show_ricetta"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

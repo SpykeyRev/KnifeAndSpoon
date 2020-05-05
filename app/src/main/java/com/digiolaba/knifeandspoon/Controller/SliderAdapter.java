@@ -12,14 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.digiolaba.knifeandspoon.Model.Ricetta;
 import com.digiolaba.knifeandspoon.Model.SliderItem;
 import com.digiolaba.knifeandspoon.R;
-import com.digiolaba.knifeandspoon.View.MainActivity;
-import com.digiolaba.knifeandspoon.View.ShowRicetta;
+import com.digiolaba.knifeandspoon.View.ShowRicettaActivity;
 import com.smarteist.autoimageslider.SliderViewAdapter;
 
 import java.io.ByteArrayOutputStream;
@@ -76,7 +74,7 @@ public class SliderAdapter extends
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(context, ShowRicetta.class);
+                Intent intent=new Intent(context, ShowRicettaActivity.class);
                 Bundle bundle=new Bundle();
                 bundle.putString("Autore",ricettas.get(position).getAuthorId());
                 //Casting from imageSlider to Drawable and conversion into byteArray

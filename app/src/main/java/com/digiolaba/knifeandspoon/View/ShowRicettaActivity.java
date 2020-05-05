@@ -1,5 +1,6 @@
 package com.digiolaba.knifeandspoon.View;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -7,8 +8,11 @@ import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,14 +28,20 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
-public class ShowRicetta extends AppCompatActivity {
+public class ShowRicettaActivity extends AppCompatActivity {
+
+    private LinearLayout showIngredientiLayout,showPassaggiLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_ricetta);
+        showIngredientiLayout=findViewById(R.id.layoutIngredientiShow);
+        showPassaggiLayout=findViewById(R.id.layoutPassaggiShow);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_ricetta);
         Bundle infoToShow=getInfoSelectedRicetta();
         String autore=infoToShow.getString("Autore");
@@ -52,9 +62,11 @@ public class ShowRicetta extends AppCompatActivity {
         TextView txtPersone=(TextView)findViewById(R.id.txtNumeroPersoneNumber);
         TextView txtTempo=(TextView)findViewById(R.id.txtTempoPreparazioneNumber);
         TextView txtAutore=(TextView)findViewById(R.id.txtAutore);
-        txtTempo.setText(tempo);
-        txtPersone.setText(persone);
+        txtTempo.setText(tempo.concat(" minuti"));
+        txtPersone.setText(personaOrPersone(persone));
         txtAutore.setText(getUsername(autore));
+        loadIngredienti(ingredienti);
+        loadPassaggi(passaggi);
     }
 
     @Override
@@ -75,19 +87,53 @@ public class ShowRicetta extends AppCompatActivity {
         return extras;
     }
 
+    private String personaOrPersone(String persone)
+    {
+        if(persone.equals("1"))
+        {
+            return persone.concat(" persona");
+        }
+        else
+        {
+            return persone.concat(" persone");
+        }
+    }
+
+
     private String getUsername(String autore)
     {
         try {
             Utente userRecipe = (Utente) new Utente.getUserInfoByReference(autore).execute().get();
             return userRecipe.getUserName();
-        } catch (ExecutionException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
+    private void loadIngredienti(List<Map<String, Object>> ingredienti)
+    {
+        for(int i=0;i<ingredienti.size();i++)
+        {
+            LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View addView = layoutInflater.inflate(R.layout.show_row_ingrediente, null);
+            TextView nomeIngrediente=addView.findViewById(R.id.txtNomeIngrediente);
+            TextView quantitaIngrediente=addView.findViewById(R.id.txtQuantitaIngrediente);
+            TextView unitaMisuraIngrediente=addView.findViewById(R.id.txtUnitaMisuraIngrediente);
+            nomeIngrediente.setText(Objects.requireNonNull(ingredienti.get(i).get("Nome")).toString().concat(" "));
+            quantitaIngrediente.setText(Objects.requireNonNull(ingredienti.get(i).get("Quantità")).toString().concat(" "));
+            unitaMisuraIngrediente.setText(Objects.requireNonNull(ingredienti.get(i).get("Unità misura")).toString().concat(" "));
+            showIngredientiLayout.addView(addView);
+        }
+    }
 
+    private void loadPassaggi(List<String> passaggi)
+    {
+        LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View addView = layoutInflater.inflate(R.layout.show_row_ingrediente, null);
+        //Vaire dichiariazioni textview=addview.findviewbyid(Rblabla);
+        //set text edit view
+        showPassaggiLayout.addView(addView);
 
+    }
 }

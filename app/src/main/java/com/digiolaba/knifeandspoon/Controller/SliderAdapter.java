@@ -89,6 +89,9 @@ public class SliderAdapter extends
                 bundle.putString("Titolo",ricettas.get(position).getTitle());
                 bundle.putSerializable("Passaggi", (Serializable) ricettas.get(position).getSteps());
                 bundle.putSerializable("Ingredienti", (Serializable) ricettas.get(position).getIngredienti());
+                bundle.putString("Tempo",ricettas.get(position).getTempo());
+                bundle.putString("Persone",ricettas.get(position).getPersone());
+                bundle.putString("Autore",ricettas.get(position).getAuthorId());
                 intent.putExtras(bundle);
                 context.startActivity(intent);
             }

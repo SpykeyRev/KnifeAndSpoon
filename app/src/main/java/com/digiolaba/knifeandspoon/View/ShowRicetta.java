@@ -17,6 +17,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.digiolaba.knifeandspoon.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,13 +40,19 @@ public class ShowRicetta extends AppCompatActivity {
         String titolo=infoToShow.getString("Titolo");
         List<String> passaggi=(ArrayList<String>)infoToShow.getSerializable("Passaggi");
         List<Map<String, Object>> ingredienti= (List<Map<String, Object>>) infoToShow.getSerializable("Ingredienti");
+        String tempo=infoToShow.getString("Tempo");
+        String persone=infoToShow.getString("Persone");
         toolbar.setTitle(titolo);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_ins_foto);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        TextView testoIngredienti=findViewById(R.id.txtShowIngredienti);
-        testoIngredienti.setText(passaggi.get(0).toString());
+        TextView txtPersone=(TextView)findViewById(R.id.txtNumeroPersoneNumber);
+        TextView txtTempo=(TextView)findViewById(R.id.txtTempoPreparazioneNumber);
+        TextView txtAutore=(TextView)findViewById(R.id.txtAutore);
+        txtTempo.setText(tempo);
+        txtPersone.setText(persone);
+        txtAutore.setText(autore);
     }
 
     @Override

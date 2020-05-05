@@ -3,6 +3,7 @@ package com.digiolaba.knifeandspoon.View;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -23,8 +25,10 @@ import androidx.viewpager.widget.ViewPager;
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.interfaces.ItemClickListener;
 import com.denzcoskun.imageslider.models.SlideModel;
+import com.digiolaba.knifeandspoon.Controller.SliderAdapter;
 import com.digiolaba.knifeandspoon.Controller.Utils;
 import com.digiolaba.knifeandspoon.Model.Ricetta;
+import com.digiolaba.knifeandspoon.Model.SliderItem;
 import com.digiolaba.knifeandspoon.Model.Utente;
 import com.digiolaba.knifeandspoon.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -38,10 +42,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.smarteist.autoimageslider.IndicatorAnimations;
+import com.smarteist.autoimageslider.SliderAnimations;
+import com.smarteist.autoimageslider.SliderView;
 import com.squareup.picasso.Picasso;
 
-import java.io.ByteArrayOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -69,7 +74,8 @@ public class MainActivity extends AppCompatActivity {
     private Boolean isOpen = false;
     private Context context = MainActivity.this;
     private CoordinatorLayout coordinatorLayout;
-    private ImageSlider imageSlider;
+    private SliderView sliderView;
+    SliderAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,8 +101,21 @@ public class MainActivity extends AppCompatActivity {
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinateLayout);
         //Setting up firebase for userInfo
         setUserInfo();
+
         //Setting up imageSlider
-        imageSlider = (ImageSlider) findViewById(R.id.home_image_slider);
+         sliderView = findViewById(R.id.imageSlider);
+
+        adapter = new SliderAdapter(this);
+
+        sliderView.setSliderAdapter(adapter);
+
+        sliderView.setIndicatorAnimation(IndicatorAnimations.WORM); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
+        sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
+        sliderView.setAutoCycleDirection(SliderView.AUTO_CYCLE_DIRECTION_BACK_AND_FORTH);
+        sliderView.setIndicatorSelectedColor(Color.WHITE);
+        sliderView.setIndicatorUnselectedColor(Color.GRAY);
+        sliderView.setScrollTimeInSec(4); //set scroll delay in seconds
+        //sliderView.startAutoCycle();
         loadImageSliderWithRicette();
         FABClickManagement();
         FABLongClickManagement();
@@ -115,7 +134,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        //Utente.getUserInfo(firebaseAuth.getCurrentUser().getEmail());
         CircleImageView userImage = (CircleImageView) findViewById(R.id.profile_image);
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser fireUser = firebaseAuth.getCurrentUser();
@@ -123,8 +141,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refresh() {
-        List<SlideModel> slideModels = new ArrayList<>();
-        imageSlider.setImageList(slideModels, true);
+        for(int i=0;i<adapter.getCount();i++){
+            adapter.deleteItem(i);
+        }
         loadImageSliderWithRicette();
         pullToRefresh.setRefreshing(false);
     }
@@ -132,35 +151,12 @@ public class MainActivity extends AppCompatActivity {
     private void loadImageSliderWithRicette() {
         try {
             ricettas = (List<Ricetta>) new Ricetta.getFirstTenRecipe().execute().get();
-            List<SlideModel> slideModels = new ArrayList<>();
             for (int i = 0; i < ricettas.size(); i++) {
-                System.out.println(ricettas.get(i).getThumbnail());
-                slideModels.add((new SlideModel(ricettas.get(i).getThumbnail(), ricettas.get(i).getTitle())));
-
+                SliderItem sliderItem = new SliderItem();
+                sliderItem.setDescription(ricettas.get(i).getTitle());
+                sliderItem.setImageUrl(ricettas.get(i).getThumbnail());
+                adapter.addItem(sliderItem,ricettas.get(i));
             }
-            imageSlider.setImageList(slideModels, true);
-            imageSlider.setItemClickListener(new ItemClickListener() {
-                @Override
-                public void onItemSelected(int i) {
-                    System.out.println(((ImageView)((RelativeLayout)((ViewPager)((RelativeLayout)imageSlider.getChildAt(0)).getChildAt(0)).getChildAt(0)).getChildAt(0)).getDrawable());
-                    System.out.println(ricettas.get(i).getTitle());
-                    System.out.println(ricettas.get(i).getTitle());
-                    Intent intent=new Intent(MainActivity.this,ShowRicetta.class);
-                    Bundle bundle=new Bundle();
-                    bundle.putString("Autore",ricettas.get(i).getAuthorId());
-                    Drawable d=((ImageView)((RelativeLayout)((ViewPager)((RelativeLayout)imageSlider.getChildAt(0)).getChildAt(0)).getChildAt(0)).getChildAt(0)).getDrawable();
-                    Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                    byte[] bitmapdata = stream.toByteArray();
-                    bundle.putByteArray("Thumbnail",bitmapdata);
-                    bundle.putString("Titolo",ricettas.get(i).getTitle());
-                    bundle.putSerializable("Passaggi", (Serializable) ricettas.get(i).getSteps());
-                    bundle.putSerializable("Ingredienti", (Serializable) ricettas.get(i).getIngredienti());
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-                }
-            });
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

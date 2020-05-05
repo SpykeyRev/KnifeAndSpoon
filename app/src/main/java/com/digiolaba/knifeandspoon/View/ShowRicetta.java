@@ -1,9 +1,14 @@
 package com.digiolaba.knifeandspoon.View;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,7 +31,11 @@ public class ShowRicetta extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_ricetta);
         Bundle infoToShow=getInfoSelectedRicetta();
         String autore=infoToShow.getString("Autore");
-        String thumbnail=infoToShow.getString("Thumbnail");
+        byte[] thumbnail=infoToShow.getByteArray("Thumbnail");
+        ImageView img_piatto_show=findViewById(R.id.img_piatto_show);
+        Drawable image = new BitmapDrawable(getResources(), BitmapFactory.decodeByteArray(thumbnail, 0, thumbnail.length));
+        img_piatto_show.setImageDrawable(image);
+        //String thumbnail=infoToShow.getString("Thumbnail");
         String titolo=infoToShow.getString("Titolo");
         List<String> passaggi=(ArrayList<String>)infoToShow.getSerializable("Passaggi");
         List<Map<String, Object>> ingredienti= (List<Map<String, Object>>) infoToShow.getSerializable("Ingredienti");
@@ -38,7 +47,7 @@ public class ShowRicetta extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         TextView testoIngredienti=findViewById(R.id.txtShowIngredienti);
         testoIngredienti.setText(passaggi.get(0).toString());
-        Log.i("CIAO",thumbnail);
+        //Log.i("CIAO",thumbnail);
 
     }
 

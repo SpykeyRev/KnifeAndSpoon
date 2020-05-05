@@ -16,17 +16,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity">
+        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".View.Settings" />
         <activity
             android:name=".View.InsertRicettaActivity"
-            android:label="@string/title_activity_insert_ricetta"
-            android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="orientation"
+            android:label="@string/title_activity_insert_ricetta"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".View.SearchActivity"
             android:label="SearchActivity"
-            android:parentActivityName=".View.MainActivity"></activity>
+            android:parentActivityName=".View.MainActivity" />
         <activity
             android:name=".View.ShowRicetta"
             android:label="@string/title_activity_show_ricetta"

@@ -2,17 +2,23 @@ package com.digiolaba.knifeandspoon.View;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager.widget.ViewPager;
 
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.interfaces.ItemClickListener;
@@ -34,6 +40,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -135,11 +142,18 @@ public class MainActivity extends AppCompatActivity {
             imageSlider.setItemClickListener(new ItemClickListener() {
                 @Override
                 public void onItemSelected(int i) {
+                    System.out.println(((ImageView)((RelativeLayout)((ViewPager)((RelativeLayout)imageSlider.getChildAt(0)).getChildAt(0)).getChildAt(0)).getChildAt(0)).getDrawable());
+                    System.out.println(ricettas.get(i).getTitle());
                     System.out.println(ricettas.get(i).getTitle());
                     Intent intent=new Intent(MainActivity.this,ShowRicetta.class);
                     Bundle bundle=new Bundle();
                     bundle.putString("Autore",ricettas.get(i).getAuthorId());
-                    bundle.putString("Thumbnail",ricettas.get(i).getThumbnail());
+                    Drawable d=((ImageView)((RelativeLayout)((ViewPager)((RelativeLayout)imageSlider.getChildAt(0)).getChildAt(0)).getChildAt(0)).getChildAt(0)).getDrawable();
+                    Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    byte[] bitmapdata = stream.toByteArray();
+                    bundle.putByteArray("Thumbnail",bitmapdata);
                     bundle.putString("Titolo",ricettas.get(i).getTitle());
                     bundle.putSerializable("Passaggi", (Serializable) ricettas.get(i).getSteps());
                     bundle.putSerializable("Ingredienti", (Serializable) ricettas.get(i).getIngredienti());

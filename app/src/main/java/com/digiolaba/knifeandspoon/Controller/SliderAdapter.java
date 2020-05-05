@@ -76,7 +76,6 @@ public class SliderAdapter extends
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, ricettas.get(position).getTitle(), Toast.LENGTH_SHORT).show();
                 Intent intent=new Intent(context, ShowRicetta.class);
                 Bundle bundle=new Bundle();
                 bundle.putString("Autore",ricettas.get(position).getAuthorId());

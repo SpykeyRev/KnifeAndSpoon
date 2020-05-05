@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -55,6 +56,35 @@ public class Utente {
                         documentSnapshot.getDocuments().get(0).get("Nome").toString(),
                         documentSnapshot.getDocuments().get(0).get("Immagine").toString(),
                         (Boolean) documentSnapshot.getDocuments().get(0).get("isAdmin")
+                );
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return obj;
+        }
+    }
+
+    public static class getUserInfoByReference extends AsyncTask {
+        String path;
+
+        public getUserInfoByReference(String path) {
+            this.path = path;
+        }
+
+        @Override
+        protected Utente doInBackground(Object[] objects) {
+            Task<DocumentSnapshot> documentSnapshotTask = FirebaseFirestore.getInstance().collection("Utenti").document(path.split("/")[0]).get();
+            Utente obj = null;
+            try {
+                DocumentSnapshot documentSnapshot = Tasks.await(documentSnapshotTask);
+                obj = new Utente(
+                        documentSnapshot.getReference().getPath(),
+                        documentSnapshot.get("Mail").toString(),
+                        documentSnapshot.get("Nome").toString(),
+                        documentSnapshot.get("Immagine").toString(),
+                        (Boolean) documentSnapshot.get("isAdmin")
                 );
             } catch (ExecutionException e) {
                 e.printStackTrace();

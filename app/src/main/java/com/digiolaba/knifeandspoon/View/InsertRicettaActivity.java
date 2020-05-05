@@ -116,9 +116,9 @@ public class InsertRicettaActivity extends AppCompatActivity {
         snackForInfoPhoto();
         checkPermissionAndPhoto();
         changeToolbatTitle();
-        checkEmptyMainEditText(persone, tiLPersone);
-        checkEmptyMainEditText(tempo, tiLTempo);
-        checkEmptyMainEditText(etTitolo, tiLTitolo);
+        checkEmptyMainEditText(persone);
+        checkEmptyMainEditText(tempo);
+        checkEmptyMainEditText(etTitolo);
         addIngrediente();
         addPassaggio();
     }
@@ -327,15 +327,19 @@ public class InsertRicettaActivity extends AppCompatActivity {
                 allIngredienti.add(addView);
                 final Spinner spinner = (Spinner) addView.findViewById(R.id.spinnerUnitaMisura);
                 final TextInputEditText etQuantita = (TextInputEditText) addView.findViewById(R.id.etQuantita);
-                checkEmptyEditText(addView, R.id.etNomeIngrediente, R.layout.add_ingrediente_layout);
-                checkEmptyEditText(addView, R.id.etQuantita, R.layout.add_ingrediente_layout);
+                final TextInputLayout t=(TextInputLayout)addView.findViewById(R.id.layout_quantita);
+                checkEmptyEditText(addView, R.id.etNomeIngrediente);
+                loadSpinnerUnitaMisura(addView,spinner);
+                checkEmptyQuantitaEditText(addView, R.id.etQuantita, spinner);
                 spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         if (spinner.getSelectedItem().toString().equals("q.b.")) {
                             etQuantita.setEnabled(false);
+                            t.setVisibility(View.GONE);
                         } else {
                             etQuantita.setEnabled(true);
+                            t.setVisibility(View.VISIBLE);
                         }
                     }
 
@@ -345,7 +349,6 @@ public class InsertRicettaActivity extends AppCompatActivity {
                     }
                 });
                 FloatingActionButton buttonRemove = (FloatingActionButton) addView.findViewById(R.id.btnRemovePassaggio);
-                loadSpinnerUnitaMisura(addView);
                 buttonRemove.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -358,8 +361,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
         });
     }
 
-    private void loadSpinnerUnitaMisura(View addView) {
-        Spinner spUnitMisura = (Spinner) addView.findViewById(R.id.spinnerUnitaMisura);
+    private void loadSpinnerUnitaMisura(View addView, Spinner spUnitMisura) {
         ArrayAdapter<String> items = new ArrayAdapter<String>(InsertRicettaActivity.this, android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.unita_misura));
         items.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spUnitMisura.setAdapter(items);
@@ -372,7 +374,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
                 LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View addView = layoutInflater.inflate(R.layout.add_passaggio_layout, null);
                 allDescrizione.add(addView);
-                checkEmptyEditText(addView, R.id.etDescrizione, R.layout.add_passaggio_layout);
+                checkEmptyEditText(addView, R.id.etDescrizione);
                 FloatingActionButton buttonRemove = (FloatingActionButton) addView.findViewById(R.id.btnRemovePassaggio);
                 buttonRemove.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -386,7 +388,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
         });
     }
 
-    private void checkEmptyMainEditText(final EditText e, TextInputLayout t) {
+    private void checkEmptyMainEditText(final EditText e) {
 
         e.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -403,9 +405,8 @@ public class InsertRicettaActivity extends AppCompatActivity {
     }
 
 
-    private void checkEmptyEditText(View v, int id_et, int id_layout) {
+    private void checkEmptyEditText(View v, int id_et) {
         final EditText e = (EditText) v.findViewById(id_et);
-        TextInputLayout t = (TextInputLayout) v.findViewById(id_layout);
         e.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -414,6 +415,31 @@ public class InsertRicettaActivity extends AppCompatActivity {
                         Animation shake = AnimationUtils.loadAnimation(InsertRicettaActivity.this, R.anim.shake);
                         v.setAnimation(shake);
                         e.setError(getString(R.string.error_empty_thing));
+                    }
+                }
+            }
+        });
+    }
+
+    private void checkEmptyQuantitaEditText(View v, int id_et, final Spinner spinner)
+    {
+
+        final EditText e = (EditText) v.findViewById(id_et);
+        e.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(spinner.getSelectedItem().toString().equals("q.b."))
+                {
+                    e.setText("");
+                }
+                else
+                {
+                    if (!hasFocus) {
+                        if (e.getText().toString().length() == 0 || e.getText().toString().trim().equals("")) {
+                            Animation shake = AnimationUtils.loadAnimation(InsertRicettaActivity.this, R.anim.shake);
+                            v.setAnimation(shake);
+                            e.setError(getString(R.string.error_empty_thing));
+                        }
                     }
                 }
             }
@@ -451,11 +477,6 @@ public class InsertRicettaActivity extends AppCompatActivity {
                     if(ingredienti.get(i).get("Nome").toString().trim().equals("")&&ingredienti.get(i).get("Quantità").toString().trim().equals(""))
                     {
                         ingredienti.remove(ingredienti.get(i));
-                    }
-                    if(ingredienti.get(i).get("Unità misura").toString().equals("q.b."))
-                    {
-                        //set quantità to 0
-                        ingredienti.get(i).put("Quantità",0);
                     }
                 }
                 if(passaggi.size()==0||ingredienti.size()==0)

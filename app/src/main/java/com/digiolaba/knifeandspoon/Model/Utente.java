@@ -75,7 +75,7 @@ public class Utente {
 
         @Override
         protected Utente doInBackground(Object[] objects) {
-            Task<DocumentSnapshot> documentSnapshotTask = FirebaseFirestore.getInstance().collection("Utenti").document(path.split("/")[0]).get();
+            Task<DocumentSnapshot> documentSnapshotTask = FirebaseFirestore.getInstance().collection("Utenti").document(path.split("/")[1]).get();
             Utente obj = null;
             try {
                 DocumentSnapshot documentSnapshot = Tasks.await(documentSnapshotTask);

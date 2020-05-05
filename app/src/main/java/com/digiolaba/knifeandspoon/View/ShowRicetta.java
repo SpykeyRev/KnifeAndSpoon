@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.digiolaba.knifeandspoon.Model.Utente;
 import com.digiolaba.knifeandspoon.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
@@ -23,6 +24,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class ShowRicetta extends AppCompatActivity {
 
@@ -52,7 +54,7 @@ public class ShowRicetta extends AppCompatActivity {
         TextView txtAutore=(TextView)findViewById(R.id.txtAutore);
         txtTempo.setText(tempo);
         txtPersone.setText(persone);
-        txtAutore.setText(autore);
+        txtAutore.setText(getUsername(autore));
     }
 
     @Override
@@ -72,5 +74,21 @@ public class ShowRicetta extends AppCompatActivity {
         Bundle extras=intent.getExtras();
         return extras;
     }
+
+    private String getUsername(String autore)
+    {
+        try {
+            Utente userRecipe = (Utente) new Utente.getUserInfoByReference(autore).execute().get();
+            Log.i("HEY",userRecipe.getUserId());
+            return userRecipe.getUserId();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 
 }

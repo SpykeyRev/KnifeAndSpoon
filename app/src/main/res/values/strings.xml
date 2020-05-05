@@ -47,6 +47,7 @@
 
 
     <string-array name="unita_misura">
+        <item>unità</item>
         <item>grammi</item>
         <item>kg</item>
         <item>bicchiere</item>

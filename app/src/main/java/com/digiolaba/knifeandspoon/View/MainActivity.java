@@ -34,6 +34,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -128,12 +129,22 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < ricettas.size(); i++) {
                 System.out.println(ricettas.get(i).getThumbnail());
                 slideModels.add((new SlideModel(ricettas.get(i).getThumbnail(), ricettas.get(i).getTitle())));
+
             }
             imageSlider.setImageList(slideModels, true);
             imageSlider.setItemClickListener(new ItemClickListener() {
                 @Override
                 public void onItemSelected(int i) {
                     System.out.println(ricettas.get(i).getTitle());
+                    Intent intent=new Intent(MainActivity.this,ShowRicetta.class);
+                    Bundle bundle=new Bundle();
+                    bundle.putString("Autore",ricettas.get(i).getAuthorId());
+                    bundle.putString("Thumbnail",ricettas.get(i).getThumbnail());
+                    bundle.putString("Titolo",ricettas.get(i).getTitle());
+                    bundle.putSerializable("Passaggi", (Serializable) ricettas.get(i).getSteps());
+                    bundle.putSerializable("Ingredienti", (Serializable) ricettas.get(i).getIngredienti());
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 }
             });
         } catch (ExecutionException e) {

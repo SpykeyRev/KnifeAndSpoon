@@ -24,6 +24,13 @@
             app:toolbarId="@+id/toolbar_ricetta"
             android:background="@drawable/pizza">
 
+            <ImageView
+                android:id="@+id/img_piatto_show"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/pizza" />
+
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar_ricetta"
                 android:layout_width="match_parent"

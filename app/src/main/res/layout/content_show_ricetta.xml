@@ -9,7 +9,7 @@
     tools:showIn="@layout/activity_show_ricetta">
 
     <TextView
-        android:id="@+id/txtRicetta"
+        android:id="@+id/txtShowIngredienti"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"

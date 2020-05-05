@@ -31,12 +31,13 @@ public class Ricetta {
     private String authorId;
     private String thumbnail;
     private String title;
+    private String persone;
     private String tempo;
     private List<Map<String, Object>> ingredienti;
     private List<String> steps;
 
 
-    Ricetta(String id, String authorId, String title, String tempo, String thumbnail, List<Map<String, Object>> ingredienti, List<String> steps) {
+    Ricetta(String id, String authorId, String title, String tempo, String persone,String thumbnail, List<Map<String, Object>> ingredienti, List<String> steps) {
         this.id = id;
         this.authorId = authorId;
         this.title = title;
@@ -44,6 +45,7 @@ public class Ricetta {
         this.ingredienti = ingredienti;
         this.steps = steps;
         this.tempo = tempo;
+        this.persone=persone;
     }
 
     public class Ingrediente {
@@ -82,6 +84,7 @@ public class Ricetta {
                             documentSnapshot.getDocuments().get(i).get("Autore").toString(),
                             documentSnapshot.getDocuments().get(i).get("Titolo").toString(),
                             documentSnapshot.getDocuments().get(i).get("Tempo di preparazione").toString(),
+                            documentSnapshot.getDocuments().get(i).get("Numero persone").toString(),
                             documentSnapshot.getDocuments().get(i).get("Thumbnail").toString(),
                             (List<Map<String, Object>>) documentSnapshot.getDocuments().get(i).get("Ingredienti"),
                             (List<String>) documentSnapshot.getDocuments().get(i).get("Passaggi")
@@ -117,6 +120,7 @@ public class Ricetta {
                         documentSnapshot.get("Autore").toString(),
                         documentSnapshot.get("Titolo").toString(),
                         documentSnapshot.get("Tempo di preparazione").toString(),
+                        documentSnapshot.get("Numero persone").toString(),
                         documentSnapshot.getString("Thumbnail"),
                         (List<Map<String, Object>>) documentSnapshot.get("Ingredienti"),
                         (List<String>) documentSnapshot.get("Passaggi")
@@ -242,6 +246,14 @@ public class Ricetta {
         return this.ingredienti;
     }
 
+    public String getTempo() {
+        return tempo;
+    }
+
+    public String getPersone() {
+        return persone;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -264,6 +276,10 @@ public class Ricetta {
 
     public void setIngredienti(List<Map<String, Object>> ingredienti) {
         this.ingredienti = ingredienti;
+    }
+
+    public void setPersone(String persone){
+        this.persone=persone;
     }
 
     public void setSteps(List<String> steps) {

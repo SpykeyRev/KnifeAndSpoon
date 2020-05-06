@@ -1,13 +1,28 @@
 package com.digiolaba.knifeandspoon.Model;
 
+import android.app.Activity;
+import android.net.Uri;
 import android.os.AsyncTask;
 
+import androidx.annotation.NonNull;
+
+import com.digiolaba.knifeandspoon.Controller.Utils;
+import com.digiolaba.knifeandspoon.View.MainActivity;
+import com.digiolaba.knifeandspoon.View.RegisterActivity;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public class Utente {
@@ -92,6 +107,53 @@ public class Utente {
                 e.printStackTrace();
             }
             return obj;
+        }
+    }
+
+    public static class registerUser extends AsyncTask<Boolean, Void, Boolean> {
+        Activity activity;
+        Map utente;
+        byte[] imgData;
+
+        public registerUser(Activity activity, Map utente, byte[] imgData) {
+            this.activity = activity;
+            this.utente = utente;
+            this.imgData = imgData;
+        }
+
+        @Override
+        protected Boolean doInBackground(Boolean... booleans) {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference();
+            final StorageReference imageRef = storageRef.child(utente.get("Nome") + ".jpg");
+            Task uploadTask = imageRef.putBytes(imgData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            utente.put("Immagine", uri.toString());
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            // Add a new document with a generated ID
+                            db.collection("Utenti")
+                                    .add(utente);
+                            MainActivity.startActivity(activity);
+                            activity.finish();
+
+                        }
+                    });
+                }
+            });
+            try {
+                Tasks.await(uploadTask);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+                return false;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return false;
+            }
+            return true;
         }
     }
 

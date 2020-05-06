@@ -96,7 +96,6 @@ public class SliderAdapter extends
     }
 
     class SliderAdapterVH extends SliderViewAdapter.ViewHolder {
-
         View itemView;
         ImageView imageViewBackground;
         ImageView imageGifContainer;

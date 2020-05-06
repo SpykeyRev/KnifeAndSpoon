@@ -2,16 +2,20 @@ package com.digiolaba.knifeandspoon.View;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.digiolaba.knifeandspoon.Controller.Utils;
+import com.digiolaba.knifeandspoon.Model.Utente;
 import com.digiolaba.knifeandspoon.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -25,8 +29,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,7 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText nome;
     private Button continua;
     private String TAG = "Register";
-    private CircleImageView userImage;
+    private ImageView userImage;
     private Context context = RegisterActivity.this;
 
     public static void startActivity(Context context) {
@@ -48,7 +55,7 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        userImage = (CircleImageView) findViewById(R.id.profile_image);
+        userImage = (ImageView) findViewById(R.id.profile_image);
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser fireUser = firebaseAuth.getCurrentUser();
         Picasso.get().load(fireUser.getPhotoUrl()).into(userImage);
@@ -100,37 +107,19 @@ public class RegisterActivity extends AppCompatActivity {
     private void registerUser() {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser fireUser = firebaseAuth.getCurrentUser();
-        Log.d(TAG, "SHIIIT");
         Map<String, Object> user = new HashMap<>();
         user.put("Mail", fireUser.getEmail().toString());
         user.put("Nome", nome.getText().toString());
-        user.put("Immagine", "");
+        //user.put("Immagine", "");
         user.put("isAdmin", false);
-        Log.d(TAG, "SHIIIT");
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Log.d(TAG, "SHIIIT");
-        // Add a new document with a generated ID
-        db.collection("Utenti")
-                .add(user)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                        launchMainActivity();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                    }
-                });
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        final StorageReference imageRef = storageRef.child(user.get("Nome") + "_profilo.jpg");
+        Bitmap bitmap = ((BitmapDrawable) userImage.getDrawable()).getBitmap();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imgData = baos.toByteArray();
+        new Utente.registerUser(RegisterActivity.this,user,imgData).execute();
     }
-
-    private void launchMainActivity() {
-        MainActivity.startActivity(this);
-        finish();
-    }
-
-
 }

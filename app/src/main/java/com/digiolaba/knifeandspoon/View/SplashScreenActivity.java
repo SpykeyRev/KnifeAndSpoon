@@ -40,28 +40,38 @@ public class SplashScreenActivity extends AppCompatActivity {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
-            FirebaseFirestore storage = FirebaseFirestore.getInstance();
-            storage.collection("Utenti").whereEqualTo("Mail", currentUser.getEmail())
-                    .limit(1).get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                boolean isEmpty = task.getResult().isEmpty();
-                                if (isEmpty) {
-                                    Intent intent = new Intent(getApplicationContext(),
-                                            RegisterActivity.class);
-                                    startActivity(intent);
-                                    finish();
-                                } else {
-                                    Intent intent = new Intent(getApplicationContext(),
-                                            MainActivity.class);
-                                    startActivity(intent);
-                                    finish();
+            if(currentUser.isAnonymous())
+            {
+                Intent intent = new Intent(getApplicationContext(),
+                        MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+            else
+            {
+                FirebaseFirestore storage = FirebaseFirestore.getInstance();
+                storage.collection("Utenti").whereEqualTo("Mail", currentUser.getEmail())
+                        .limit(1).get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    boolean isEmpty = task.getResult().isEmpty();
+                                    if (isEmpty) {
+                                        Intent intent = new Intent(getApplicationContext(),
+                                                RegisterActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    } else {
+                                        Intent intent = new Intent(getApplicationContext(),
+                                                MainActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
                                 }
                             }
-                        }
-                    });
+                        });
+            }
         } else {
             Intent intent = new Intent(getApplicationContext(),
                     LoginActivity.class);

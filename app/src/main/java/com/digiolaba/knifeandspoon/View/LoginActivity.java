@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,22 +35,31 @@ public class LoginActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 1001;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser user;
-    GoogleSignInClient googleSignInClient;
-    Context context = LoginActivity.this;
+    private GoogleSignInClient googleSignInClient;
+    private Context context = LoginActivity.this;
+    private Button btnAnonymous;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         SignInButton signInButton = findViewById(R.id.btnLogin);
+        btnAnonymous=(Button)findViewById(R.id.btnNoLogin);
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 signInToGoogle();
             }
         });
-        //btnNoLogin=(Button)findViewById(R.id.btnNoLogin);
+
         configureGoogleClient();
+
+        btnAnonymous.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signInAnonymously();
+            }
+        });
     }
 
     private void configureGoogleClient() {
@@ -165,5 +176,26 @@ public class LoginActivity extends AppCompatActivity {
     private void launchMainActivity() {
         MainActivity.startActivity(this);
         finish();
+    }
+
+    private void signInAnonymously()
+    {
+        firebaseAuth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d(TAG, "signInAnonymously:success");
+                    FirebaseUser user = firebaseAuth.getCurrentUser();
+                    launchMainActivity();
+
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w(TAG, "signInAnonymously:failure", task.getException());
+                    Toast.makeText(LoginActivity.this, "Authentication failed.",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }

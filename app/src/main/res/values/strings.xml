@@ -65,7 +65,7 @@
         <item>cucchiaino</item>
         <item>q.b.</item>
     </string-array>
-
+    <string name="welcome_visitatore">visitatore</string>
     <string name="pubblica_ricetta">Pubblica la ricetta</string>
     <string name="ricetta_in_pubblicazione">La tua ricetta è stata inviata agli admin per la revisione</string>
     <string name="ricetta_in_pubblicazione_error">Si è verificato un errore nell\'invio della ricetta</string>

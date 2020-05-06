@@ -121,20 +121,28 @@ public class MainActivity extends AppCompatActivity {
     private void setUserInfo() {
         googleSignInClient = GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN);
         firebaseAuth = FirebaseAuth.getInstance();
+        TextView userName = (TextView) findViewById(R.id.userName);
         try {
-            actualUser = (Utente) new Utente.getUserInfo(firebaseAuth.getCurrentUser().getEmail()).execute().get();
-            TextView userName = (TextView) findViewById(R.id.userName);
-            userName.setText(actualUser.getUserName());
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+            FirebaseUser fireUser = firebaseAuth.getCurrentUser();
+            if(fireUser.isAnonymous())
+            {
+
+            }
+            else
+            {
+                actualUser = (Utente) new Utente.getUserInfo(firebaseAuth.getCurrentUser().getEmail()).execute().get();
+                userName.setText(actualUser.getUserName());
+                CircleImageView userImage = (CircleImageView) findViewById(R.id.profile_image);
+                Picasso.get().load(fireUser.getPhotoUrl()).into(userImage);
+            }
 
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        CircleImageView userImage = (CircleImageView) findViewById(R.id.profile_image);
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser fireUser = firebaseAuth.getCurrentUser();
-        Picasso.get().load(fireUser.getPhotoUrl()).into(userImage);
+
     }
 
     private void refresh() {

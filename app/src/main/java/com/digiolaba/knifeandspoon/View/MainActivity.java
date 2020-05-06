@@ -193,21 +193,14 @@ public class MainActivity extends AppCompatActivity {
 
                     try {
                         Intent intent=new Intent(MainActivity.this,ShowRicettaActivity.class);
-                        Bundle bundle=new Bundle();
-                        bundle.putString("Autore", ricettas.get(position).getAuthorId());
+                        Bundle bundle=Utils.loadBundle(ricettas.get(position));
                         //Casting from imageSlider to Drawable and conversion into byteArray
                         Drawable d = ricettaImageFeed.getDrawable();
                         Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
                         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
                         byte[] bitmapdata = stream.toByteArray();
                         bundle.putByteArray("Thumbnail", bitmapdata);
-                        bundle.putString("Titolo", ricettas.get(position).getTitle());
-                        bundle.putSerializable("Passaggi", (Serializable) ricettas.get(position).getSteps());
-                        bundle.putSerializable("Ingredienti", (Serializable) ricettas.get(position).getIngredienti());
-                        bundle.putString("Tempo", ricettas.get(position).getTempo());
-                        bundle.putString("Persone", ricettas.get(position).getPersone());
-                        bundle.putString("Autore", ricettas.get(position).getAuthorId());
                         intent.putExtras(bundle);
                         startActivity(intent);
                     }

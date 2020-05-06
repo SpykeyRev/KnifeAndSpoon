@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -12,8 +13,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.digiolaba.knifeandspoon.Model.Ricetta;
 import com.digiolaba.knifeandspoon.R;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.io.Serializable;
 
 public class Utils {
     public static boolean checkNetworkConnection(Context context) {
@@ -134,5 +138,18 @@ public class Utils {
         } else {
             return persone.concat(" persone");
         }
+    }
+
+
+    public static Bundle loadBundle(Ricetta ricettas)
+    {
+        Bundle bundle=new Bundle();
+        bundle.putString("Autore", ricettas.getAuthorId());
+        bundle.putString("Titolo", ricettas.getTitle());
+        bundle.putSerializable("Passaggi", (Serializable) ricettas.getSteps());
+        bundle.putSerializable("Ingredienti", (Serializable) ricettas.getIngredienti());
+        bundle.putString("Tempo", ricettas.getTempo());
+        bundle.putString("Persone", ricettas.getPersone());
+        return bundle;
     }
 }

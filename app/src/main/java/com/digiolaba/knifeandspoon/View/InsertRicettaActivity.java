@@ -34,6 +34,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.bumptech.glide.Glide;
 import com.digiolaba.knifeandspoon.Controller.Utils;
 import com.digiolaba.knifeandspoon.Model.Ricetta;
 import com.digiolaba.knifeandspoon.R;
@@ -203,7 +204,8 @@ public class InsertRicettaActivity extends AppCompatActivity {
             }
 
             if (bitmap != null) {
-                img_piatto.setImageBitmap(bitmap);
+                Glide.with(InsertRicettaActivity.this).load(bitmap).centerCrop().into(img_piatto);
+                //img_piatto.setImageBitmap(bitmap);
             }
 
         }

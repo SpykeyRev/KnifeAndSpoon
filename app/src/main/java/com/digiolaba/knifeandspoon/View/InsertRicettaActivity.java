@@ -3,6 +3,7 @@ package com.digiolaba.knifeandspoon.View;
 import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -29,8 +30,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -136,7 +139,6 @@ public class InsertRicettaActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home: {
                 this.onBackPressed();
-                this.finish();
                 return true;
             }
             case R.id.publishRicetta: {
@@ -148,6 +150,38 @@ public class InsertRicettaActivity extends AppCompatActivity {
             }
 
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if((etTitolo.getText().toString().trim().equals("")&&numeroPersone.getText().toString().trim().equals("")&&tempoPreparazione.getText().toString().trim().equals("")&&allDescrizione.size()==0&&allIngredienti.size()==0))
+        {
+            closeActivity();
+        }
+        else {
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which){
+                        case DialogInterface.BUTTON_POSITIVE:
+                            closeActivity();
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            //No button clicked
+                            break;
+                    }
+                }
+            };
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Sei sicuro di voler tornare indietro?").setPositiveButton("Si", dialogClickListener)
+                    .setNegativeButton("No", dialogClickListener).show();
+        }
+    }
+
+    private void closeActivity()
+    {
+        this.finish();
     }
 
     private void loadSpinnerCategoria() {

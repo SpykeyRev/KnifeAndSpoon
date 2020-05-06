@@ -1,6 +1,7 @@
 package com.digiolaba.knifeandspoon.View;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -17,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     private SliderView sliderView;
     private LinearLayout layoutFeed;
     SliderAdapter adapter;
+    private FirebaseUser fireUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,13 +126,8 @@ public class MainActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         TextView userName = (TextView) findViewById(R.id.userName);
         try {
-            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-            FirebaseUser fireUser = firebaseAuth.getCurrentUser();
-            if(fireUser.isAnonymous())
-            {
-
-            }
-            else
+            fireUser = firebaseAuth.getCurrentUser();
+            if(!fireUser.isAnonymous())
             {
                 actualUser = (Utente) new Utente.getUserInfo(firebaseAuth.getCurrentUser().getEmail()).execute().get();
                 userName.setText(actualUser.getUserName());
@@ -235,39 +233,51 @@ public class MainActivity extends AppCompatActivity {
         fab_main.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isOpen) {
-                    fab_add.startAnimation(fab_close);
-                    fab_search.startAnimation(fab_close);
-                    fab_settings.startAnimation(fab_close);
-                    fab_main.startAnimation(fab_anticlock);
-                    fab_add.setClickable(false);
-                    fab_add.setEnabled(false);
-                    fab_search.setClickable(false);
-                    fab_search.setEnabled(false);
-                    fab_settings.setClickable(false);
-                    fab_settings.setEnabled(false);
-                    isOpen = false;
-                } else {
-                    fab_add.startAnimation(fab_open);
-                    fab_search.startAnimation(fab_open);
-                    fab_settings.startAnimation(fab_open);
-                    fab_main.startAnimation(fab_clock);
-                    fab_add.setClickable(true);
-                    fab_add.setEnabled(true);
-                    fab_search.setClickable(true);
-                    fab_search.setEnabled(true);
-                    fab_settings.setClickable(true);
-                    fab_settings.setEnabled(true);
-                    isOpen = true;
-                }
+                FABShowDifferentUsers();
             }
         });
         fab_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, InsertRicettaActivity.class);
-                intent.putExtra("actualUseridentifier", actualUser.getUserId());
-                startActivity(intent);
+                if(fireUser.isAnonymous())
+                {
+                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which){
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    GoogleSignInClient client = GoogleSignIn.getClient(MainActivity.this, GoogleSignInOptions.DEFAULT_SIGN_IN);
+                                    client.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            FirebaseAuth.getInstance().signOut();
+                                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            intent.putExtra("EXIT", true);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    });
+                                    break;
+
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    //No button clicked
+                                    break;
+                            }
+                        }
+                    };
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setMessage(getString(R.string.anonymous_try_add)).setPositiveButton(getString(R.string.let_me_register), dialogClickListener)
+                            .setNegativeButton(getString(R.string.cancel), dialogClickListener).show();
+                }
+                else
+                {
+                    Intent intent = new Intent(MainActivity.this, InsertRicettaActivity.class);
+                    intent.putExtra("actualUseridentifier", actualUser.getUserId());
+                    startActivity(intent);
+                }
             }
         });
         fab_search.setOnClickListener(new View.OnClickListener() {
@@ -291,6 +301,67 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private void FABShowDifferentUsers()
+    {
+        if(fireUser.isAnonymous())
+        {
+            fab_add.setBackgroundColor(getColor(android.R.color.darker_gray));
+            if (isOpen) {
+                fab_add.startAnimation(fab_close);
+                fab_search.startAnimation(fab_close);
+                fab_settings.startAnimation(fab_close);
+                fab_main.startAnimation(fab_anticlock);
+                fab_add.setClickable(false);
+                fab_add.setEnabled(false);
+                fab_search.setClickable(false);
+                fab_search.setEnabled(false);
+                fab_settings.setClickable(false);
+                fab_settings.setEnabled(false);
+                isOpen = false;
+            } else {
+                fab_add.startAnimation(fab_open);
+                fab_search.startAnimation(fab_open);
+                fab_main.startAnimation(fab_clock);
+                fab_add.setClickable(true);
+                fab_add.setEnabled(true);
+                fab_search.setClickable(true);
+                fab_search.setEnabled(true);
+
+                isOpen = true;
+            }
+        }
+        else if(!fireUser.isAnonymous())
+        {
+            if (isOpen) {
+                fab_add.startAnimation(fab_close);
+                fab_search.startAnimation(fab_close);
+                fab_settings.startAnimation(fab_close);
+                fab_main.startAnimation(fab_anticlock);
+                fab_add.setClickable(false);
+                fab_add.setEnabled(false);
+                fab_search.setClickable(false);
+                fab_search.setEnabled(false);
+                fab_settings.setClickable(false);
+                fab_settings.setEnabled(false);
+                isOpen = false;
+            } else {
+                fab_add.startAnimation(fab_open);
+                fab_search.startAnimation(fab_open);
+                fab_settings.startAnimation(fab_open);
+                fab_main.startAnimation(fab_clock);
+                fab_add.setClickable(true);
+                fab_add.setEnabled(true);
+                fab_search.setClickable(true);
+                fab_search.setEnabled(true);
+                fab_settings.setClickable(true);
+                fab_settings.setEnabled(true);
+                isOpen = true;
+            }
+        }
+
+
     }
 
     private void FABLongClickManagement() {

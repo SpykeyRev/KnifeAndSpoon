@@ -83,4 +83,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_insert_ricetta">Nome Ricetta</string>
     <string name="carattere_vietato">Non puoi inserire \"_ricetta\" nel tuo nome.</string>
+    <string name="anonymous_try_add">Devi registrarti per poter scrivere una ricetta.</string>
+    <string name="let_me_register">Fammi registrare!</string>
+    <string name="cancel">Annulla</string>
 </resources>

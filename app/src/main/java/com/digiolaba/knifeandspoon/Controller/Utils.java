@@ -127,4 +127,12 @@ public class Utils {
             dialog.cancel();
         }
     }
+
+    public static String personaOrPersone(String persone) {
+        if (persone.equals("1")) {
+            return persone.concat(" persona");
+        } else {
+            return persone.concat(" persone");
+        }
+    }
 }

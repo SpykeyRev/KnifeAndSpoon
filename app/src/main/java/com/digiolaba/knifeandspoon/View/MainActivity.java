@@ -2,12 +2,18 @@ package com.digiolaba.knifeandspoon.View;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -37,6 +43,8 @@ import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -65,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
     private Context context = MainActivity.this;
     private CoordinatorLayout coordinatorLayout;
     private SliderView sliderView;
+    private LinearLayout layoutFeed;
     SliderAdapter adapter;
 
     @Override
@@ -89,16 +98,13 @@ public class MainActivity extends AppCompatActivity {
         fab_clock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_clock);
         fab_anticlock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_anticlock);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinateLayout);
+        layoutFeed=(LinearLayout)findViewById(R.id.layoutFeed);
         //Setting up firebase for userInfo
         setUserInfo();
-
         //Setting up imageSlider
         sliderView = findViewById(R.id.imageSlider);
-
         adapter = new SliderAdapter(this);
-
         sliderView.setSliderAdapter(adapter);
-
         sliderView.setIndicatorAnimation(IndicatorAnimations.WORM); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
         sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
         sliderView.setAutoCycleDirection(SliderView.AUTO_CYCLE_DIRECTION_BACK_AND_FORTH);
@@ -109,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         loadImageSliderWithRicette();
         FABClickManagement();
         FABLongClickManagement();
+        loadFeed();
     }
 
     private void setUserInfo() {
@@ -161,6 +168,61 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    private void loadFeed()
+    {
+        for(int i=0;i<ricettas.size();i++)
+        {
+            LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View addView = layoutInflater.inflate(R.layout.row_feed_layout, null);
+            TextView txtNomeRicettaFeed=(TextView)addView.findViewById(R.id.txtFeedNomeRicetta);
+            TextView txtTempoPreparazioneFeed=(TextView)addView.findViewById(R.id.txtFeedTempoPreparazione);
+            TextView txtPersoneFeed=(TextView)addView.findViewById(R.id.txtFeedPersone);
+            final ImageView ricettaImageFeed = (ImageView) addView.findViewById(R.id.imgFeedRicetta);
+            Picasso.get().load(ricettas.get(i).getThumbnail()).into(ricettaImageFeed);
+            txtNomeRicettaFeed.setText(ricettas.get(i).getTitle());
+
+            txtTempoPreparazioneFeed.setText(ricettas.get(i).getTempo().concat(" minuti"));
+            String feedPersone="Per ".concat(Utils.personaOrPersone(ricettas.get(i).getPersone()));
+            txtPersoneFeed.setText(feedPersone);
+            LinearLayout layoutContainer=(LinearLayout)addView.findViewById(R.id.layoutFeedMainAndPic);
+            final int position = i;
+            layoutContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    try {
+                        Intent intent=new Intent(MainActivity.this,ShowRicettaActivity.class);
+                        Bundle bundle=new Bundle();
+                        bundle.putString("Autore", ricettas.get(position).getAuthorId());
+                        //Casting from imageSlider to Drawable and conversion into byteArray
+                        Drawable d = ricettaImageFeed.getDrawable();
+                        Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+                        byte[] bitmapdata = stream.toByteArray();
+                        bundle.putByteArray("Thumbnail", bitmapdata);
+                        bundle.putString("Titolo", ricettas.get(position).getTitle());
+                        bundle.putSerializable("Passaggi", (Serializable) ricettas.get(position).getSteps());
+                        bundle.putSerializable("Ingredienti", (Serializable) ricettas.get(position).getIngredienti());
+                        bundle.putString("Tempo", ricettas.get(position).getTempo());
+                        bundle.putString("Persone", ricettas.get(position).getPersone());
+                        bundle.putString("Autore", ricettas.get(position).getAuthorId());
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                    catch(RuntimeException e)
+                    {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+            layoutFeed.addView(addView);
+        }
+    }
+
+
 
 
     private void FABClickManagement() {

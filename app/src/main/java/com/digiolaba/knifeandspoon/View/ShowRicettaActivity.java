@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.digiolaba.knifeandspoon.Controller.Utils;
 import com.digiolaba.knifeandspoon.Model.Utente;
 import com.digiolaba.knifeandspoon.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -59,7 +60,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
         TextView txtTempo = (TextView) findViewById(R.id.txtTempoPreparazioneNumber);
         TextView txtAutore = (TextView) findViewById(R.id.txtAutore);
         txtTempo.setText(tempo.concat(" minuti"));
-        txtPersone.setText(personaOrPersone(persone));
+        txtPersone.setText(Utils.personaOrPersone(persone));
         txtAutore.setText(getUsername(autore));
         loadIngredienti(ingredienti);
         loadPassaggi(passaggi);
@@ -83,13 +84,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
         return extras;
     }
 
-    private String personaOrPersone(String persone) {
-        if (persone.equals("1")) {
-            return persone.concat(" persona");
-        } else {
-            return persone.concat(" persone");
-        }
-    }
+
 
 
     private String getUsername(String autore) {

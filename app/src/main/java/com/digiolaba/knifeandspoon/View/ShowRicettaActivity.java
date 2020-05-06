@@ -21,12 +21,17 @@ import com.digiolaba.knifeandspoon.Controller.Utils;
 import com.digiolaba.knifeandspoon.Model.Utente;
 import com.digiolaba.knifeandspoon.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ShowRicettaActivity extends AppCompatActivity {
 
@@ -90,10 +95,8 @@ public class ShowRicettaActivity extends AppCompatActivity {
     private String getUsername(String autore) {
         try {
             Utente userRecipe = (Utente) new Utente.getUserInfoByReference(autore).execute().get();
-            /*CircleImageView userImage = (CircleImageView) findViewById(R.id.profile_image);
-            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-            FirebaseUser fireUser = firebaseAuth.getCurrentUser();
-            Picasso.get().load(fireUser.getPhotoUrl()).into(userImage);*/
+            CircleImageView userImage = (CircleImageView) findViewById(R.id.profile_image);
+            Picasso.get().load(userRecipe.getUserImage()).into(userImage);
             return userRecipe.getUserName();
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();

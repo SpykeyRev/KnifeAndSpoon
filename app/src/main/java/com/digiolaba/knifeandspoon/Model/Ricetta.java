@@ -169,7 +169,7 @@ public class Ricetta {
         protected Boolean doInBackground(Boolean... booleans) {
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReference();
-            final StorageReference imageRef = storageRef.child(ricetta.get("Titolo") + ".jpg");
+            final StorageReference imageRef = storageRef.child(ricetta.get("Titolo") + "_ricetta.jpg");
             Task uploadTask = imageRef.putBytes(imgData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {

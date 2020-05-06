@@ -273,7 +273,15 @@ public class MainActivity extends AppCompatActivity {
         fab_settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //intent per redirect ad activity impostazioni
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                CircleImageView userImage = (CircleImageView) findViewById(R.id.profile_image);
+                Drawable d = userImage.getDrawable();
+                Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
+                byte[] bitmapdata = stream.toByteArray();
+                intent.putExtra("userProPic", bitmapdata);
+                startActivity(intent);
             }
         });
     }
@@ -332,48 +340,4 @@ public class MainActivity extends AppCompatActivity {
                 });
 
     }
-
-    /*@Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.buttonLogout:
-                signOut();
-                break;
-            case R.id.buttonDisconnect:
-                revokeAccess();
-                break;
-        }
-    }*/
-
-    private void signOut() {
-        // Firebase sign out
-        firebaseAuth.signOut();
-
-        // Google sign out
-        googleSignInClient.signOut().addOnCompleteListener(this,
-                new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // Google Sign In failed, update UI appropriately
-                        Log.w(TAG, "Signed out of google");
-                    }
-                });
-    }
-
-    private void revokeAccess() {
-        // Firebase sign out
-        firebaseAuth.signOut();
-
-        // Google revoke access
-        googleSignInClient.revokeAccess().addOnCompleteListener(this,
-                new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // Google Sign In failed, update UI appropriately
-                        Log.w(TAG, "Revoked Access");
-                    }
-                });
-    }
-
-
 }

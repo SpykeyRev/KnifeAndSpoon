@@ -16,8 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity">
-        <activity android:name=".SettingsActivity"></activity>
-        <activity android:name=".View.Settings" />
+        <activity android:name=".View.SettingsActivity"></activity>
         <activity
             android:name=".View.InsertRicettaActivity"
             android:configChanges="orientation"

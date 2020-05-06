@@ -109,8 +109,161 @@
 
                     </LinearLayout>
 
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            >
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="10dp">
+
+                                <com.google.android.material.imageview.ShapeableImageView
+                                    android:id="@+id/antipasto_view"
+                                    android:layout_width="150dp"
+                                    android:layout_height="100dp"
+                                    android:clickable="true"
+                                    android:scaleType="centerCrop"
+                                    app:shapeAppearanceOverlay="@style/category_button"
+                                    app:srcCompat="@drawable/antipasto"
+                                    android:focusable="true" />
+
+                                <TextView
+                                    android:id="@+id/antipastoText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_marginStart="15dp"
+                                    android:layout_marginTop="60dp"
+                                    android:layout_marginBottom="20dp"
+                                    android:text="@string/antipasto"
+                                    android:textColor="@color/white" />
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="10dp">
+
+                                <com.google.android.material.imageview.ShapeableImageView
+                                    android:id="@+id/primo_view"
+                                    android:layout_width="150dp"
+                                    android:layout_height="100dp"
+                                    android:clickable="true"
+                                    android:scaleType="centerCrop"
+                                    app:shapeAppearanceOverlay="@style/category_button"
+                                    app:srcCompat="@drawable/primo"
+                                    android:focusable="true" />
+
+                                <TextView
+                                    android:id="@+id/primoText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_marginStart="15dp"
+                                    android:layout_marginTop="60dp"
+                                    android:layout_marginBottom="20dp"
+                                    android:text="@string/primo"
+                                    android:textColor="@color/white" />
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="10dp">
+
+                                <com.google.android.material.imageview.ShapeableImageView
+                                    android:id="@+id/secondo_view"
+                                    android:layout_width="150dp"
+                                    android:layout_height="100dp"
+                                    android:clickable="true"
+                                    android:scaleType="centerCrop"
+                                    app:shapeAppearanceOverlay="@style/category_button"
+                                    app:srcCompat="@drawable/secondo"
+                                    android:focusable="true" />
+
+                                <TextView
+                                    android:id="@+id/secondoText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_marginStart="15dp"
+                                    android:layout_marginTop="60dp"
+                                    android:layout_marginBottom="20dp"
+                                    android:text="@string/secondo"
+                                    android:textColor="@color/white" />
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="10dp">
+
+                                <com.google.android.material.imageview.ShapeableImageView
+                                    android:id="@+id/contorno_view"
+                                    android:layout_width="150dp"
+                                    android:layout_height="100dp"
+                                    android:clickable="true"
+                                    android:scaleType="centerCrop"
+                                    app:shapeAppearanceOverlay="@style/category_button"
+                                    app:srcCompat="@drawable/contorno"
+                                    android:focusable="true" />
+
+                                <TextView
+                                    android:id="@+id/contornoText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_marginStart="15dp"
+                                    android:layout_marginTop="60dp"
+                                    android:layout_marginBottom="20dp"
+                                    android:text="@string/contorno"
+                                    android:textColor="@color/white" />
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_marginStart="10dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <com.google.android.material.imageview.ShapeableImageView
+                                    android:id="@+id/image_view"
+                                    android:layout_width="150dp"
+                                    android:layout_height="100dp"
+                                    android:clickable="true"
+                                    android:scaleType="centerCrop"
+                                    app:shapeAppearanceOverlay="@style/category_button"
+                                    app:srcCompat="@drawable/torta"
+                                    android:focusable="true" />
+
+                                <TextView
+                                    android:textColor="@color/white"
+                                    android:id="@+id/tortaText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_marginStart="15dp"
+                                    android:layout_marginTop="60dp"
+                                    android:layout_marginBottom="20dp"
+                                    android:text="@string/dolce" />
+                            </RelativeLayout>
+
+                        </LinearLayout>
+                    </HorizontalScrollView>
+
                     <androidx.cardview.widget.CardView
-                        app:cardCornerRadius="6dp"
+                        app:cardCornerRadius="15dp"
                         android:layout_margin="16dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">

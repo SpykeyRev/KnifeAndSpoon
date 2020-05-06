@@ -40,6 +40,12 @@
     <string name="tempo_di_preparazione_text">Tempo di preparazione:&#160;</string>
     <string name="numero_di_persone_text">Per:&#160;</string>
 
+    <string name="antipasto">Antipasto</string>
+    <string name="primo">Primo</string>
+    <string name="secondo">Secondo</string>
+    <string name="contorno">Contorno</string>
+    <string name="dolce">Dolce</string>
+
     <string-array name="categoria">
         <item>Antipasto</item>
         <item>Primo</item>

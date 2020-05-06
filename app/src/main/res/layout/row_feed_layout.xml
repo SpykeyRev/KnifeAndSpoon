@@ -45,7 +45,6 @@
                 android:id="@+id/txtFeedNomeRicetta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/made_by"
                 android:textSize="22sp" />
 
             <LinearLayout
@@ -60,14 +59,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:text="@string/settings"
                     android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/txtFeedPersone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/settings"
                     android:textSize="14sp" />
             </LinearLayout>
 

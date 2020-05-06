@@ -181,7 +181,6 @@ public class MainActivity extends AppCompatActivity {
             final ImageView ricettaImageFeed = (ImageView) addView.findViewById(R.id.imgFeedRicetta);
             Picasso.get().load(ricettas.get(i).getThumbnail()).into(ricettaImageFeed);
             txtNomeRicettaFeed.setText(ricettas.get(i).getTitle());
-
             txtTempoPreparazioneFeed.setText(ricettas.get(i).getTempo().concat(" minuti"));
             String feedPersone="Per ".concat(Utils.personaOrPersone(ricettas.get(i).getPersone()));
             txtPersoneFeed.setText(feedPersone);

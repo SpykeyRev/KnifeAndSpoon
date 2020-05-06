@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.internal.Util;
 
 public class RegisterActivity extends AppCompatActivity {
     private EditText nome;
@@ -70,13 +71,18 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void checkName() {
-        if (nome.getText().toString().equals("")) {
+        if (nome.getText().toString().trim().equals("")) {
             Utils.errorDialog(this, R.string.error_empty_name, R.string.error_ok);
         } else if (nome.getText().toString().contains(" ") && (nome.getText().toString().startsWith(" ") && nome.getText().toString().endsWith(" "))) {
             Utils.errorDialog(this, R.string.error_name_space, R.string.error_ok);
-        } else if (nome.getText().toString().length() <= 6 || nome.getText().toString().length() >= 20) {
+        } else if (nome.getText().toString().length() < 6 || nome.getText().toString().length() > 20) {
             Utils.errorDialog(this, R.string.error_lenght_name, R.string.error_ok);
-        } else {
+        }
+        else if(nome.getText().toString().contains("_ricetta"))
+        {
+            Utils.errorDialog(this,R.string.carattere_vietato,R.string.error_ok);
+        }
+        else {
             checkIfNameExists();
         }
     }
@@ -110,7 +116,6 @@ public class RegisterActivity extends AppCompatActivity {
         Map<String, Object> user = new HashMap<>();
         user.put("Mail", fireUser.getEmail().toString());
         user.put("Nome", nome.getText().toString());
-        //user.put("Immagine", "");
         user.put("isAdmin", false);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseStorage storage = FirebaseStorage.getInstance();

@@ -518,7 +518,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
         img_piatto.buildDrawingCache();
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
-        final StorageReference imageRef = storageRef.child(ricetta.get("Titolo") + ".jpg");
+        final StorageReference imageRef = storageRef.child(ricetta.get("Titolo") + "_ricetta.jpg");
         Bitmap bitmap = ((BitmapDrawable) img_piatto.getDrawable()).getBitmap();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);

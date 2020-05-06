@@ -24,6 +24,7 @@ import com.google.firebase.storage.UploadTask;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 public class Ricetta {
@@ -169,7 +170,7 @@ public class Ricetta {
         protected Boolean doInBackground(Boolean... booleans) {
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReference();
-            final StorageReference imageRef = storageRef.child(ricetta.get("Titolo") + "_ricetta.jpg");
+            final StorageReference imageRef = storageRef.child(UUID.randomUUID().toString() + ".jpg");
             Task uploadTask = imageRef.putBytes(imgData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {

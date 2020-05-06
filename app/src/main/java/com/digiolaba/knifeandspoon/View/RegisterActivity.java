@@ -78,10 +78,6 @@ public class RegisterActivity extends AppCompatActivity {
         } else if (nome.getText().toString().length() < 6 || nome.getText().toString().length() > 20) {
             Utils.errorDialog(this, R.string.error_lenght_name, R.string.error_ok);
         }
-        else if(nome.getText().toString().contains("_ricetta"))
-        {
-            Utils.errorDialog(this,R.string.carattere_vietato,R.string.error_ok);
-        }
         else {
             checkIfNameExists();
         }

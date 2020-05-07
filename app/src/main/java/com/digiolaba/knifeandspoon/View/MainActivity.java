@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -18,11 +17,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
 import com.digiolaba.knifeandspoon.Controller.SliderAdapter;
 import com.digiolaba.knifeandspoon.Controller.Utils;
 import com.digiolaba.knifeandspoon.Model.Ricetta;
@@ -46,7 +47,6 @@ import com.smarteist.autoimageslider.SliderView;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout layoutFeed;
     SliderAdapter adapter;
     private FirebaseUser fireUser;
+    private int LAUNCH_SETTINGS_ACTIVITY =1998;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
         FABClickManagement();
         FABLongClickManagement();
         loadFeed();
+
     }
 
     private void setUserInfo() {
@@ -132,9 +134,8 @@ public class MainActivity extends AppCompatActivity {
                 actualUser = (Utente) new Utente.getUserInfo(firebaseAuth.getCurrentUser().getEmail()).execute().get();
                 userName.setText(actualUser.getUserName());
                 CircleImageView userImage = (CircleImageView) findViewById(R.id.profile_image);
-                Picasso.get().load(fireUser.getPhotoUrl()).into(userImage);
+                Picasso.get().load(actualUser.getUserImage()).into(userImage);
             }
-
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -145,6 +146,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void refresh() {
         loadImageSliderWithRicette();
+        try {
+            actualUser = (Utente) new Utente.getUserInfo(firebaseAuth.getCurrentUser().getEmail()).execute().get();
+            CircleImageView userImage = (CircleImageView) findViewById(R.id.profile_image);
+            Glide.with(this).load(actualUser.getUserImage()).into(userImage);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         pullToRefresh.setRefreshing(false);
     }
 
@@ -296,13 +306,28 @@ public class MainActivity extends AppCompatActivity {
                 Drawable d = userImage.getDrawable();
                 Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
                 byte[] bitmapdata = stream.toByteArray();
                 intent.putExtra("userProPic", bitmapdata);
+                intent.putExtra("id",actualUser.getUserId());
+                intent.putExtra("nome",actualUser.getUserName());
                 intent.putExtra("isAdmin",actualUser.getisAdmin());
-                startActivity(intent);
+                startActivityForResult(intent, LAUNCH_SETTINGS_ACTIVITY);
+
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode== LAUNCH_SETTINGS_ACTIVITY)
+        {
+            if(resultCode==RESULT_OK)
+            {
+                refresh();
+            }
+        }
     }
 
     private void FABShowDifferentUsers()

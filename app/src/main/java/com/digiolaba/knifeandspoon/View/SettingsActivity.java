@@ -1,15 +1,19 @@
 package com.digiolaba.knifeandspoon.View;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -20,18 +24,29 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.digiolaba.knifeandspoon.Controller.Utils;
+import com.digiolaba.knifeandspoon.Model.Utente;
 import com.digiolaba.knifeandspoon.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -46,6 +61,10 @@ public class SettingsActivity extends AppCompatActivity {
     private ArrayList<String> permissionsRejected = new ArrayList<>();
     private ArrayList<String> permissions = new ArrayList<>();
     private ImageView userImage;
+    private String id;
+    private String username;
+    private int result= Activity.RESULT_CANCELED;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,12 +79,15 @@ public class SettingsActivity extends AppCompatActivity {
         changeProPic = findViewById(R.id.btnChangeProPic);
         logOutClick();
         checkPermissionAndPhoto();
-
+        id=extras.getString("id");
+        username=extras.getString("nome");
         loadAdminButton(extras.getBoolean("isAdmin"));
     }
 
     @Override
     public void onBackPressed() {
+        Intent intent=new Intent();
+        setResult(result,intent);
         super.onBackPressed();
         this.finish();
     }
@@ -132,8 +154,10 @@ public class SettingsActivity extends AppCompatActivity {
 
             if (bitmap != null) {
                 Glide.with(SettingsActivity.this).load(bitmap).centerCrop().into(userImage);
-                //img_piatto.setImageBitmap(bitmap);
-                loadImageToFirebase();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+                byte[] imgData = baos.toByteArray();
+                loadImageToFirebase(imgData);
             }
 
         }
@@ -223,9 +247,10 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-    private void loadImageToFirebase()
+    private void loadImageToFirebase(final byte[] imgData)
     {
-
+        new Utente.changePicUser(id,username,imgData).execute();
+        result=Activity.RESULT_OK;
     }
 
     private void loadAdminButton(Boolean isAdmin)

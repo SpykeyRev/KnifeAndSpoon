@@ -3,13 +3,12 @@ package com.digiolaba.knifeandspoon.Model;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.digiolaba.knifeandspoon.Controller.Utils;
 import com.digiolaba.knifeandspoon.View.MainActivity;
-import com.digiolaba.knifeandspoon.View.RegisterActivity;
-import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
@@ -18,7 +17,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -154,6 +152,65 @@ public class Utente {
                 return false;
             }
             return true;
+        }
+    }
+
+    public static class changePicUser extends AsyncTask<Boolean,Void,Boolean>
+    {
+        String id,username;
+        byte[] imgData;
+
+        public changePicUser(String id, String username,byte[] imgData)
+        {
+            this.id=id;
+            this.username=username;
+            this.imgData=imgData;
+        }
+
+        @Override
+        protected Boolean doInBackground(Boolean... booleans) {
+            String documentID=id.split("/")[1];
+            FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+            final DocumentReference utentiRef = rootRef.collection("Utenti").document(documentID);
+            utentiRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(task.isSuccessful())
+                    {
+                        DocumentSnapshot documentSnapshot=task.getResult();
+                        if(documentSnapshot.exists())
+                        {
+                            FirebaseStorage storage = FirebaseStorage.getInstance();
+                            StorageReference storageRef = storage.getReference();
+                            final StorageReference imageRef = storageRef.child(username + ".jpg");
+                            Task uploadTask = imageRef.putBytes(imgData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            uri.toString();
+                                            utentiRef.update("Immagine",uri.toString());
+                                        }
+                                    });
+                                }
+                            });
+                            /*try {
+                                Tasks.await(uploadTask);
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }*/
+                        }
+                        else
+                        {
+                            Log.e("CIAO","CIAO");
+                        }
+                    }
+                }
+            });
+            return null;
         }
     }
 

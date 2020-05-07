@@ -298,6 +298,7 @@ public class MainActivity extends AppCompatActivity {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
                 byte[] bitmapdata = stream.toByteArray();
                 intent.putExtra("userProPic", bitmapdata);
+                intent.putExtra("isAdmin",actualUser.getisAdmin());
                 startActivity(intent);
             }
         });
@@ -311,14 +312,11 @@ public class MainActivity extends AppCompatActivity {
             if (isOpen) {
                 fab_add.startAnimation(fab_close);
                 fab_search.startAnimation(fab_close);
-                fab_settings.startAnimation(fab_close);
                 fab_main.startAnimation(fab_anticlock);
                 fab_add.setClickable(false);
                 fab_add.setEnabled(false);
                 fab_search.setClickable(false);
                 fab_search.setEnabled(false);
-                fab_settings.setClickable(false);
-                fab_settings.setEnabled(false);
                 isOpen = false;
             } else {
                 fab_add.startAnimation(fab_open);
@@ -328,7 +326,6 @@ public class MainActivity extends AppCompatActivity {
                 fab_add.setEnabled(true);
                 fab_search.setClickable(true);
                 fab_search.setEnabled(true);
-
                 isOpen = true;
             }
         }

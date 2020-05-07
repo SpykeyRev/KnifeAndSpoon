@@ -2,9 +2,9 @@ package com.digiolaba.knifeandspoon.View;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,13 +17,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SettingsActivity extends AppCompatActivity {
-    Button logOut;
-    Button changeProPic;
+
+    private Button logOut;
+    private Button changeProPic;
+    private Button reviewRicettaAdmin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,8 +35,21 @@ public class SettingsActivity extends AppCompatActivity {
         Glide.with(this).load(extras.get("userProPic"))
                 .centerCrop()
                 .into(userImage);
-        logOut = findViewById(R.id.logOut);
-        changeProPic = findViewById(R.id.changeProPic);
+        logOut = findViewById(R.id.btnLogOut);
+        changeProPic = findViewById(R.id.btnChangeProPic);
+        logOutClick();
+        changeProPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //do something
+            }
+        });
+
+        loadAdminButton(extras.getBoolean("isAdmin"));
+    }
+
+    private void logOutClick()
+    {
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,11 +69,21 @@ public class SettingsActivity extends AppCompatActivity {
                 });
             }
         });
-        changeProPic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //do something
-            }
-        });
+    }
+    private void loadAdminButton(Boolean isAdmin)
+    {
+        if(isAdmin)
+        {
+            reviewRicettaAdmin=(Button)findViewById(R.id.btnApproveRicettaAdmin);
+            reviewRicettaAdmin.setVisibility(View.VISIBLE);
+            reviewRicettaAdmin.setClickable(true);
+            reviewRicettaAdmin.setEnabled(true);
+            reviewRicettaAdmin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(SettingsActivity.this,R.string.error_ok,Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 }

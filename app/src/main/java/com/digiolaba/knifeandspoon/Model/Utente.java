@@ -173,7 +173,7 @@ public class Utente {
         return this.image;
     }
 
-    public boolean isAdmin() {
+    public boolean getisAdmin() {
         return this.isAdmin;
     }
 }

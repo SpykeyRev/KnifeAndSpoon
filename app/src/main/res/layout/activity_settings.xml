@@ -42,16 +42,25 @@
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/logOut"
+                android:id="@+id/btnLogOut"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Effettua Log-Out" />
+                android:text="@string/log_out" />
 
             <Button
-                android:id="@+id/changeProPic"
+                android:id="@+id/btnChangeProPic"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Cambia Immagine Profilo" />
+                android:text="@string/change_image_profile" />
+
+            <Button
+                android:id="@+id/btnApproveRicettaAdmin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:enabled="false"
+                android:text="@string/admin_approve_ricette"
+                android:visibility="gone" />
 
         </LinearLayout>
     </ScrollView>

@@ -86,4 +86,7 @@
     <string name="anonymous_try_add">Devi registrarti per poter scrivere una ricetta.</string>
     <string name="let_me_register">Fammi registrare!</string>
     <string name="cancel">Annulla</string>
+    <string name="log_out">Effettua Log-Out</string>
+    <string name="change_image_profile">Cambia Immagine Profilo</string>
+    <string name="admin_approve_ricette">Approva le recensioni</string>
 </resources>

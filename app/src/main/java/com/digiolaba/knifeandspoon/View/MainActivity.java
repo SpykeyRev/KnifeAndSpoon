@@ -296,7 +296,7 @@ public class MainActivity extends AppCompatActivity {
                 Drawable d = userImage.getDrawable();
                 Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                 byte[] bitmapdata = stream.toByteArray();
                 intent.putExtra("userProPic", bitmapdata);
                 intent.putExtra("isAdmin",actualUser.getisAdmin());

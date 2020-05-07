@@ -81,7 +81,9 @@ public class SettingsActivity extends AppCompatActivity {
             reviewRicettaAdmin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(SettingsActivity.this,R.string.error_ok,Toast.LENGTH_LONG).show();
+                    Intent intent=new Intent(SettingsActivity.this,RicetteToApproveActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
             });
         }

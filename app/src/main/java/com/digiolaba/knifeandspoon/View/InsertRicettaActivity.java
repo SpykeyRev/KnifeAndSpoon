@@ -509,6 +509,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
                     ricettaToPush.put("Numero persone", numeroPersone.getText().toString());
                     ricettaToPush.put("Passaggi", getInfoPassaggi());
                     ricettaToPush.put("Ingredienti", getInfoIngredienti());
+                    ricettaToPush.put("isApproved",false);
                     publishToFirebase(ricettaToPush);
                 }
             } else {

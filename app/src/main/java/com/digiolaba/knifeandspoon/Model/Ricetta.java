@@ -12,9 +12,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -36,9 +38,10 @@ public class Ricetta {
     private String tempo;
     private List<Map<String, Object>> ingredienti;
     private List<String> steps;
+    private Boolean isApproved;
 
 
-    Ricetta(String id, String authorId, String title, String tempo, String persone, String thumbnail, List<Map<String, Object>> ingredienti, List<String> steps) {
+    Ricetta(String id, String authorId, String title, String tempo, String persone, String thumbnail, List<Map<String, Object>> ingredienti, List<String> steps,Boolean isApproved) {
         this.id = id;
         this.authorId = authorId;
         this.title = title;
@@ -47,6 +50,7 @@ public class Ricetta {
         this.steps = steps;
         this.tempo = tempo;
         this.persone = persone;
+        this.isApproved=isApproved;
     }
 
     public class Ingrediente {
@@ -75,11 +79,16 @@ public class Ricetta {
     public static class getFirstTenRecipe extends AsyncTask {
         @Override
         protected List<Ricetta> doInBackground(Object[] objects) {
-            Task<QuerySnapshot> documentSnapshotTask = FirebaseFirestore.getInstance().collection("Ricette").limit(10).get();
+            FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+            CollectionReference utentiRef = rootRef.collection("Ricette");
+            Query queryrRicettaApprovata = utentiRef.whereEqualTo("isApproved", true);
+            Task<QuerySnapshot> documentSnapshotTask=queryrRicettaApprovata.limit(10).get();
+            //Task<QuerySnapshot> documentSnapshotTask = FirebaseFirestore.getInstance().collection("Ricette").limit(10).get();
             List<Ricetta> obj = new ArrayList();
             try {
                 QuerySnapshot documentSnapshot = Tasks.await(documentSnapshotTask);
                 for (int i = 0; i < documentSnapshot.size(); i++) {
+
                     obj.add(new Ricetta(
                             documentSnapshot.getDocuments().get(i).getId(),
                             documentSnapshot.getDocuments().get(i).get("Autore").toString(),
@@ -88,8 +97,10 @@ public class Ricetta {
                             documentSnapshot.getDocuments().get(i).get("Numero persone").toString(),
                             documentSnapshot.getDocuments().get(i).get("Thumbnail").toString(),
                             (List<Map<String, Object>>) documentSnapshot.getDocuments().get(i).get("Ingredienti"),
-                            (List<String>) documentSnapshot.getDocuments().get(i).get("Passaggi")
+                            (List<String>) documentSnapshot.getDocuments().get(i).get("Passaggi"),
+                            (Boolean)documentSnapshot.getDocuments().get(i).get("isApproved")
                     ));
+
                 }
 
             } catch (ExecutionException e) {
@@ -124,7 +135,8 @@ public class Ricetta {
                         documentSnapshot.get("Numero persone").toString(),
                         documentSnapshot.getString("Thumbnail"),
                         (List<Map<String, Object>>) documentSnapshot.get("Ingredienti"),
-                        (List<String>) documentSnapshot.get("Passaggi")
+                        (List<String>) documentSnapshot.get("Passaggi"),
+                        (Boolean)documentSnapshot.get("isApproved")
                 );
             } catch (ExecutionException e) {
                 e.printStackTrace();
@@ -254,6 +266,8 @@ public class Ricetta {
     public String getPersone() {
         return persone;
     }
+
+    public Boolean getIsApproved(){return isApproved;}
 
     public void setId(String id) {
         this.id = id;

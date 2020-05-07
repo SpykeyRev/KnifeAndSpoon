@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         sliderView.setIndicatorSelectedColor(Color.WHITE);
         sliderView.setIndicatorUnselectedColor(Color.GRAY);
         sliderView.setScrollTimeInSec(4); //set scroll delay in seconds
-        //sliderView.startAutoCycle();
+        sliderView.startAutoCycle();
         loadImageSliderWithRicette();
         FABClickManagement();
         FABLongClickManagement();

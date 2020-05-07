@@ -80,15 +80,14 @@ public class Ricetta {
         @Override
         protected List<Ricetta> doInBackground(Object[] objects) {
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-            CollectionReference utentiRef = rootRef.collection("Ricette");
-            Query queryrRicettaApprovata = utentiRef.whereEqualTo("isApproved", true);
+            CollectionReference ricetteRef = rootRef.collection("Ricette");
+            Query queryrRicettaApprovata = ricetteRef.whereEqualTo("isApproved", true);
             Task<QuerySnapshot> documentSnapshotTask=queryrRicettaApprovata.limit(10).get();
             //Task<QuerySnapshot> documentSnapshotTask = FirebaseFirestore.getInstance().collection("Ricette").limit(10).get();
             List<Ricetta> obj = new ArrayList();
             try {
                 QuerySnapshot documentSnapshot = Tasks.await(documentSnapshotTask);
                 for (int i = 0; i < documentSnapshot.size(); i++) {
-
                     obj.add(new Ricetta(
                             documentSnapshot.getDocuments().get(i).getId(),
                             documentSnapshot.getDocuments().get(i).get("Autore").toString(),
@@ -100,9 +99,40 @@ public class Ricetta {
                             (List<String>) documentSnapshot.getDocuments().get(i).get("Passaggi"),
                             (Boolean)documentSnapshot.getDocuments().get(i).get("isApproved")
                     ));
-
                 }
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return obj;
+        }
+    }
 
+    public static class getRecipeToReview extends AsyncTask {
+        @Override
+        protected List<Ricetta> doInBackground(Object[] objects) {
+            FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+            CollectionReference ricetteRef = rootRef.collection("Ricette");
+            Query queryrRicettaApprovata = ricetteRef.whereEqualTo("isApproved", false);
+            Task<QuerySnapshot> documentSnapshotTask=queryrRicettaApprovata.get();
+            //Task<QuerySnapshot> documentSnapshotTask = FirebaseFirestore.getInstance().collection("Ricette").limit(10).get();
+            List<Ricetta> obj = new ArrayList();
+            try {
+                QuerySnapshot documentSnapshot = Tasks.await(documentSnapshotTask);
+                for (int i = 0; i < documentSnapshot.size(); i++) {
+                    obj.add(new Ricetta(
+                            documentSnapshot.getDocuments().get(i).getId(),
+                            documentSnapshot.getDocuments().get(i).get("Autore").toString(),
+                            documentSnapshot.getDocuments().get(i).get("Titolo").toString(),
+                            documentSnapshot.getDocuments().get(i).get("Tempo di preparazione").toString(),
+                            documentSnapshot.getDocuments().get(i).get("Numero persone").toString(),
+                            documentSnapshot.getDocuments().get(i).get("Thumbnail").toString(),
+                            (List<Map<String, Object>>) documentSnapshot.getDocuments().get(i).get("Ingredienti"),
+                            (List<String>) documentSnapshot.getDocuments().get(i).get("Passaggi"),
+                            (Boolean)documentSnapshot.getDocuments().get(i).get("isApproved")
+                    ));
+                }
             } catch (ExecutionException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {

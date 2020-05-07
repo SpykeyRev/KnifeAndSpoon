@@ -83,9 +83,14 @@ public class SettingsActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Intent intent=new Intent(SettingsActivity.this,RicetteToApproveActivity.class);
                     startActivity(intent);
-                    finish();
                 }
             });
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.finish();
     }
 }

@@ -252,7 +252,6 @@ public class ShowRicettaActivity extends AppCompatActivity {
                     else
                     {
                         Log.e("Update error", "Failed with: ", task.getException());
-                        adminRedirect();
                     }
                 }
             }

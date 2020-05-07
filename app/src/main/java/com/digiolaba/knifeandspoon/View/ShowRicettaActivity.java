@@ -227,6 +227,18 @@ public class ShowRicettaActivity extends AppCompatActivity {
                     }
                     else
                     {
+                        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which){
+                                    case DialogInterface.BUTTON_POSITIVE:
+                                        adminRedirect();
+                                        break;
+                                }
+                            }
+                        };
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ShowRicettaActivity.this);
+                        builder.setMessage("C'è stato un errore").setPositiveButton("Ricarica", dialogClickListener).show();
                         Log.e("Update error", "Failed with: ", task.getException());
                     }
                 }
@@ -251,6 +263,18 @@ public class ShowRicettaActivity extends AppCompatActivity {
                     }
                     else
                     {
+                        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which){
+                                    case DialogInterface.BUTTON_POSITIVE:
+                                        adminRedirect();
+                                        break;
+                                }
+                            }
+                        };
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ShowRicettaActivity.this);
+                        builder.setMessage("C'è stato un errore").setPositiveButton("Ricarica", dialogClickListener).show();
                         Log.e("Update error", "Failed with: ", task.getException());
                     }
                 }

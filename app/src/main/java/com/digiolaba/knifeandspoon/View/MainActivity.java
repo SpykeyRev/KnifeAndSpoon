@@ -416,4 +416,16 @@ public class MainActivity extends AppCompatActivity {
                 });
 
     }
+
+    /*@Override
+    protected void onPause() {
+        super.onPause();
+        coordinatorLayout.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        coordinatorLayout.setVisibility(View.VISIBLE);
+    }*/
 }

@@ -56,9 +56,12 @@ public class RicetteToApproveActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+
     private void loadRicetteToReview()
     {
         try {
+            ricetteToReviewLayout.removeAllViews();
             final List<Ricetta> ricettas = (List<Ricetta>) new Ricetta.getRecipeToReview().execute().get();
             if(ricettas.size()==0)
             {
@@ -79,6 +82,7 @@ public class RicetteToApproveActivity extends AppCompatActivity {
             }
             else
             {
+
                 for(int i=0;i<ricettas.size();i++)
                 {
                     LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -110,6 +114,7 @@ public class RicetteToApproveActivity extends AppCompatActivity {
                                 bundle.putBoolean("isAdmin",true);
                                 intent.putExtras(bundle);
                                 startActivity(intent);
+
                             }
                             catch(RuntimeException e)
                             {
@@ -133,5 +138,11 @@ public class RicetteToApproveActivity extends AppCompatActivity {
     {
         this.onBackPressed();
         this.finish();
+    }
+
+    @Override
+    protected void onResume() {
+        loadRicetteToReview();
+        super.onResume();
     }
 }

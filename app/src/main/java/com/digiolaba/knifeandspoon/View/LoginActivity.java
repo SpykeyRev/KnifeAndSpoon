@@ -198,7 +198,6 @@ public class LoginActivity extends AppCompatActivity {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-
                     launchMainActivity();
 
                 } else {

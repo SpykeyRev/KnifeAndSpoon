@@ -1,15 +1,25 @@
 package com.digiolaba.knifeandspoon.View;
 
+import android.Manifest;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.digiolaba.knifeandspoon.Controller.Utils;
 import com.digiolaba.knifeandspoon.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -18,6 +28,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -25,27 +40,34 @@ public class SettingsActivity extends AppCompatActivity {
     private Button logOut;
     private Button changeProPic;
     private Button reviewRicettaAdmin;
+    private final static int ALL_PERMISSIONS_RESULT = 107;
+    private final static int PICK_IMAGE = 200;
+    private ArrayList<String> permissionsToRequest;
+    private ArrayList<String> permissionsRejected = new ArrayList<>();
+    private ArrayList<String> permissions = new ArrayList<>();
+    private ImageView userImage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
-        CircleImageView userImage = (CircleImageView) findViewById(R.id.profile_image);
+        userImage = (ImageView) findViewById(R.id.profile_image);
         Glide.with(this).load(extras.get("userProPic"))
                 .centerCrop()
                 .into(userImage);
         logOut = findViewById(R.id.btnLogOut);
         changeProPic = findViewById(R.id.btnChangeProPic);
         logOutClick();
-        changeProPic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //do something
-            }
-        });
+        checkPermissionAndPhoto();
 
         loadAdminButton(extras.getBoolean("isAdmin"));
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.finish();
     }
 
     private void logOutClick()
@@ -70,6 +92,142 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void checkPermissionAndPhoto() {
+        changeProPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                permissions.add(Manifest.permission.CAMERA);
+                permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+                permissions.add(Manifest.permission.INTERNET);
+                permissionsToRequest = findUnaskedPermissions(permissions);
+                if (permissionsToRequest.size() > 0) {
+                    requestPermissions(permissionsToRequest.toArray(new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
+                } else {
+                    startActivityForResult(getPickImageChooserIntent(), PICK_IMAGE);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == PICK_IMAGE) {
+            Bitmap bitmap = null;
+            if (resultCode == RESULT_OK) {
+                if (getPickImageResultUri(intent) != null) {
+                    Uri picUri = getPickImageResultUri(intent);
+                    try {
+                        bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), picUri);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    bitmap = (Bitmap) intent.getExtras().get("data");
+                }
+            }
+
+            if (bitmap != null) {
+                Glide.with(SettingsActivity.this).load(bitmap).centerCrop().into(userImage);
+                //img_piatto.setImageBitmap(bitmap);
+                loadImageToFirebase();
+            }
+
+        }
+    }
+
+    private Uri getPickImageResultUri(Intent data) {
+        boolean isCamera = true;
+        if (data != null) {
+            String action = data.getAction();
+            isCamera = action != null && action.equals(MediaStore.ACTION_IMAGE_CAPTURE);
+        }
+
+        return isCamera ? getCaptureImageOutputUri() : data.getData();
+    }
+
+    private Intent getPickImageChooserIntent() {
+        Uri outputFileUri = getCaptureImageOutputUri();
+        List<Intent> allIntents = new ArrayList<>();
+        PackageManager packageManager = getPackageManager();
+        Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        List<ResolveInfo> listCam = packageManager.queryIntentActivities(captureIntent, 0);
+        for (ResolveInfo res : listCam) {
+            Intent intent = new Intent(captureIntent);
+            intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+            intent.setPackage(res.activityInfo.packageName);
+            if (outputFileUri != null) {
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+            }
+            allIntents.add(intent);
+        }
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        List<ResolveInfo> listGallery = packageManager.queryIntentActivities(galleryIntent, 0);
+        for (ResolveInfo res : listGallery) {
+            Intent intent = new Intent(galleryIntent);
+            intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+            intent.setPackage(res.activityInfo.packageName);
+            allIntents.add(intent);
+        }
+        Intent mainIntent = allIntents.get(allIntents.size() - 1);
+        for (Intent intent : allIntents) {
+            if (intent.getComponent().getClassName().equals("com.android.documentsui.DocumentsActivity")) {
+                mainIntent = intent;
+                break;
+            }
+        }
+        allIntents.remove(mainIntent);
+        Intent chooserIntent = Intent.createChooser(mainIntent, getString(R.string.selsorgente));
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, allIntents.toArray(new Parcelable[allIntents.size()]));
+        return chooserIntent;
+    }
+
+    public Uri getCaptureImageOutputUri() {
+        Uri outputFileUri = null;
+        File getImage = getExternalCacheDir();
+        if (getImage != null) {
+            outputFileUri = Uri.fromFile(new File(getImage.getPath(), "propic.png"));
+        }
+        return outputFileUri;
+    }
+
+    private ArrayList findUnaskedPermissions(ArrayList<String> wanted) {
+        ArrayList<String> result = new ArrayList<>();
+
+        for (String perm : wanted) {
+            if (!(checkSelfPermission(perm) == PackageManager.PERMISSION_GRANTED)) {
+                result.add(perm);
+            }
+        }
+
+        return result;
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == ALL_PERMISSIONS_RESULT) {
+            for (String perm : permissionsToRequest) {
+                if (!(checkSelfPermission(perm) == PackageManager.PERMISSION_GRANTED)) {
+                    permissionsRejected.add(perm);
+                }
+            }
+            if (permissionsRejected.size() > 0) {
+                if (shouldShowRequestPermissionRationale(permissionsRejected.get(0))) {
+                    Utils.errorDialog(SettingsActivity.this, R.string.error_not_all_permissions, R.string.error_ok);
+                }
+            } else {
+                startActivityForResult(getPickImageChooserIntent(), PICK_IMAGE);
+            }
+        }
+    }
+
+    private void loadImageToFirebase()
+    {
+
+    }
+
     private void loadAdminButton(Boolean isAdmin)
     {
         if(isAdmin)
@@ -88,9 +246,5 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        this.finish();
-    }
+
 }

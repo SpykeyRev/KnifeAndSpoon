@@ -90,5 +90,7 @@
     <string name="change_image_profile">Cambia Immagine Profilo</string>
     <string name="admin_approve_ricette">Approva le recensioni</string>
     <string name="title_activity_ricette_to_approve">Ricette da approvare</string>
+    <string name="approve_ricetta">Approva</string>
+    <string name="disapprove_ricetta">Non approvare</string>
 
 </resources>

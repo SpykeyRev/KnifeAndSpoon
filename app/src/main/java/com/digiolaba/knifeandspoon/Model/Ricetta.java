@@ -297,6 +297,8 @@ public class Ricetta {
         return persone;
     }
 
+    public String getId(){return id;}
+
     public Boolean getIsApproved(){return isApproved;}
 
     public void setId(String id) {

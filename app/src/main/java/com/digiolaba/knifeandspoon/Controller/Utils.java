@@ -150,6 +150,7 @@ public class Utils {
         bundle.putSerializable("Ingredienti", (Serializable) ricettas.getIngredienti());
         bundle.putString("Tempo", ricettas.getTempo());
         bundle.putString("Persone", ricettas.getPersone());
+        bundle.putString("Id",ricettas.getId());
         return bundle;
     }
 }

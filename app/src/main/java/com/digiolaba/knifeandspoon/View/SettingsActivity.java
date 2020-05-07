@@ -153,11 +153,18 @@ public class SettingsActivity extends AppCompatActivity {
             }
 
             if (bitmap != null) {
-                Glide.with(SettingsActivity.this).load(bitmap).centerCrop().into(userImage);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 30, baos);
                 byte[] imgData = baos.toByteArray();
-                loadImageToFirebase(imgData);
+                if(imgData.length>700*1024)
+                {
+                    Utils.errorDialog(SettingsActivity.this,R.string.image_too_big,R.string.error_ok);
+                }
+                else
+                {
+                    Glide.with(SettingsActivity.this).load(bitmap).centerCrop().into(userImage);
+                    loadImageToFirebase(imgData);
+                }
             }
 
         }

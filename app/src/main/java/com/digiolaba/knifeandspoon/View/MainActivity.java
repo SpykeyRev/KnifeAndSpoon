@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -350,7 +351,12 @@ public class MainActivity extends AppCompatActivity {
         {
             if(resultCode==RESULT_OK)
             {
+                Log.e("MAIN","sto nell'if");
                 new Utente.setPreferiti(data.getExtras().getString("docRicetta"),data.getExtras().getString("docUser"),data.getExtras().getBoolean("fav"));
+            }
+            else
+            {
+                Log.e("MAIN","sto nell'else");
             }
         }
     }

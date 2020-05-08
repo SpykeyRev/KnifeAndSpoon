@@ -97,8 +97,8 @@ public class ShowRicettaActivity extends AppCompatActivity {
             {
                 /*Intent intent = new Intent(ShowRicetta.this, MainActivity.class);
             startActivity(intent);*/
-                this.onBackPressed();
                 checkFavIsChanged();
+                this.onBackPressed();
                 this.finish();
                 return true;
             }
@@ -117,7 +117,11 @@ public class ShowRicettaActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
+    @Override
+    public void onBackPressed() {
+        checkFavIsChanged();
+        super.onBackPressed();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -220,8 +224,6 @@ public class ShowRicettaActivity extends AppCompatActivity {
             intent.putExtra("fav",isFavourite[0]);
             setResult(Activity.RESULT_OK,intent);
         }
-        onBackPressed();
-        finish();
     }
 
 

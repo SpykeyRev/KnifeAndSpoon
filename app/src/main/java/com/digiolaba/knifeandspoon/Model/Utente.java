@@ -300,6 +300,9 @@ public class Utente {
                                 Map<String,Object>newPreferito=new HashMap<String, Object>();
                                 newPreferito.put("Preferiti",preferiti);
                                 utentiRef.set(newPreferito);*/
+                                List<String> preferiti= (List<String>) documentSnapshots.get("Preferiti");
+                                preferiti.remove(documentIdRicetta);
+                                utentiRef.update("Preferiti",preferiti);
                             }
 
                         }

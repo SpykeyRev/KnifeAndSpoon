@@ -97,7 +97,10 @@ public class ShowRicettaActivity extends AppCompatActivity {
             {
                 /*Intent intent = new Intent(ShowRicetta.this, MainActivity.class);
             startActivity(intent);*/
-                checkFavIsChanged();
+                if(!infoToShow.getBoolean("isAdmin"))
+                {
+                    checkFavIsChanged();
+                }
                 this.onBackPressed();
                 this.finish();
                 return true;
@@ -119,7 +122,10 @@ public class ShowRicettaActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        checkFavIsChanged();
+        if(!infoToShow.getBoolean("isAdmin"))
+        {
+            checkFavIsChanged();
+        }
         super.onBackPressed();
     }
 

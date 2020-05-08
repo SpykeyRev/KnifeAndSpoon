@@ -286,20 +286,10 @@ public class Utente {
                             {
                                 List<String> preferiti= (List<String>) documentSnapshots.get("Preferiti");
                                 preferiti.add(documentIdRicetta);
-                                //utentiRef.set(preferiti);
-                                //Map<String,Object>newPreferito=new HashMap<String, Object>();
-                                //newPreferito.put("Preferiti",preferiti);
-                                //utentiRef.set(newPreferito);
                                 utentiRef.update("Preferiti",preferiti);
                             }
                             else
                             {
-                                /*List<String> preferiti= (List<String>) documentSnapshots.get("Preferiti");
-                                preferiti.remove(documentIdRicetta);
-                                //utentiRef.set(preferiti);
-                                Map<String,Object>newPreferito=new HashMap<String, Object>();
-                                newPreferito.put("Preferiti",preferiti);
-                                utentiRef.set(newPreferito);*/
                                 List<String> preferiti= (List<String>) documentSnapshots.get("Preferiti");
                                 preferiti.remove(documentIdRicetta);
                                 utentiRef.update("Preferiti",preferiti);

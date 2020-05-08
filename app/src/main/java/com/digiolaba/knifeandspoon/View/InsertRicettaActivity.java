@@ -79,6 +79,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
     private EditText tempoPreparazione;
     private String actualUser;
     private final static int PICK_IMAGE = 200;
+    private MenuItem publish;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +128,10 @@ public class InsertRicettaActivity extends AppCompatActivity {
         addPassaggio();
     }
 
+    public MenuItem getPublish(){
+        return this.publish;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_insert_ricetta, menu);
@@ -142,6 +147,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.publishRicetta: {
+                publish=item;
                 pubblicaRicetta();
                 return true;
             }
@@ -479,6 +485,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
     }
 
     private void pubblicaRicetta() {
+        //disabilita pulsante
         if (etTitolo.getText().toString().trim().equals("")) {
             Utils.errorDialog(InsertRicettaActivity.this, R.string.error_no_titolo, R.string.error_ok);
         } else if (tempoPreparazione.getText().toString().equals("") || tempoPreparazione.getText().toString().equals("0")) {
@@ -550,12 +557,13 @@ public class InsertRicettaActivity extends AppCompatActivity {
     }
 
     private void publishToFirebase(Map ricetta) {
+        publish.setEnabled(false);
         img_piatto.setDrawingCacheEnabled(true);
         img_piatto.buildDrawingCache();
         Bitmap bitmap = ((BitmapDrawable) img_piatto.getDrawable()).getBitmap();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] imgData = baos.toByteArray();
-        new Ricetta.publishRecipe(InsertRicettaActivity.this, ricetta, imgData).execute();
+        new Ricetta.publishRecipe(InsertRicettaActivity.this, publish,ricetta, imgData).execute();
     }
 }

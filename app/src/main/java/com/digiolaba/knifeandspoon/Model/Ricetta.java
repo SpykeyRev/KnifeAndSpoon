@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 
@@ -181,15 +182,17 @@ public class Ricetta {
         Activity activity;
         Map ricetta;
         byte[] imgData;
+        MenuItem publish;
         Utils.LoadingDialog loadingDialog;
         Utils.SuccessDialog successDialog;
         Utils.ErrorDialog errorDialog;
 
-        public publishRecipe(Activity activity, Map ricetta, byte[] imgData) {
+        public publishRecipe(Activity activity,MenuItem publish, Map ricetta, byte[] imgData) {
             this.activity = activity;
             this.ricetta = ricetta;
             this.imgData = imgData;
             this.loadingDialog = new Utils.LoadingDialog(activity);
+            this.publish=publish;
         }
 
         public void changeDialogText(String newText) {
@@ -237,6 +240,7 @@ public class Ricetta {
                                         public void onFailure(@NonNull Exception e) {
                                             errorDialog = new Utils.ErrorDialog(activity);
                                             errorDialog.startLoadingDialog();
+                                            publish.setEnabled(true);
                                         }
                                     });
                         }
@@ -253,6 +257,7 @@ public class Ricetta {
                                         public void onFailure(@NonNull Exception e) {
                                             errorDialog = new Utils.ErrorDialog(activity);
                                             errorDialog.startLoadingDialog();
+                                            publish.setEnabled(true);
                                         }
                                     }
             );

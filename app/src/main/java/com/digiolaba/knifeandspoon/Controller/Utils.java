@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -87,7 +88,7 @@ public class Utils {
     public static class SuccessDialog {
         private Activity activity;
         private AlertDialog dialog;
-        private TextView text;
+        private Button ok;
 
         public SuccessDialog(Activity myActivity) {
             activity = myActivity;
@@ -97,10 +98,18 @@ public class Utils {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             LayoutInflater inflater = activity.getLayoutInflater();
             builder.setView(inflater.inflate(R.layout.success_dialog, null));
-            builder.setCancelable(true);
+            builder.setCancelable(false);
             dialog = builder.create();
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             dialog.show();
+            ok = (Button) dialog.findViewById(R.id.exitSuccessDialog);
+            ok.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismissLoadingDialog();
+                    activity.finish();
+                }
+            });
         }
 
         public void dismissLoadingDialog() {

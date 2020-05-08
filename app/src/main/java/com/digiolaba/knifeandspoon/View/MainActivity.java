@@ -1,5 +1,6 @@
 package com.digiolaba.knifeandspoon.View;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -78,7 +79,9 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout layoutFeed;
     SliderAdapter adapter;
     private FirebaseUser fireUser;
-    private int LAUNCH_SETTINGS_ACTIVITY =1998;
+    private static int LAUNCH_SHOW_RICETTA_ACTIVITY=2912;
+    private static int LAUNCH_SETTINGS_ACTIVITY =1998;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -217,8 +220,10 @@ public class MainActivity extends AppCompatActivity {
                         byte[] bitmapdata = stream.toByteArray();
                         bundle.putByteArray("Thumbnail", bitmapdata);
                         bundle.putBoolean("isAdmin",false);
+                        bundle.putString("pathIdUser",actualUser.getUserId());
+                        bundle.putBoolean("isFav",checkPreferiti(ricettas.get(position).getId()));
                         intent.putExtras(bundle);
-                        startActivity(intent);
+                        startActivityForResult(intent,LAUNCH_SHOW_RICETTA_ACTIVITY);
                     }
                     catch(RuntimeException e)
                     {
@@ -231,6 +236,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private Boolean checkPreferiti(String idRicetta)
+    {
+        Boolean found=false;
+        try {
+            found=new Utente.checkPreferiti(idRicetta,actualUser.getUserId()).execute().get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return found;
+    }
 
 
 
@@ -328,6 +345,13 @@ public class MainActivity extends AppCompatActivity {
                 refresh();
             }
         }
+        if(requestCode==LAUNCH_SHOW_RICETTA_ACTIVITY)
+        {
+            if(resultCode==RESULT_OK)
+            {
+                new Utente.setPreferiti(data.getExtras().getString("docRicetta"),data.getExtras().getString("docUser"),data.getExtras().getBoolean("fav"));
+            }
+        }
     }
 
     private void FABShowDifferentUsers()
@@ -420,7 +444,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void getUserInfo(String email) {
+ /*   public void getUserInfo(String email) {
         final List<Utente> users = new ArrayList();
         FirebaseFirestore storage = FirebaseFirestore.getInstance();
         Task task = storage.collection("Utenti").whereEqualTo("Mail", email).get()
@@ -440,7 +464,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-    }
+    }*/
 
     /*@Override
     protected void onPause() {

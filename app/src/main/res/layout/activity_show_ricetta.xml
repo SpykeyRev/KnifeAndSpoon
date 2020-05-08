@@ -55,14 +55,14 @@
     <include layout="@layout/content_show_ricetta" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_ins_foto"
+        android:id="@+id/fab_favourite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
+        app:backgroundTint="@color/colorPrimary"
         app:layout_anchor="@id/app_bar_ricetta"
         app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@android:drawable/ic_dialog_email"
-        app:backgroundTint="@color/colorPrimary"
+        app:srcCompat="@drawable/favorite"
         app:tint="@android:color/white" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

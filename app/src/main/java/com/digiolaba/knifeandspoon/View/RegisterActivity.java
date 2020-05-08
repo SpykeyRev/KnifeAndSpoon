@@ -34,7 +34,9 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -107,12 +109,14 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void registerUser() {
+        List<String> preferiti=new ArrayList<String>();
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser fireUser = firebaseAuth.getCurrentUser();
         Map<String, Object> user = new HashMap<>();
         user.put("Mail", fireUser.getEmail().toString());
         user.put("Nome", nome.getText().toString());
         user.put("isAdmin", false);
+        user.put("Preferiti",preferiti);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();

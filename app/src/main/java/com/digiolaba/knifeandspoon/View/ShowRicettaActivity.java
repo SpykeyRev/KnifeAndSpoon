@@ -1,5 +1,6 @@
 package com.digiolaba.knifeandspoon.View;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -50,8 +51,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ShowRicettaActivity extends AppCompatActivity {
 
     private LinearLayout showIngredientiLayout, showPassaggiLayout;
-
     private Bundle infoToShow;
+    private Boolean[] isFavourite;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +74,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
         String persone = infoToShow.getString("Persone");
         toolbar.setTitle(titolo);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_ins_foto);
+        FloatingActionButton fab_favourite = (FloatingActionButton) findViewById(R.id.fab_favourite);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         TextView txtPersone = (TextView) findViewById(R.id.txtNumeroPersoneNumber);
@@ -83,6 +85,8 @@ public class ShowRicettaActivity extends AppCompatActivity {
         txtAutore.setText(getUsername(autore));
         loadIngredienti(ingredienti);
         loadPassaggi(passaggi);
+        isFavourite= new Boolean[]{(Boolean) infoToShow.get("isFav")};
+        fabFavouriteSetter(fab_favourite);
     }
 
     @Override
@@ -94,6 +98,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
                 /*Intent intent = new Intent(ShowRicetta.this, MainActivity.class);
             startActivity(intent);*/
                 this.onBackPressed();
+                checkFavIsChanged();
                 this.finish();
                 return true;
             }
@@ -169,6 +174,56 @@ public class ShowRicettaActivity extends AppCompatActivity {
             showPassaggiLayout.addView(addView);
         }
     }
+
+    private void fabFavouriteSetter(final FloatingActionButton fab)
+    {
+        //dovrebbe essere preso da firebase
+        if(!isFavourite[0])
+        {
+            fab.setImageResource(R.drawable.favorite);
+        }
+        else
+        {
+            fab.setImageResource(R.drawable.favorite_full);
+        }
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!isFavourite[0])
+                {
+                    fab.setImageResource(R.drawable.favorite_full);
+                    Utils.showSnackbar(showPassaggiLayout,"Aggiunto ai preferiti");
+                    isFavourite[0] =true;
+                }
+                else
+                {
+                    fab.setImageResource(R.drawable.favorite);
+                    Utils.showSnackbar(showPassaggiLayout,"Rimosso dai preferiti");
+                    isFavourite[0] =false;
+                }
+            }
+        });
+    }
+
+    private void checkFavIsChanged()
+    {
+        Intent intent=new Intent();
+        if(isFavourite[0]==infoToShow.getBoolean("isFav"))
+        {
+            setResult(Activity.RESULT_CANCELED,intent);
+        }
+        else
+        {
+            intent.putExtra("docRicetta",infoToShow.get("Id").toString());
+            intent.putExtra("docUser",infoToShow.get("pathIdUser").toString());
+            intent.putExtra("fav",isFavourite[0]);
+            setResult(Activity.RESULT_OK,intent);
+        }
+        onBackPressed();
+        finish();
+    }
+
 
     private void adminApprove()
     {

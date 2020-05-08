@@ -15,11 +15,14 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -29,13 +32,15 @@ public class Utente {
     private String nome;
     private Boolean isAdmin;
     private String image;
+    private List<String> favourite;
 
-    public Utente(String id, String mail, String nome, String image, Boolean isAdmin) {
+    public Utente(String id, String mail, String nome, String image, Boolean isAdmin,List<String> favourite) {
         this.id = id;
         this.mail = mail;
         this.nome = nome;
         this.image = image;
         this.isAdmin = isAdmin;
+        this.favourite=favourite;
     }
 
     /*
@@ -68,7 +73,8 @@ public class Utente {
                         documentSnapshot.getDocuments().get(0).get("Mail").toString(),
                         documentSnapshot.getDocuments().get(0).get("Nome").toString(),
                         documentSnapshot.getDocuments().get(0).get("Immagine").toString(),
-                        (Boolean) documentSnapshot.getDocuments().get(0).get("isAdmin")
+                        (Boolean) documentSnapshot.getDocuments().get(0).get("isAdmin"),
+                        (List<String>)documentSnapshot.getDocuments().get(0).get("Preferiti")
                 );
             } catch (ExecutionException e) {
                 e.printStackTrace();
@@ -97,7 +103,8 @@ public class Utente {
                         documentSnapshot.get("Mail").toString(),
                         documentSnapshot.get("Nome").toString(),
                         documentSnapshot.get("Immagine").toString(),
-                        (Boolean) documentSnapshot.get("isAdmin")
+                        (Boolean) documentSnapshot.get("isAdmin"),
+                        (List<String>)documentSnapshot.get("Preferiti")
                 );
             } catch (ExecutionException e) {
                 e.printStackTrace();
@@ -214,6 +221,96 @@ public class Utente {
         }
     }
 
+    public static class checkPreferiti extends AsyncTask<Boolean,Void,Boolean>
+    {
+        String documentIdRicetta,pathIdUtente;
+
+        public checkPreferiti(String documentIdRicetta,String pathIdUtente)
+        {
+            this.documentIdRicetta=documentIdRicetta;
+            this.pathIdUtente=pathIdUtente;
+        }
+
+        @Override
+        protected Boolean doInBackground(Boolean... booleans) {
+            Boolean found=false;
+            String documentIdUtente =pathIdUtente.split("/")[1];
+            FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+            DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
+            Task<DocumentSnapshot> documentSnapshotTask=utentiRef.get();
+            try {
+                DocumentSnapshot documentSnapshots=Tasks.await(documentSnapshotTask);
+                List<String> preferiti= (List<String>) documentSnapshots.get("Preferiti");
+                for(int i=0;i<preferiti.size();i++)
+                {
+                    if(preferiti.get(i).equals(documentIdRicetta))
+                    {
+                        found=true;
+                    }
+                }
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return found;
+        }
+    }
+
+    public static class setPreferiti extends AsyncTask<Boolean,Void,Boolean>
+    {
+        String documentIdRicetta,pathIdUtente;
+        Boolean fav;
+
+        public setPreferiti(String documentIdRicetta,String pathIdUtente,Boolean fav)
+        {
+            this.documentIdRicetta=documentIdRicetta;
+            this.pathIdUtente=pathIdUtente;
+            this.fav=fav;
+        }
+
+        @Override
+        protected Boolean doInBackground(Boolean... booleans) {
+            String documentIdUtente =pathIdUtente.split("/")[1];
+            FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+            final DocumentReference utentiRef=rootRef.collection("Utenti").document(documentIdUtente);
+            utentiRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(task.isSuccessful())
+                    {
+                        DocumentSnapshot documentSnapshots=task.getResult();
+                        if(documentSnapshots.exists())
+                        {
+                            if(fav)
+                            {
+                                List<String> preferiti= (List<String>) documentSnapshots.get("Preferiti");
+                                preferiti.add(documentIdRicetta);
+                                //utentiRef.set(preferiti);
+                                //Map<String,Object>newPreferito=new HashMap<String, Object>();
+                                //newPreferito.put("Preferiti",preferiti);
+                                //utentiRef.set(newPreferito);
+                                utentiRef.update("Preferiti",preferiti);
+                            }
+                            else
+                            {
+                                /*List<String> preferiti= (List<String>) documentSnapshots.get("Preferiti");
+                                preferiti.remove(documentIdRicetta);
+                                //utentiRef.set(preferiti);
+                                Map<String,Object>newPreferito=new HashMap<String, Object>();
+                                newPreferito.put("Preferiti",preferiti);
+                                utentiRef.set(newPreferito);*/
+                            }
+
+                        }
+                    }
+                }
+            });
+
+            return null;
+        }
+    }
+
 
     public String getUserId() {
         return this.id;
@@ -233,5 +330,8 @@ public class Utente {
 
     public boolean getisAdmin() {
         return this.isAdmin;
+    }
+
+    public List<String> getFavourite(){return this.favourite;
     }
 }

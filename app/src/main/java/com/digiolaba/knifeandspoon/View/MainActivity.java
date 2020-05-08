@@ -351,13 +351,9 @@ public class MainActivity extends AppCompatActivity {
         {
             if(resultCode==RESULT_OK)
             {
-                Log.e("MAIN","sto nell'if");
-                new Utente.setPreferiti(data.getExtras().getString("docRicetta"),data.getExtras().getString("docUser"),data.getExtras().getBoolean("fav"));
+                new Utente.setPreferiti(data.getExtras().getString("docRicetta"),data.getExtras().getString("docUser"),data.getExtras().getBoolean("fav")).execute();
             }
-            else
-            {
-                Log.e("MAIN","sto nell'else");
-            }
+
         }
     }
 

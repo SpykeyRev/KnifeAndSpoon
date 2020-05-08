@@ -35,6 +35,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -48,7 +50,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ShowRicettaActivity extends AppCompatActivity {
 
     private LinearLayout showIngredientiLayout, showPassaggiLayout;
-    private Boolean isAdmin;
+
     private Bundle infoToShow;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +83,6 @@ public class ShowRicettaActivity extends AppCompatActivity {
         txtAutore.setText(getUsername(autore));
         loadIngredienti(ingredienti);
         loadPassaggi(passaggi);
-        isAdmin=infoToShow.getBoolean("isAdmin");
     }
 
     @Override
@@ -115,7 +116,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(isAdmin)
+        if(infoToShow.getBoolean("isAdmin"))
         {
             getMenuInflater().inflate(R.menu.menu_show_ricetta,menu);
         }
@@ -249,7 +250,8 @@ public class ShowRicettaActivity extends AppCompatActivity {
     private void deleteRicettaAdmin()
     {
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-        final DocumentReference ricetteRef = rootRef.collection("Ricette").document((String) infoToShow.get("Id"));
+        final DocumentReference ricetteRef = rootRef.collection("Ricette").document((String) Objects.requireNonNull(infoToShow.get("Id")));
+        final StorageReference photoRef= FirebaseStorage.getInstance().getReferenceFromUrl(Objects.requireNonNull(infoToShow.getString("ThumbnailURL")));
         ricetteRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -258,6 +260,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
                     DocumentSnapshot documentSnapshot=task.getResult();
                     if(documentSnapshot.exists())
                     {
+                        photoRef.delete();
                         ricetteRef.delete();
                         adminRedirect();
                     }

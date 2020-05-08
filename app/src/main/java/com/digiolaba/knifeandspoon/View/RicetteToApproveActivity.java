@@ -112,6 +112,7 @@ public class RicetteToApproveActivity extends AppCompatActivity {
                                 byte[] bitmapdata = stream.toByteArray();
                                 bundle.putByteArray("Thumbnail", bitmapdata);
                                 bundle.putBoolean("isAdmin",true);
+                                bundle.putString("ThumbnailURL",ricettas.get(position).getThumbnail());
                                 intent.putExtras(bundle);
                                 startActivity(intent);
 

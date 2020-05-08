@@ -15,6 +15,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -203,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
             txtTempoPreparazioneFeed.setText(ricettas.get(i).getTempo().concat(" minuti"));
             String feedPersone="Per ".concat(Utils.personaOrPersone(ricettas.get(i).getPersone()));
             txtPersoneFeed.setText(feedPersone);
-            LinearLayout layoutContainer=(LinearLayout)addView.findViewById(R.id.layoutFeedMainAndPic);
+            RelativeLayout layoutContainer=(RelativeLayout)addView.findViewById(R.id.layoutFeedMainAndPic);
             final int position = i;
             layoutContainer.setOnClickListener(new View.OnClickListener() {
                 @Override

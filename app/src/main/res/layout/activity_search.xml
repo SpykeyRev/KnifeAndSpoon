@@ -4,6 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+
     <ImageButton
         android:id="@+id/btn_search"
         android:layout_width="60dp"
@@ -35,18 +45,6 @@
         android:paddingBottom="10dp"
         android:textColor="#999999" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/result_list"
-        android:layout_width="match_parent"
-        android:layout_height="576dp"
-        android:layout_below="@+id/search_bar"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="1dp">
-
-    </androidx.recyclerview.widget.RecyclerView>
-
     <TextView
         android:id="@+id/heading_search"
         android:layout_width="wrap_content"
@@ -56,6 +54,15 @@
         android:text="Ricerca ricetta"
         android:textColor="@color/colorPrimary"
         android:textSize="30sp" />
+
+    <LinearLayout
+        android:id="@+id/LayoutFeedSearch"
+        android:layout_width="411dp"
+        android:layout_height="607dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:orientation="vertical"></LinearLayout>
 
 
 </RelativeLayout>

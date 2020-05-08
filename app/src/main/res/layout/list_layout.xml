@@ -1,104 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
 
-    <ImageView
-        android:id="@+id/immagineRicetta"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:foregroundGravity="left"
-        android:adjustViewBounds="true"
-        app:srcCompat="@drawable/app_logo" />
+    <LinearLayout
+        android:id="@+id/layoutFeedMainAndPic2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/nomeRicetta"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="140dp"
-        android:layout_marginTop="20dp"
-        android:textSize="22dp"
-        android:textColor="@color/colorPrimaryDark"
-        android:text="Risotto con le erbette" />
+        <ImageView
+            android:id="@+id/imageSearchRicetta"
+            android:layout_width="273dp"
+            android:layout_height="120dp"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/app_logo" />
 
-    <TextView
-        android:id="@+id/tempoPreparazione"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="140dp"
-        android:layout_marginTop="55dp"
-        android:textSize="14dp"
-        android:text="15 minuti" />
+        <LinearLayout
+            android:id="@+id/layoutFeedNomeRicetta2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/nomeRicetta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Risotto con le erbette"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="22dp" />
 
-    <TextView
-        android:id="@+id/autoreRicetta"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="140dp"
-        android:layout_marginTop="75dp"
-        android:textSize="14dp"
-        android:text="Inviata da: DioScalzo05" />
+            <LinearLayout
+                android:id="@+id/layoutFeedTempoAutoreRicetta"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/tempoPreparazione"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="15 minuti"
+                    android:textSize="14dp" />
 
-    <ImageView
-        android:id="@+id/immagineRicetta2"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="150dp"
-        android:foregroundGravity="left"
-        android:adjustViewBounds="true"
-        app:srcCompat="@drawable/ic_google" />
+                <TextView
+                    android:id="@+id/autoreRicetta"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Inviata da: DioScalzo05"
+                    android:textSize="14dp" />
 
-    <TextView
-        android:id="@+id/nomeRicetta2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="140dp"
-        android:layout_marginTop="150dp"
-        android:textSize="22dp"
-        android:textColor="@color/colorPrimaryDark"
-        android:text="Carbonara" />
-
-    <TextView
-        android:id="@+id/tempoPreparazione2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="140dp"
-        android:layout_marginTop="185dp"
-        android:textSize="14dp"
-        android:text="15 minuti" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 
 
-    <TextView
-        android:id="@+id/autoreRicetta2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="140dp"
-        android:layout_marginTop="205dp"
-        android:textSize="14dp"
-        android:text="Inviata da: MariaMaddalena07" />
-
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

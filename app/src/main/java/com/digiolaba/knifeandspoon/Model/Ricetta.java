@@ -42,7 +42,7 @@ public class Ricetta {
     private Boolean isApproved;
 
 
-    Ricetta(String id, String authorId, String title, String tempo, String persone, String thumbnail, List<Map<String, Object>> ingredienti, List<String> steps,Boolean isApproved) {
+    public Ricetta(String id, String authorId, String title, String tempo, String persone, String thumbnail, List<Map<String, Object>> ingredienti, List<String> steps, Boolean isApproved) {
         this.id = id;
         this.authorId = authorId;
         this.title = title;

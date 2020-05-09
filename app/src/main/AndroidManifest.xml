@@ -17,11 +17,14 @@
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity">
         <activity
+            android:name=".View.FavouriteActivity"
+            android:label="@string/title_activity_favourite"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".View.RicetteToApproveActivity"
             android:label="@string/title_activity_ricette_to_approve"
-            android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait"
-            ></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".View.SettingsActivity" />
         <activity
             android:name=".View.InsertRicettaActivity"

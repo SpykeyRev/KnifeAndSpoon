@@ -39,7 +39,9 @@
     <string name="made_by">Autore</string>
     <string name="tempo_di_preparazione_text">Tempo di preparazione:&#160;</string>
     <string name="numero_di_persone_text">Per:&#160;</string>
-
+    <string name="add">Aggiungi</string>
+    <string name="search">Cerca</string>
+    <string name="favourites">Preferiti</string>
     <string name="antipasto">Antipasto</string>
     <string name="primo">Primo</string>
     <string name="secondo">Secondo</string>
@@ -84,6 +86,7 @@
     <string name="title_activity_insert_ricetta">Nome Ricetta</string>
     <string name="carattere_vietato">Non puoi inserire \"_ricetta\" nel tuo nome.</string>
     <string name="anonymous_try_add">Devi registrarti per poter scrivere una ricetta.</string>
+    <string name="anonymous_try_fav">Devi registrarti per poter vedere la lista dei preferiti.</string>
     <string name="let_me_register">Fammi registrare!</string>
     <string name="cancel">Annulla</string>
     <string name="log_out">Effettua Log-Out</string>
@@ -93,4 +96,8 @@
     <string name="approve_ricetta">Approva</string>
     <string name="disapprove_ricetta">Non approvare</string>
     <string name="image_too_big">Questa immagine è troppo pesante. Per favore scegline un\'altra.</string>
+    <string name="title_activity_favourite">Preferiti</string>
+    <string name="nothing_to_show_here_admin">Non c\'è niente da vedere qui, tutte le ricette presenti nel database sono state approvate!</string>
+    <string name="perfect_exclamation_mark">Perfetto!</string>
+
 </resources>

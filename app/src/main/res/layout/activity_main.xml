@@ -339,7 +339,7 @@
             android:layout_margin="16dp"
             android:clickable="true"
             android:focusable="true"
-            android:text="Aggiungi"
+            android:text="@string/add"
             android:textColor="@color/white"
             android:visibility="invisible"
             app:backgroundTint="@color/colorPrimary"
@@ -363,7 +363,7 @@
             android:layout_margin="16dp"
             android:clickable="true"
             android:focusable="true"
-            android:text="Cerca"
+            android:text="@string/search"
             android:textColor="@color/white"
             android:visibility="invisible"
             app:backgroundTint="@color/colorPrimary"
@@ -379,6 +379,30 @@
             app:layout_anchorGravity="top|right|end" />
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/fabFavoutiteMain"
+            style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|top"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/favourites"
+            android:textColor="@color/white"
+            android:visibility="invisible"
+            app:backgroundTint="@color/colorPrimary"
+            app:icon="@drawable/favorite_full"
+            app:iconTint="@android:color/white"
+            app:layout_anchor="@id/dummy3" />
+
+        <View
+            android:id="@+id/dummy4"
+            android:layout_width="1dp"
+            android:layout_height="16dp"
+            app:layout_anchor="@id/fabFavoutiteMain"
+            app:layout_anchorGravity="top|right|end" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/fabSettings"
             style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
             android:layout_width="wrap_content"
@@ -387,13 +411,13 @@
             android:layout_margin="16dp"
             android:clickable="true"
             android:focusable="true"
-            android:text="Impostazioni"
+            android:text="@string/settings"
             android:textColor="@color/white"
             android:visibility="invisible"
             app:backgroundTint="@color/colorPrimary"
             app:icon="@drawable/ic_settings_black_24dp"
             app:iconTint="@android:color/white"
-            app:layout_anchor="@id/dummy3" />
+            app:layout_anchor="@id/dummy4" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

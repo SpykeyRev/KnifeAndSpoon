@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
@@ -77,7 +78,7 @@ public class RicetteToApproveActivity extends AppCompatActivity {
                     }
                 };
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("Non c'è niente da vedere qui, tutte le ricette presenti nel database sono state approvate!").setPositiveButton("Perfetto!", dialogClickListener)
+                builder.setMessage(getString(R.string.nothing_to_show_here_admin)).setPositiveButton(getString(R.string.perfect_exclamation_mark), dialogClickListener)
                         .show();
             }
             else
@@ -96,7 +97,7 @@ public class RicetteToApproveActivity extends AppCompatActivity {
                     txtTempoPreparazioneFeed.setText(ricettas.get(i).getTempo().concat(" minuti"));
                     String feedPersone="Per ".concat(Utils.personaOrPersone(ricettas.get(i).getPersone()));
                     txtPersoneFeed.setText(feedPersone);
-                    LinearLayout layoutContainer=(LinearLayout)addView.findViewById(R.id.layoutFeedMainAndPic);
+                    RelativeLayout layoutContainer=(RelativeLayout)addView.findViewById(R.id.layoutFeedMainAndPic);
                     final int position = i;
                     layoutContainer.setOnClickListener(new View.OnClickListener() {
                         @Override

@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
     private GoogleSignInClient googleSignInClient;
     private SwipeRefreshLayout pullToRefresh;
     private FloatingActionButton fab_main;
-    private ExtendedFloatingActionButton fab_add, fab_search, fab_settings;
+    private ExtendedFloatingActionButton fab_add, fab_search, fab_settings,fab_favourite;
     private Animation fab_open, fab_close, fab_clock, fab_anticlock;
     private List<Ricetta> ricettas;
     private Boolean isOpen = false;
@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
         fab_add = (ExtendedFloatingActionButton) findViewById(R.id.fabAdd);
         fab_search = (ExtendedFloatingActionButton) findViewById(R.id.fabSearch);
         fab_settings = (ExtendedFloatingActionButton) findViewById(R.id.fabSettings);
+        fab_favourite=(ExtendedFloatingActionButton)findViewById(R.id.fabFavoutiteMain);
         fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         fab_clock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_clock);
@@ -260,6 +261,8 @@ public class MainActivity extends AppCompatActivity {
         fab_search.setEnabled(false);
         fab_settings.setClickable(false);
         fab_settings.setEnabled(false);
+        fab_favourite.setClickable(false);
+        fab_favourite.setEnabled(false);
         fab_main.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -317,6 +320,49 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        fab_favourite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(fireUser.isAnonymous())
+                {
+                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which){
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    GoogleSignInClient client = GoogleSignIn.getClient(MainActivity.this, GoogleSignInOptions.DEFAULT_SIGN_IN);
+                                    client.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            FirebaseAuth.getInstance().signOut();
+                                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            intent.putExtra("EXIT", true);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    });
+                                    break;
+
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    //No button clicked
+                                    break;
+                            }
+                        }
+                    };
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setMessage(getString(R.string.anonymous_try_fav)).setPositiveButton(getString(R.string.let_me_register), dialogClickListener)
+                            .setNegativeButton(getString(R.string.cancel), dialogClickListener).show();
+                }
+                else
+                {
+                    Intent intent = new Intent(MainActivity.this, FavouriteActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
         fab_settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -362,23 +408,30 @@ public class MainActivity extends AppCompatActivity {
         if(fireUser.isAnonymous())
         {
             fab_add.setBackgroundColor(getColor(android.R.color.darker_gray));
+            fab_favourite.setBackgroundColor(getColor(android.R.color.darker_gray));
             if (isOpen) {
                 fab_add.startAnimation(fab_close);
                 fab_search.startAnimation(fab_close);
+                fab_favourite.startAnimation(fab_close);
                 fab_main.startAnimation(fab_anticlock);
                 fab_add.setClickable(false);
                 fab_add.setEnabled(false);
                 fab_search.setClickable(false);
                 fab_search.setEnabled(false);
+                fab_favourite.setClickable(false);
+                fab_favourite.setEnabled(false);
                 isOpen = false;
             } else {
                 fab_add.startAnimation(fab_open);
                 fab_search.startAnimation(fab_open);
+                fab_favourite.startAnimation(fab_open);
                 fab_main.startAnimation(fab_clock);
                 fab_add.setClickable(true);
                 fab_add.setEnabled(true);
                 fab_search.setClickable(true);
                 fab_search.setEnabled(true);
+                fab_favourite.setClickable(true);
+                fab_favourite.setEnabled(true);
                 isOpen = true;
             }
         }
@@ -388,6 +441,7 @@ public class MainActivity extends AppCompatActivity {
                 fab_add.startAnimation(fab_close);
                 fab_search.startAnimation(fab_close);
                 fab_settings.startAnimation(fab_close);
+                fab_favourite.startAnimation(fab_close);
                 fab_main.startAnimation(fab_anticlock);
                 fab_add.setClickable(false);
                 fab_add.setEnabled(false);
@@ -395,11 +449,14 @@ public class MainActivity extends AppCompatActivity {
                 fab_search.setEnabled(false);
                 fab_settings.setClickable(false);
                 fab_settings.setEnabled(false);
+                fab_favourite.setClickable(false);
+                fab_favourite.setEnabled(false);
                 isOpen = false;
             } else {
                 fab_add.startAnimation(fab_open);
                 fab_search.startAnimation(fab_open);
                 fab_settings.startAnimation(fab_open);
+                fab_favourite.startAnimation(fab_open);
                 fab_main.startAnimation(fab_clock);
                 fab_add.setClickable(true);
                 fab_add.setEnabled(true);
@@ -407,6 +464,8 @@ public class MainActivity extends AppCompatActivity {
                 fab_search.setEnabled(true);
                 fab_settings.setClickable(true);
                 fab_settings.setEnabled(true);
+                fab_favourite.setClickable(true);
+                fab_favourite.setEnabled(true);
                 isOpen = true;
             }
         }

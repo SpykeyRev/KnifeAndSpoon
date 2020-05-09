@@ -57,6 +57,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
     private Bundle infoToShow;
     private Boolean[] isFavourite;
     private FloatingActionButton fab_favourite;
+    private Boolean[] appoggio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +91,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
         loadIngredienti(ingredienti);
         loadPassaggi(passaggi);
         isFavourite= new Boolean[]{(Boolean) infoToShow.get("isFav")};
+        appoggio= new Boolean[]{(Boolean) infoToShow.get("isFav")};
         fabFavouriteSetter();
     }
 
@@ -148,8 +150,15 @@ public class ShowRicettaActivity extends AppCompatActivity {
         return extras;
     }
 
-
-
+    @Override
+    protected void onPause() {
+        if(isFavourite[0]!=appoggio[0])
+        {
+            new Utente.setPreferiti(infoToShow.get("Id").toString(),infoToShow.get("pathIdUser").toString(),isFavourite[0]).execute();
+            appoggio[0]=!appoggio[0];
+        }
+        super.onPause();
+    }
 
     private String getUsername(String autore) {
         try {
@@ -272,7 +281,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
     private void checkFavIsChanged()
     {
         Intent intent=new Intent();
-        if(isFavourite[0]==infoToShow.getBoolean("isFav"))
+        if(isFavourite[0]==appoggio[0])
         {
             setResult(Activity.RESULT_CANCELED,intent);
         }

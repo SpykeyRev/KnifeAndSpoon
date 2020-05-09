@@ -198,17 +198,8 @@ public class FavouriteActivity extends AppCompatActivity {
                     DocumentSnapshot documentSnapshots=task.getResult();
                     if(documentSnapshots.exists())
                     {
-                        if(documentIdRicetta==null)
-                        {
-                            Log.e("EEEE","ciao");
-                        }
-
                         List<String> preferiti= (List<String>) documentSnapshots.get("Preferiti");
                         preferiti.remove(documentIdRicetta);
-                        for(int i=0;i<preferiti.size();i++)
-                        {
-                            Log.e("CIAO CIAO",preferiti.get(i));
-                        }
                         utentiRef.update("Preferiti",preferiti);
                     }
                 }

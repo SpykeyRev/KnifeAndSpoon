@@ -16,24 +16,31 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.digiolaba.knifeandspoon.Model.Ricetta;
 import com.digiolaba.knifeandspoon.Model.SliderItem;
+import com.digiolaba.knifeandspoon.Model.Utente;
 import com.digiolaba.knifeandspoon.R;
 import com.digiolaba.knifeandspoon.View.ShowRicettaActivity;
+import com.google.firebase.auth.FirebaseUser;
 import com.smarteist.autoimageslider.SliderViewAdapter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class SliderAdapter extends
         SliderViewAdapter<SliderAdapter.SliderAdapterVH> {
 
     private Context context;
+    private FirebaseUser fireUser;
+    private Utente actualUser;
     private List<SliderItem> mSliderItems = new ArrayList<>();
     private List<Ricetta> ricettas = new ArrayList<>();
 
-    public SliderAdapter(Context context) {
+    public SliderAdapter(Context context, FirebaseUser fireUser,Utente actualUser) {
         this.context = context;
+        this.fireUser=fireUser;
+        this.actualUser=actualUser;
     }
 
     public void renewItems(List<SliderItem> sliderItems, List<Ricetta> ricettas) {
@@ -83,10 +90,33 @@ public class SliderAdapter extends
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
                 byte[] bitmapdata = stream.toByteArray();
                 bundle.putByteArray("Thumbnail", bitmapdata);
+                if(!fireUser.isAnonymous())
+                {
+                    bundle.putString("pathIdUser",actualUser.getUserId());
+                    bundle.putBoolean("isFav",checkPreferiti(ricettas.get(position).getId()));
+                }
+                else
+                {
+                    bundle.putString("pathIdUser","anonymous");
+                    bundle.putBoolean("isFav",false);
+                }
                 intent.putExtras(bundle);
                 context.startActivity(intent);
             }
         });
+    }
+
+    private Boolean checkPreferiti(String idRicetta)
+    {
+        Boolean found=false;
+        try {
+            found=new Utente.checkPreferiti(idRicetta,actualUser.getUserId()).execute().get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return found;
     }
 
     @Override

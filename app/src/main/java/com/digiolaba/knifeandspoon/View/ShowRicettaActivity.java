@@ -229,7 +229,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
         }
         else
         {
-            fab_favourite.setBackgroundColor(getColor(android.R.color.darker_gray));
+            fab_favourite.setBackgroundTintList(getColorStateList(android.R.color.darker_gray));
             fab_favourite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

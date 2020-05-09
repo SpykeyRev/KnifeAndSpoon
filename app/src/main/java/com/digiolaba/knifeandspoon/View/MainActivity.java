@@ -482,7 +482,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onLongClick(View v) {
                 Utils.showSnackbar(coordinatorLayout, getResources().getString(R.string.settings));
-
+                return false;
+            }
+        });
+        fab_favourite.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Utils.showSnackbar(coordinatorLayout, getResources().getString(R.string.preferiti));
                 return false;
             }
         });

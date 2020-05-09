@@ -200,11 +200,11 @@ public class ShowRicettaActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         if (!isFavourite[0]) {
                             fab_favourite.setImageResource(R.drawable.favorite_full);
-                            Utils.showSnackbar(showPassaggiLayout, "Aggiunto ai preferiti");
+                            Utils.showSnackbar(showPassaggiLayout, getString(R.string.added_preferiti));
                             isFavourite[0] = true;
                         } else {
                             fab_favourite.setImageResource(R.drawable.favorite);
-                            Utils.showSnackbar(showPassaggiLayout, "Rimosso dai preferiti");
+                            Utils.showSnackbar(showPassaggiLayout, getString(R.string.removed_preferiti));
                             isFavourite[0] = false;
                         }
                     }
@@ -250,6 +250,17 @@ public class ShowRicettaActivity extends AppCompatActivity {
                 }
             });
         }
+        fab_favourite.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (!isFavourite[0]) {
+                    Utils.showSnackbar(showPassaggiLayout, getString(R.string.add_preferiti));
+                } else {
+                    Utils.showSnackbar(showPassaggiLayout, getString(R.string.remove_preferiti));
+                }
+                return false;
+            }
+        });
 
     }
 

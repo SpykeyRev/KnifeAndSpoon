@@ -101,5 +101,11 @@
     <string name="nothing_to_show_here_admin">Non c\'è niente da vedere qui, tutte le ricette presenti nel database sono state approvate!</string>
     <string name="perfect_exclamation_mark">Perfetto!</string>
     <string name="no_fav_yet">Non ci sono dei preferiti. Aggiungine qualcuno!</string>
+    <string name="preferiti">Mostra le mie ricette preferite</string>
+    <string name="add_preferiti">Aggiungi ai preferiti</string>
+    <string name="remove_preferiti">Rimuovi dai preferiti</string>
+    <string name="added_preferiti">Aggiunto dai preferiti</string>
+    <string name="removed_preferiti">Rimosso dai preferiti</string>
+
 
 </resources>

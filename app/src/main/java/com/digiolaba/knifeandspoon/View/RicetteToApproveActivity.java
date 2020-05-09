@@ -114,6 +114,7 @@ public class RicetteToApproveActivity extends AppCompatActivity {
                                 bundle.putByteArray("Thumbnail", bitmapdata);
                                 bundle.putBoolean("isAdmin",true);
                                 bundle.putString("ThumbnailURL",ricettas.get(position).getThumbnail());
+                                bundle.putString("pathIdUser","admin");
                                 intent.putExtras(bundle);
                                 startActivity(intent);
 

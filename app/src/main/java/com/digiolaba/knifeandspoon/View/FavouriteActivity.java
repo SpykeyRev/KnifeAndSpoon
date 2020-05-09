@@ -85,7 +85,6 @@ public class FavouriteActivity extends AppCompatActivity {
     private void loadRicetteFav()
     {
         layoutFeedFav.removeAllViews();
-
         try {
             ricettas= (List<Ricetta>) new Ricetta.getFavRicette(actualUser).execute().get();
         } catch (ExecutionException e) {

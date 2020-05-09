@@ -25,6 +25,9 @@ import androidx.appcompat.widget.Toolbar;
 import com.digiolaba.knifeandspoon.Controller.Utils;
 import com.digiolaba.knifeandspoon.Model.Utente;
 import com.digiolaba.knifeandspoon.R;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -53,6 +56,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
     private LinearLayout showIngredientiLayout, showPassaggiLayout;
     private Bundle infoToShow;
     private Boolean[] isFavourite;
+    private FloatingActionButton fab_favourite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +78,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
         String persone = infoToShow.getString("Persone");
         toolbar.setTitle(titolo);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab_favourite = (FloatingActionButton) findViewById(R.id.fab_favourite);
+        fab_favourite = (FloatingActionButton) findViewById(R.id.fab_favourite);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         TextView txtPersone = (TextView) findViewById(R.id.txtNumeroPersoneNumber);
@@ -86,7 +90,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
         loadIngredienti(ingredienti);
         loadPassaggi(passaggi);
         isFavourite= new Boolean[]{(Boolean) infoToShow.get("isFav")};
-        fabFavouriteSetter(fab_favourite);
+        fabFavouriteSetter();
     }
 
     @Override
@@ -185,35 +189,84 @@ public class ShowRicettaActivity extends AppCompatActivity {
         }
     }
 
-    private void fabFavouriteSetter(final FloatingActionButton fab)
+    private void fabFavouriteSetter()
     {
-        //dovrebbe essere preso da firebase
-        if(!isFavourite[0])
+        if(!(infoToShow.get("pathIdUser").toString().equals("anonymous")))
         {
-            fab.setImageResource(R.drawable.favorite);
-        }
-        else
-        {
-            fab.setImageResource(R.drawable.favorite_full);
-        }
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            if(!infoToShow.getBoolean("isAdmin"))
+            {
                 if(!isFavourite[0])
                 {
-                    fab.setImageResource(R.drawable.favorite_full);
-                    Utils.showSnackbar(showPassaggiLayout,"Aggiunto ai preferiti");
-                    isFavourite[0] =true;
+                    fab_favourite.setImageResource(R.drawable.favorite);
                 }
                 else
                 {
-                    fab.setImageResource(R.drawable.favorite);
-                    Utils.showSnackbar(showPassaggiLayout,"Rimosso dai preferiti");
-                    isFavourite[0] =false;
+                    fab_favourite.setImageResource(R.drawable.favorite_full);
                 }
+
+                fab_favourite.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(!isFavourite[0])
+                        {
+                            fab_favourite.setImageResource(R.drawable.favorite_full);
+                            Utils.showSnackbar(showPassaggiLayout,"Aggiunto ai preferiti");
+                            isFavourite[0] =true;
+                        }
+                        else
+                        {
+                            fab_favourite.setImageResource(R.drawable.favorite);
+                            Utils.showSnackbar(showPassaggiLayout,"Rimosso dai preferiti");
+                            isFavourite[0] =false;
+                        }
+                    }
+                });
             }
-        });
+            else
+            {
+                fab_favourite.setVisibility(View.GONE);
+            }
+        }
+        else
+        {
+            fab_favourite.setBackgroundColor(getColor(android.R.color.darker_gray));
+            fab_favourite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which){
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    GoogleSignInClient client = GoogleSignIn.getClient(ShowRicettaActivity.this, GoogleSignInOptions.DEFAULT_SIGN_IN);
+                                    client.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            FirebaseAuth.getInstance().signOut();
+                                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            intent.putExtra("EXIT", true);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    });
+                                    break;
+
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    //No button clicked
+                                    break;
+                            }
+                        }
+                    };
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ShowRicettaActivity.this);
+                    builder.setMessage(getString(R.string.anonymous_try_new_fav)).setPositiveButton(getString(R.string.let_me_register), dialogClickListener)
+                            .setNegativeButton(getString(R.string.cancel), dialogClickListener).show();
+                }
+            });
+        }
+
     }
 
     private void checkFavIsChanged()

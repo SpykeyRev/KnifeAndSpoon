@@ -223,8 +223,16 @@ public class MainActivity extends AppCompatActivity {
                         byte[] bitmapdata = stream.toByteArray();
                         bundle.putByteArray("Thumbnail", bitmapdata);
                         bundle.putBoolean("isAdmin",false);
-                        bundle.putString("pathIdUser",actualUser.getUserId());
-                        bundle.putBoolean("isFav",checkPreferiti(ricettas.get(position).getId()));
+                        if(!fireUser.isAnonymous())
+                        {
+                            bundle.putString("pathIdUser",actualUser.getUserId());
+                            bundle.putBoolean("isFav",checkPreferiti(ricettas.get(position).getId()));
+                        }
+                        else
+                        {
+                            bundle.putString("pathIdUser","anonymous");
+                            bundle.putBoolean("isFav",false);
+                        }
                         intent.putExtras(bundle);
                         startActivityForResult(intent,LAUNCH_SHOW_RICETTA_ACTIVITY);
                     }

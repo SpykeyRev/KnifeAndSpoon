@@ -87,6 +87,7 @@
     <string name="carattere_vietato">Non puoi inserire \"_ricetta\" nel tuo nome.</string>
     <string name="anonymous_try_add">Devi registrarti per poter scrivere una ricetta.</string>
     <string name="anonymous_try_fav">Devi registrarti per poter vedere la lista dei preferiti.</string>
+    <string name="anonymous_try_new_fav">Devi registrarti per poter aggiungere una ricetta ai preferiti.</string>
     <string name="let_me_register">Fammi registrare!</string>
     <string name="cancel">Annulla</string>
     <string name="log_out">Effettua Log-Out</string>

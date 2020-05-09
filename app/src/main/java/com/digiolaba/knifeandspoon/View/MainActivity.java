@@ -1,6 +1,5 @@
 package com.digiolaba.knifeandspoon.View;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -42,8 +40,6 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
@@ -61,6 +57,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private Utente actualUser;
 
+    public void MainActivity() {
+
+    }
+
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
         context.startActivity(intent);
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
     private GoogleSignInClient googleSignInClient;
     private SwipeRefreshLayout pullToRefresh;
     private FloatingActionButton fab_main;
-    private ExtendedFloatingActionButton fab_add, fab_search, fab_settings,fab_favourite;
+    private ExtendedFloatingActionButton fab_add, fab_search, fab_settings, fab_favourite;
     private Animation fab_open, fab_close, fab_clock, fab_anticlock;
     private List<Ricetta> ricettas;
     private Boolean isOpen = false;
@@ -81,8 +81,8 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout layoutFeed;
     SliderAdapter adapter;
     private FirebaseUser fireUser;
-    private static int LAUNCH_SHOW_RICETTA_ACTIVITY=2912;
-    private static int LAUNCH_SETTINGS_ACTIVITY =1998;
+    private static int LAUNCH_SHOW_RICETTA_ACTIVITY = 2912;
+    private static int LAUNCH_SETTINGS_ACTIVITY = 1998;
 
 
     @Override
@@ -102,18 +102,18 @@ public class MainActivity extends AppCompatActivity {
         fab_add = (ExtendedFloatingActionButton) findViewById(R.id.fabAdd);
         fab_search = (ExtendedFloatingActionButton) findViewById(R.id.fabSearch);
         fab_settings = (ExtendedFloatingActionButton) findViewById(R.id.fabSettings);
-        fab_favourite=(ExtendedFloatingActionButton)findViewById(R.id.fabFavoutiteMain);
+        fab_favourite = (ExtendedFloatingActionButton) findViewById(R.id.fabFavoutiteMain);
         fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         fab_clock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_clock);
         fab_anticlock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_anticlock);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinateLayout);
-        layoutFeed=(LinearLayout)findViewById(R.id.layoutFeed);
+        layoutFeed = (LinearLayout) findViewById(R.id.layoutFeed);
         //Setting up firebase for userInfo
         setUserInfo();
         //Setting up imageSlider
         sliderView = findViewById(R.id.imageSlider);
-        adapter = new SliderAdapter(this,FirebaseAuth.getInstance().getCurrentUser(),actualUser);
+        adapter = new SliderAdapter(MainActivity.this, this, FirebaseAuth.getInstance().getCurrentUser(), actualUser);
         sliderView.setSliderAdapter(adapter);
         sliderView.setIndicatorAnimation(IndicatorAnimations.WORM); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
         sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
@@ -126,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
         FABClickManagement();
         FABLongClickManagement();
         loadFeed();
-
     }
 
     private void setUserInfo() {
@@ -135,9 +134,8 @@ public class MainActivity extends AppCompatActivity {
         TextView userName = (TextView) findViewById(R.id.userName);
         try {
             fireUser = firebaseAuth.getCurrentUser();
-            if(!fireUser.isAnonymous())
-            {
-                actualUser = (Utente) new Utente.getUserInfo(firebaseAuth.getCurrentUser().getEmail()).execute().get();
+            if (!fireUser.isAnonymous()) {
+                actualUser = (Utente) new Utente.getUserInfo(this, firebaseAuth.getCurrentUser().getEmail()).execute().get();
                 userName.setText(actualUser.getUserName());
                 CircleImageView userImage = (CircleImageView) findViewById(R.id.profile_image);
                 Picasso.get().load(actualUser.getUserImage()).into(userImage);
@@ -153,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
     private void refresh() {
         loadImageSliderWithRicette();
         try {
-            actualUser = (Utente) new Utente.getUserInfo(firebaseAuth.getCurrentUser().getEmail()).execute().get();
+            actualUser = (Utente) new Utente.getUserInfo(this, firebaseAuth.getCurrentUser().getEmail()).execute().get();
             CircleImageView userImage = (CircleImageView) findViewById(R.id.profile_image);
             Glide.with(this).load(actualUser.getUserImage()).into(userImage);
         } catch (ExecutionException e) {
@@ -191,30 +189,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loadFeed()
-    {
-        for(int i=0;i<ricettas.size();i++)
-        {
+    private void loadFeed() {
+        for (int i = 0; i < ricettas.size(); i++) {
             LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View addView = layoutInflater.inflate(R.layout.row_feed_layout, null);
-            TextView txtNomeRicettaFeed=(TextView)addView.findViewById(R.id.txtFeedNomeRicetta);
-            TextView txtTempoPreparazioneFeed=(TextView)addView.findViewById(R.id.txtFeedTempoPreparazione);
-            TextView txtPersoneFeed=(TextView)addView.findViewById(R.id.txtFeedPersone);
+            TextView txtNomeRicettaFeed = (TextView) addView.findViewById(R.id.txtFeedNomeRicetta);
+            TextView txtTempoPreparazioneFeed = (TextView) addView.findViewById(R.id.txtFeedTempoPreparazione);
+            TextView txtPersoneFeed = (TextView) addView.findViewById(R.id.txtFeedPersone);
             final ImageView ricettaImageFeed = (ImageView) addView.findViewById(R.id.imgFeedRicetta);
             Picasso.get().load(ricettas.get(i).getThumbnail()).into(ricettaImageFeed);
             txtNomeRicettaFeed.setText(ricettas.get(i).getTitle());
             txtTempoPreparazioneFeed.setText(ricettas.get(i).getTempo().concat(" minuti"));
-            String feedPersone="Per ".concat(Utils.personaOrPersone(ricettas.get(i).getPersone()));
+            String feedPersone = "Per ".concat(Utils.personaOrPersone(ricettas.get(i).getPersone()));
             txtPersoneFeed.setText(feedPersone);
-            RelativeLayout layoutContainer=(RelativeLayout)addView.findViewById(R.id.layoutFeedMainAndPic);
+            RelativeLayout layoutContainer = (RelativeLayout) addView.findViewById(R.id.layoutFeedMainAndPic);
             final int position = i;
             layoutContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                     try {
-                        Intent intent=new Intent(MainActivity.this,ShowRicettaActivity.class);
-                        Bundle bundle=Utils.loadBundle(ricettas.get(position));
+                        Intent intent = new Intent(MainActivity.this, ShowRicettaActivity.class);
+                        Bundle bundle = Utils.loadBundle(ricettas.get(position));
                         //Casting from imageSlider to Drawable and conversion into byteArray
                         Drawable d = ricettaImageFeed.getDrawable();
                         Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
@@ -222,22 +218,17 @@ public class MainActivity extends AppCompatActivity {
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
                         byte[] bitmapdata = stream.toByteArray();
                         bundle.putByteArray("Thumbnail", bitmapdata);
-                        bundle.putBoolean("isAdmin",false);
-                        if(!fireUser.isAnonymous())
-                        {
-                            bundle.putString("pathIdUser",actualUser.getUserId());
-                            bundle.putBoolean("isFav",checkPreferiti(ricettas.get(position).getId()));
-                        }
-                        else
-                        {
-                            bundle.putString("pathIdUser","anonymous");
-                            bundle.putBoolean("isFav",false);
+                        bundle.putBoolean("isAdmin", false);
+                        if (!fireUser.isAnonymous()) {
+                            bundle.putString("pathIdUser", actualUser.getUserId());
+                            bundle.putBoolean("isFav", checkPreferiti(ricettas.get(position).getId()));
+                        } else {
+                            bundle.putString("pathIdUser", "anonymous");
+                            bundle.putBoolean("isFav", false);
                         }
                         intent.putExtras(bundle);
-                        startActivityForResult(intent,LAUNCH_SHOW_RICETTA_ACTIVITY);
-                    }
-                    catch(RuntimeException e)
-                    {
+                        startActivityForResult(intent, LAUNCH_SHOW_RICETTA_ACTIVITY);
+                    } catch (RuntimeException e) {
                         e.printStackTrace();
                     }
 
@@ -247,11 +238,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private Boolean checkPreferiti(String idRicetta)
-    {
-        Boolean found=false;
+    private Boolean checkPreferiti(String idRicetta) {
+        Boolean found = false;
         try {
-            found=new Utente.checkPreferiti(idRicetta,actualUser.getUserId()).execute().get();
+            found = new Utente.checkPreferiti(this, idRicetta, actualUser.getUserId()).execute().get();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -259,7 +249,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return found;
     }
-
 
 
     private void FABClickManagement() {
@@ -280,12 +269,11 @@ public class MainActivity extends AppCompatActivity {
         fab_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(fireUser.isAnonymous())
-                {
+                if (fireUser.isAnonymous()) {
                     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            switch (which){
+                            switch (which) {
                                 case DialogInterface.BUTTON_POSITIVE:
                                     GoogleSignInClient client = GoogleSignIn.getClient(MainActivity.this, GoogleSignInOptions.DEFAULT_SIGN_IN);
                                     client.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -312,9 +300,7 @@ public class MainActivity extends AppCompatActivity {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                     builder.setMessage(getString(R.string.anonymous_try_add)).setPositiveButton(getString(R.string.let_me_register), dialogClickListener)
                             .setNegativeButton(getString(R.string.cancel), dialogClickListener).show();
-                }
-                else
-                {
+                } else {
                     Intent intent = new Intent(MainActivity.this, InsertRicettaActivity.class);
                     intent.putExtra("actualUseridentifier", actualUser.getUserId());
                     startActivity(intent);
@@ -331,12 +317,11 @@ public class MainActivity extends AppCompatActivity {
         fab_favourite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(fireUser.isAnonymous())
-                {
+                if (fireUser.isAnonymous()) {
                     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            switch (which){
+                            switch (which) {
                                 case DialogInterface.BUTTON_POSITIVE:
                                     GoogleSignInClient client = GoogleSignIn.getClient(MainActivity.this, GoogleSignInOptions.DEFAULT_SIGN_IN);
                                     client.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -363,11 +348,9 @@ public class MainActivity extends AppCompatActivity {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                     builder.setMessage(getString(R.string.anonymous_try_fav)).setPositiveButton(getString(R.string.let_me_register), dialogClickListener)
                             .setNegativeButton(getString(R.string.cancel), dialogClickListener).show();
-                }
-                else
-                {
+                } else {
                     Intent intent = new Intent(MainActivity.this, FavouriteActivity.class);
-                    intent.putExtra("pathIdUser",actualUser.getUserId());
+                    intent.putExtra("pathIdUser", actualUser.getUserId());
                     startActivity(intent);
                 }
             }
@@ -383,9 +366,9 @@ public class MainActivity extends AppCompatActivity {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
                 byte[] bitmapdata = stream.toByteArray();
                 intent.putExtra("userProPic", bitmapdata);
-                intent.putExtra("id",actualUser.getUserId());
-                intent.putExtra("nome",actualUser.getUserName());
-                intent.putExtra("isAdmin",actualUser.getisAdmin());
+                intent.putExtra("id", actualUser.getUserId());
+                intent.putExtra("nome", actualUser.getUserName());
+                intent.putExtra("isAdmin", actualUser.getisAdmin());
                 startActivityForResult(intent, LAUNCH_SETTINGS_ACTIVITY);
 
             }
@@ -395,26 +378,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode== LAUNCH_SETTINGS_ACTIVITY)
-        {
-            if(resultCode==RESULT_OK)
-            {
+        if (requestCode == LAUNCH_SETTINGS_ACTIVITY) {
+            if (resultCode == RESULT_OK) {
                 refresh();
             }
         }
-        if(requestCode==LAUNCH_SHOW_RICETTA_ACTIVITY)
-        {
-            if(resultCode==RESULT_OK)
-            {
-                new Utente.setPreferiti(data.getExtras().getString("docRicetta"),data.getExtras().getString("docUser"),data.getExtras().getBoolean("fav")).execute();
+        if (requestCode == LAUNCH_SHOW_RICETTA_ACTIVITY) {
+            if (resultCode == RESULT_OK) {
+                new Utente.setPreferiti(this, data.getExtras().getString("docRicetta"), data.getExtras().getString("docUser"), data.getExtras().getBoolean("fav")).execute();
             }
         }
     }
 
-    private void FABShowDifferentUsers()
-    {
-        if(fireUser.isAnonymous())
-        {
+    private void FABShowDifferentUsers() {
+        if (fireUser.isAnonymous()) {
             fab_add.setBackgroundColor(getColor(android.R.color.darker_gray));
             fab_favourite.setBackgroundColor(getColor(android.R.color.darker_gray));
             if (isOpen) {
@@ -442,9 +419,7 @@ public class MainActivity extends AppCompatActivity {
                 fab_favourite.setEnabled(true);
                 isOpen = true;
             }
-        }
-        else if(!fireUser.isAnonymous())
-        {
+        } else if (!fireUser.isAnonymous()) {
             if (isOpen) {
                 fab_add.startAnimation(fab_close);
                 fab_search.startAnimation(fab_close);

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -31,11 +30,8 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -63,7 +59,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String SearchRicetta =mSearchBar.getText().toString();
+                String SearchRicetta = mSearchBar.getText().toString();
                 try {
                     ricettas = (List<Ricetta>) new getRicercaSearch(SearchRicetta).execute().get();
                 } catch (ExecutionException e) {
@@ -79,20 +75,19 @@ public class SearchActivity extends AppCompatActivity {
 
     private void loadRicettaView() {
 
-        for(int i=0; i < ricettas.size(); i++)
-        {
-            LayoutInflater layoutInflater =(LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View addView = layoutInflater.inflate(R.layout.list_layout, null);
-                TextView txtnomeRicetta = (TextView) addView.findViewById(R.id.nomeRicetta);
-                TextView txtTempoPreparazione = (TextView)addView.findViewById(R.id.tempoPreparazione);
-                TextView txtAutore = (TextView) addView.findViewById(R.id.autoreRicetta);
+        for (int i = 0; i < ricettas.size(); i++) {
+            LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View addView = layoutInflater.inflate(R.layout.list_layout, null);
+            TextView txtnomeRicetta = (TextView) addView.findViewById(R.id.nomeRicetta);
+            TextView txtTempoPreparazione = (TextView) addView.findViewById(R.id.tempoPreparazione);
+            TextView txtAutore = (TextView) addView.findViewById(R.id.autoreRicetta);
 
-                final ImageView ricettaImage = (ImageView) addView.findViewById(R.id.imageSearchRicetta);
-                Picasso.get().load(ricettas.get(i).getThumbnail()).into(ricettaImage);
+            final ImageView ricettaImage = (ImageView) addView.findViewById(R.id.imageSearchRicetta);
+            Picasso.get().load(ricettas.get(i).getThumbnail()).into(ricettaImage);
 
-                txtnomeRicetta.setText(ricettas.get(i).getTitle());
-                txtTempoPreparazione.setText(ricettas.get(i).getTempo().concat(" minuti"));
-                txtAutore.setText(ricettas.get(i).getAuthorId());
+            txtnomeRicetta.setText(ricettas.get(i).getTitle());
+            txtTempoPreparazione.setText(ricettas.get(i).getTempo().concat(" minuti"));
+            txtAutore.setText(ricettas.get(i).getAuthorId());
 
             LinearLayout layoutContainer = (LinearLayout) addView.findViewById(R.id.layoutFeedMainAndPic2);
             final int position = i;
@@ -131,8 +126,8 @@ public class SearchActivity extends AppCompatActivity {
 
         String SearchRicetta;
 
-        public getRicercaSearch(String SearchRicetta){
-            this.SearchRicetta= SearchRicetta;
+        public getRicercaSearch(String SearchRicetta) {
+            this.SearchRicetta = SearchRicetta;
         }
 
 
@@ -141,7 +136,7 @@ public class SearchActivity extends AppCompatActivity {
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
             CollectionReference ricetteRef = rootRef.collection("Ricette");
             Query search = ricetteRef.whereEqualTo("isApproved", true).startAt(SearchRicetta);
-            Task<QuerySnapshot> documentSnapshotTask=search.get();
+            Task<QuerySnapshot> documentSnapshotTask = search.get();
             List<Ricetta> obj = new ArrayList();
             try {
                 QuerySnapshot documentSnapshot = Tasks.await(documentSnapshotTask);
@@ -155,7 +150,7 @@ public class SearchActivity extends AppCompatActivity {
                             documentSnapshot.getDocuments().get(i).get("Thumbnail").toString(),
                             (List<Map<String, Object>>) documentSnapshot.getDocuments().get(i).get("Ingredienti"),
                             (List<String>) documentSnapshot.getDocuments().get(i).get("Passaggi"),
-                            (Boolean)documentSnapshot.getDocuments().get(i).get("isApproved")
+                            (Boolean) documentSnapshot.getDocuments().get(i).get("isApproved")
                     ));
                 }
             } catch (ExecutionException e) {
@@ -166,6 +161,7 @@ public class SearchActivity extends AppCompatActivity {
             return obj;
         }
     }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {

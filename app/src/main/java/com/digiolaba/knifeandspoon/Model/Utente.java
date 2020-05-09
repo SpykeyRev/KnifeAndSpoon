@@ -3,10 +3,12 @@ package com.digiolaba.knifeandspoon.Model;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.digiolaba.knifeandspoon.Controller.Utils;
 import com.digiolaba.knifeandspoon.View.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -15,13 +17,11 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -34,13 +34,13 @@ public class Utente {
     private String image;
     private List<String> favourite;
 
-    public Utente(String id, String mail, String nome, String image, Boolean isAdmin,List<String> favourite) {
+    public Utente(String id, String mail, String nome, String image, Boolean isAdmin, List<String> favourite) {
         this.id = id;
         this.mail = mail;
         this.nome = nome;
         this.image = image;
         this.isAdmin = isAdmin;
-        this.favourite=favourite;
+        this.favourite = favourite;
     }
 
     /*
@@ -55,15 +55,37 @@ public class Utente {
             e.printStackTrace();
         }
      */
-    public static class getUserInfo extends AsyncTask {
+    public static class getUserInfo extends AsyncTask<Boolean, Utente, Utente> {
+        Activity activity;
         String email;
+        Utils.LoadingDialog loadingDialog;
 
-        public getUserInfo(String email) {
+        public getUserInfo(Activity activity, String email) {
             this.email = email;
+            this.loadingDialog = new Utils.LoadingDialog(activity);
         }
 
         @Override
-        protected Utente doInBackground(Object[] objects) {
+        protected void onPostExecute(Utente result) {
+            super.onPostExecute(result);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    loadingDialog.dismissLoadingDialog();
+                    ;
+                }
+            }, 1000);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            this.loadingDialog.startLoadingDialog();
+        }
+
+        @Override
+        protected Utente doInBackground(Boolean... booleans) {
             Task<QuerySnapshot> documentSnapshotTask = FirebaseFirestore.getInstance().collection("Utenti").whereEqualTo("Mail", email).get();
             Utente obj = null;
             try {
@@ -74,7 +96,7 @@ public class Utente {
                         documentSnapshot.getDocuments().get(0).get("Nome").toString(),
                         documentSnapshot.getDocuments().get(0).get("Immagine").toString(),
                         (Boolean) documentSnapshot.getDocuments().get(0).get("isAdmin"),
-                        (List<String>)documentSnapshot.getDocuments().get(0).get("Preferiti")
+                        (List<String>) documentSnapshot.getDocuments().get(0).get("Preferiti")
                 );
             } catch (ExecutionException e) {
                 e.printStackTrace();
@@ -85,15 +107,37 @@ public class Utente {
         }
     }
 
-    public static class getUserInfoByReference extends AsyncTask {
+    public static class getUserInfoByReference extends AsyncTask<Boolean, Utente, Utente> {
         String path;
+        Activity activity;
+        Utils.LoadingDialog loadingDialog;
 
-        public getUserInfoByReference(String path) {
+        public getUserInfoByReference(Activity activity, String path) {
             this.path = path;
+            this.loadingDialog = new Utils.LoadingDialog(activity);
         }
 
         @Override
-        protected Utente doInBackground(Object[] objects) {
+        protected void onPostExecute(Utente result) {
+            super.onPostExecute(result);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    loadingDialog.dismissLoadingDialog();
+                    ;
+                }
+            }, 1000);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            this.loadingDialog.startLoadingDialog();
+        }
+
+        @Override
+        protected Utente doInBackground(Boolean... booleans) {
             Task<DocumentSnapshot> documentSnapshotTask = FirebaseFirestore.getInstance().collection("Utenti").document(path.split("/")[1]).get();
             Utente obj = null;
             try {
@@ -104,7 +148,7 @@ public class Utente {
                         documentSnapshot.get("Nome").toString(),
                         documentSnapshot.get("Immagine").toString(),
                         (Boolean) documentSnapshot.get("isAdmin"),
-                        (List<String>)documentSnapshot.get("Preferiti")
+                        (List<String>) documentSnapshot.get("Preferiti")
                 );
             } catch (ExecutionException e) {
                 e.printStackTrace();
@@ -119,11 +163,30 @@ public class Utente {
         Activity activity;
         Map utente;
         byte[] imgData;
+        Utils.LoadingDialog loadingDialog;
 
         public registerUser(Activity activity, Map utente, byte[] imgData) {
             this.activity = activity;
             this.utente = utente;
             this.imgData = imgData;
+            this.loadingDialog = new Utils.LoadingDialog(activity);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    loadingDialog.dismissLoadingDialog();
+                }
+            }, 1000);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            this.loadingDialog.startLoadingDialog();
         }
 
         @Override
@@ -162,31 +225,48 @@ public class Utente {
         }
     }
 
-    public static class changePicUser extends AsyncTask<Boolean,Void,Boolean>
-    {
-        String id,username;
+    public static class changePicUser extends AsyncTask<Boolean, Void, Boolean> {
+        Activity activity;
+        Utils.LoadingDialog loadingDialog;
+        String id, username;
         byte[] imgData;
 
-        public changePicUser(String id, String username,byte[] imgData)
-        {
-            this.id=id;
-            this.username=username;
-            this.imgData=imgData;
+        public changePicUser(Activity activity, String id, String username, byte[] imgData) {
+            this.activity = activity;
+            this.id = id;
+            this.username = username;
+            this.imgData = imgData;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    loadingDialog.dismissLoadingDialog();
+                    ;
+                }
+            }, 1000);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            this.loadingDialog.startLoadingDialog();
         }
 
         @Override
         protected Boolean doInBackground(Boolean... booleans) {
-            String documentID=id.split("/")[1];
+            String documentID = id.split("/")[1];
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
             final DocumentReference utentiRef = rootRef.collection("Utenti").document(documentID);
             utentiRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if(task.isSuccessful())
-                    {
-                        DocumentSnapshot documentSnapshot=task.getResult();
-                        if(documentSnapshot.exists())
-                        {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot documentSnapshot = task.getResult();
+                        if (documentSnapshot.exists()) {
                             FirebaseStorage storage = FirebaseStorage.getInstance();
                             StorageReference storageRef = storage.getReference();
                             final StorageReference imageRef = storageRef.child(username + ".jpg");
@@ -197,22 +277,13 @@ public class Utente {
                                         @Override
                                         public void onSuccess(Uri uri) {
                                             uri.toString();
-                                            utentiRef.update("Immagine",uri.toString());
+                                            utentiRef.update("Immagine", uri.toString());
                                         }
                                     });
                                 }
                             });
-                            /*try {
-                                Tasks.await(uploadTask);
-                            } catch (ExecutionException e) {
-                                e.printStackTrace();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }*/
-                        }
-                        else
-                        {
-                            Log.e("CIAO","CIAO");
+                        } else {
+                            Log.e("CIAO", "CIAO");
                         }
                     }
                 }
@@ -221,31 +292,48 @@ public class Utente {
         }
     }
 
-    public static class checkPreferiti extends AsyncTask<Boolean,Void,Boolean>
-    {
-        String documentIdRicetta,pathIdUtente;
+    public static class checkPreferiti extends AsyncTask<Boolean, Void, Boolean> {
+        String documentIdRicetta, pathIdUtente;
+        Activity activity;
+        Utils.LoadingDialog loadingDialog;
 
-        public checkPreferiti(String documentIdRicetta,String pathIdUtente)
-        {
-            this.documentIdRicetta=documentIdRicetta;
-            this.pathIdUtente=pathIdUtente;
+        public checkPreferiti(Activity activity, String documentIdRicetta, String pathIdUtente) {
+            this.activity = activity;
+            this.documentIdRicetta = documentIdRicetta;
+            this.pathIdUtente = pathIdUtente;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    loadingDialog.dismissLoadingDialog();
+                    ;
+                }
+            }, 1000);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            this.loadingDialog.startLoadingDialog();
         }
 
         @Override
         protected Boolean doInBackground(Boolean... booleans) {
-            Boolean found=false;
-            String documentIdUtente =pathIdUtente.split("/")[1];
+            Boolean found = false;
+            String documentIdUtente = pathIdUtente.split("/")[1];
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
             DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
-            Task<DocumentSnapshot> documentSnapshotTask=utentiRef.get();
+            Task<DocumentSnapshot> documentSnapshotTask = utentiRef.get();
             try {
-                DocumentSnapshot documentSnapshots=Tasks.await(documentSnapshotTask);
-                List<String> preferiti= (List<String>) documentSnapshots.get("Preferiti");
-                for(int i=0;i<preferiti.size();i++)
-                {
-                    if(preferiti.get(i).equals(documentIdRicetta))
-                    {
-                        found=true;
+                DocumentSnapshot documentSnapshots = Tasks.await(documentSnapshotTask);
+                List<String> preferiti = (List<String>) documentSnapshots.get("Preferiti");
+                for (int i = 0; i < preferiti.size(); i++) {
+                    if (preferiti.get(i).equals(documentIdRicetta)) {
+                        found = true;
                     }
                 }
             } catch (ExecutionException e) {
@@ -257,42 +345,55 @@ public class Utente {
         }
     }
 
-    public static class setPreferiti extends AsyncTask<Boolean,Void,Boolean>
-    {
-        String documentIdRicetta,pathIdUtente;
+    public static class setPreferiti extends AsyncTask<Boolean, Void, Boolean> {
+        String documentIdRicetta, pathIdUtente;
         Boolean fav;
+        Activity activity;
+        Utils.LoadingDialog loadingDialog;
 
-        public setPreferiti(String documentIdRicetta,String pathIdUtente,Boolean fav)
-        {
-            this.documentIdRicetta=documentIdRicetta;
-            this.pathIdUtente=pathIdUtente;
-            this.fav=fav;
+        public setPreferiti(Activity activity, String documentIdRicetta, String pathIdUtente, Boolean fav) {
+            this.documentIdRicetta = documentIdRicetta;
+            this.pathIdUtente = pathIdUtente;
+            this.fav = fav;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    loadingDialog.dismissLoadingDialog();
+                    ;
+                }
+            }, 1000);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            this.loadingDialog.startLoadingDialog();
         }
 
         @Override
         protected Boolean doInBackground(Boolean... booleans) {
-            String documentIdUtente =pathIdUtente.split("/")[1];
+            String documentIdUtente = pathIdUtente.split("/")[1];
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-            final DocumentReference utentiRef=rootRef.collection("Utenti").document(documentIdUtente);
+            final DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
             utentiRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if(task.isSuccessful())
-                    {
-                        DocumentSnapshot documentSnapshots=task.getResult();
-                        if(documentSnapshots.exists())
-                        {
-                            if(fav)
-                            {
-                                List<String> preferiti= (List<String>) documentSnapshots.get("Preferiti");
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot documentSnapshots = task.getResult();
+                        if (documentSnapshots.exists()) {
+                            if (fav) {
+                                List<String> preferiti = (List<String>) documentSnapshots.get("Preferiti");
                                 preferiti.add(documentIdRicetta);
-                                utentiRef.update("Preferiti",preferiti);
-                            }
-                            else
-                            {
-                                List<String> preferiti= (List<String>) documentSnapshots.get("Preferiti");
+                                utentiRef.update("Preferiti", preferiti);
+                            } else {
+                                List<String> preferiti = (List<String>) documentSnapshots.get("Preferiti");
                                 preferiti.remove(documentIdRicetta);
-                                utentiRef.update("Preferiti",preferiti);
+                                utentiRef.update("Preferiti", preferiti);
                             }
 
                         }
@@ -325,6 +426,7 @@ public class Utente {
         return this.isAdmin;
     }
 
-    public List<String> getFavourite(){return this.favourite;
+    public List<String> getFavourite() {
+        return this.favourite;
     }
 }

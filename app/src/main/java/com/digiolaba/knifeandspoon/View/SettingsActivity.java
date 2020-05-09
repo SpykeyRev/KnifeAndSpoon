@@ -7,17 +7,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,25 +26,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -63,7 +48,7 @@ public class SettingsActivity extends AppCompatActivity {
     private ImageView userImage;
     private String id;
     private String username;
-    private int result= Activity.RESULT_CANCELED;
+    private int result = Activity.RESULT_CANCELED;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,21 +64,20 @@ public class SettingsActivity extends AppCompatActivity {
         changeProPic = findViewById(R.id.btnChangeProPic);
         logOutClick();
         checkPermissionAndPhoto();
-        id=extras.getString("id");
-        username=extras.getString("nome");
+        id = extras.getString("id");
+        username = extras.getString("nome");
         loadAdminButton(extras.getBoolean("isAdmin"));
     }
 
     @Override
     public void onBackPressed() {
-        Intent intent=new Intent();
-        setResult(result,intent);
+        Intent intent = new Intent();
+        setResult(result, intent);
         super.onBackPressed();
         this.finish();
     }
 
-    private void logOutClick()
-    {
+    private void logOutClick() {
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -156,12 +140,9 @@ public class SettingsActivity extends AppCompatActivity {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 30, baos);
                 byte[] imgData = baos.toByteArray();
-                if(imgData.length>700*1024)
-                {
-                    Utils.errorDialog(SettingsActivity.this,R.string.image_too_big,R.string.error_ok);
-                }
-                else
-                {
+                if (imgData.length > 700 * 1024) {
+                    Utils.errorDialog(SettingsActivity.this, R.string.image_too_big, R.string.error_ok);
+                } else {
                     Glide.with(SettingsActivity.this).load(bitmap).centerCrop().into(userImage);
                     loadImageToFirebase(imgData);
                 }
@@ -254,24 +235,21 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-    private void loadImageToFirebase(final byte[] imgData)
-    {
-        new Utente.changePicUser(id,username,imgData).execute();
-        result=Activity.RESULT_OK;
+    private void loadImageToFirebase(final byte[] imgData) {
+        new Utente.changePicUser(this, id, username, imgData).execute();
+        result = Activity.RESULT_OK;
     }
 
-    private void loadAdminButton(Boolean isAdmin)
-    {
-        if(isAdmin)
-        {
-            reviewRicettaAdmin=(Button)findViewById(R.id.btnApproveRicettaAdmin);
+    private void loadAdminButton(Boolean isAdmin) {
+        if (isAdmin) {
+            reviewRicettaAdmin = (Button) findViewById(R.id.btnApproveRicettaAdmin);
             reviewRicettaAdmin.setVisibility(View.VISIBLE);
             reviewRicettaAdmin.setClickable(true);
             reviewRicettaAdmin.setEnabled(true);
             reviewRicettaAdmin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent=new Intent(SettingsActivity.this,RicetteToApproveActivity.class);
+                    Intent intent = new Intent(SettingsActivity.this, RicetteToApproveActivity.class);
                     startActivity(intent);
                 }
             });

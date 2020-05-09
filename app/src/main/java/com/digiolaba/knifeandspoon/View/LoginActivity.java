@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         SignInButton signInButton = findViewById(R.id.btnLogin);
-        btnAnonymous=(Button)findViewById(R.id.btnNoLogin);
+        btnAnonymous = (Button) findViewById(R.id.btnNoLogin);
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -182,8 +182,7 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-    private void signInAnonymously()
-    {
+    private void signInAnonymously() {
         firebaseAuth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -192,7 +191,7 @@ public class LoginActivity extends AppCompatActivity {
                     Log.d(TAG, "signInAnonymously:success");
                     FirebaseUser user = firebaseAuth.getCurrentUser();
                     try {
-                        List<Ricetta>ricettas = (List<Ricetta>) new Ricetta.getFirstTenRecipe().execute().get();
+                        List<Ricetta> ricettas = (List<Ricetta>) new Ricetta.getFirstTenRecipe().execute().get();
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     } catch (InterruptedException e) {

@@ -1,5 +1,6 @@
 package com.digiolaba.knifeandspoon.Controller;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,24 +24,23 @@ import com.google.firebase.auth.FirebaseUser;
 import com.smarteist.autoimageslider.SliderViewAdapter;
 
 import java.io.ByteArrayOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class SliderAdapter extends
         SliderViewAdapter<SliderAdapter.SliderAdapterVH> {
-
+    private Activity activity;
     private Context context;
     private FirebaseUser fireUser;
     private Utente actualUser;
     private List<SliderItem> mSliderItems = new ArrayList<>();
     private List<Ricetta> ricettas = new ArrayList<>();
 
-    public SliderAdapter(Context context, FirebaseUser fireUser,Utente actualUser) {
+    public SliderAdapter(Activity activity, Context context, FirebaseUser fireUser, Utente actualUser) {
         this.context = context;
-        this.fireUser=fireUser;
-        this.actualUser=actualUser;
+        this.fireUser = fireUser;
+        this.actualUser = actualUser;
     }
 
     public void renewItems(List<SliderItem> sliderItems, List<Ricetta> ricettas) {
@@ -90,15 +90,12 @@ public class SliderAdapter extends
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
                 byte[] bitmapdata = stream.toByteArray();
                 bundle.putByteArray("Thumbnail", bitmapdata);
-                if(!fireUser.isAnonymous())
-                {
-                    bundle.putString("pathIdUser",actualUser.getUserId());
-                    bundle.putBoolean("isFav",checkPreferiti(ricettas.get(position).getId()));
-                }
-                else
-                {
-                    bundle.putString("pathIdUser","anonymous");
-                    bundle.putBoolean("isFav",false);
+                if (!fireUser.isAnonymous()) {
+                    bundle.putString("pathIdUser", actualUser.getUserId());
+                    bundle.putBoolean("isFav", checkPreferiti(ricettas.get(position).getId()));
+                } else {
+                    bundle.putString("pathIdUser", "anonymous");
+                    bundle.putBoolean("isFav", false);
                 }
                 intent.putExtras(bundle);
                 context.startActivity(intent);
@@ -106,11 +103,10 @@ public class SliderAdapter extends
         });
     }
 
-    private Boolean checkPreferiti(String idRicetta)
-    {
-        Boolean found=false;
+    private Boolean checkPreferiti(String idRicetta) {
+        Boolean found = false;
         try {
-            found=new Utente.checkPreferiti(idRicetta,actualUser.getUserId()).execute().get();
+            found = new Utente.checkPreferiti(activity, idRicetta, actualUser.getUserId()).execute().get();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

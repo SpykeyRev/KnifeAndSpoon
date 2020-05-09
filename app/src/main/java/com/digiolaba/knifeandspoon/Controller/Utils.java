@@ -150,16 +150,46 @@ public class Utils {
     }
 
 
-    public static Bundle loadBundle(Ricetta ricettas)
-    {
-        Bundle bundle=new Bundle();
+    public static Bundle loadBundle(Ricetta ricettas) {
+        Bundle bundle = new Bundle();
         bundle.putString("Autore", ricettas.getAuthorId());
         bundle.putString("Titolo", ricettas.getTitle());
         bundle.putSerializable("Passaggi", (Serializable) ricettas.getSteps());
         bundle.putSerializable("Ingredienti", (Serializable) ricettas.getIngredienti());
         bundle.putString("Tempo", ricettas.getTempo());
         bundle.putString("Persone", ricettas.getPersone());
-        bundle.putString("Id",ricettas.getId());
+        bundle.putString("Id", ricettas.getId());
         return bundle;
+    }
+
+    public static class DynamicLoadingDialog {
+        private Activity activity;
+        private AlertDialog dialog;
+        private TextView text;
+
+        public DynamicLoadingDialog(Activity myActivity) {
+            activity = myActivity;
+        }
+
+        public void startLoadingDialog() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            LayoutInflater inflater = activity.getLayoutInflater();
+            builder.setView(inflater.inflate(R.layout.splash_loading_dialog, null));
+            builder.setCancelable(false);
+            dialog = builder.create();
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.show();
+            text = (TextView) dialog.findViewById(R.id.textSplashLoading);
+        }
+
+        public void updateText(String newText) {
+            if (text != null) {
+                text.setText(newText);
+            }
+        }
+
+        public void dismissLoadingDialog() {
+            dialog.cancel();
+        }
     }
 }

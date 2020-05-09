@@ -30,7 +30,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -45,8 +44,6 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -56,7 +53,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 
 public class InsertRicettaActivity extends AppCompatActivity {
 
@@ -128,7 +124,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
         addPassaggio();
     }
 
-    public MenuItem getPublish(){
+    public MenuItem getPublish() {
         return this.publish;
     }
 
@@ -147,7 +143,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.publishRicetta: {
-                publish=item;
+                publish = item;
                 pubblicaRicetta();
                 return true;
             }
@@ -160,15 +156,13 @@ public class InsertRicettaActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if((etTitolo.getText().toString().trim().equals("")&&numeroPersone.getText().toString().trim().equals("")&&tempoPreparazione.getText().toString().trim().equals("")&&allDescrizione.size()==0&&allIngredienti.size()==0))
-        {
+        if ((etTitolo.getText().toString().trim().equals("") && numeroPersone.getText().toString().trim().equals("") && tempoPreparazione.getText().toString().trim().equals("") && allDescrizione.size() == 0 && allIngredienti.size() == 0)) {
             closeActivity();
-        }
-        else {
+        } else {
             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    switch (which){
+                    switch (which) {
                         case DialogInterface.BUTTON_POSITIVE:
                             closeActivity();
                             break;
@@ -185,8 +179,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
         }
     }
 
-    private void closeActivity()
-    {
+    private void closeActivity() {
         this.finish();
     }
 
@@ -516,7 +509,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
                     ricettaToPush.put("Numero persone", numeroPersone.getText().toString());
                     ricettaToPush.put("Passaggi", getInfoPassaggi());
                     ricettaToPush.put("Ingredienti", getInfoIngredienti());
-                    ricettaToPush.put("isApproved",false);
+                    ricettaToPush.put("isApproved", false);
                     publishToFirebase(ricettaToPush);
                 }
             } else {
@@ -564,6 +557,6 @@ public class InsertRicettaActivity extends AppCompatActivity {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] imgData = baos.toByteArray();
-        new Ricetta.publishRecipe(InsertRicettaActivity.this, publish,ricetta, imgData).execute();
+        new Ricetta.publishRecipe(InsertRicettaActivity.this, publish, ricetta, imgData).execute();
     }
 }

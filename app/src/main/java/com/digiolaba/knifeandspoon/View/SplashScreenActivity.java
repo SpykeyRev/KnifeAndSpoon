@@ -44,8 +44,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
-            if(currentUser.isAnonymous())
-            {
+            if (currentUser.isAnonymous()) {
                 try {
                     List<Ricetta> ricettas = (List<Ricetta>) new Ricetta.getFirstTenRecipe().execute().get();
                 } catch (ExecutionException e) {
@@ -57,9 +56,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                         MainActivity.class);
                 startActivity(intent);
                 finish();
-            }
-            else
-            {
+            } else {
                 FirebaseFirestore storage = FirebaseFirestore.getInstance();
                 storage.collection("Utenti").whereEqualTo("Mail", currentUser.getEmail())
                         .limit(1).get()

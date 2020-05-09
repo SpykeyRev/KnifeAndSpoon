@@ -51,7 +51,7 @@ public class Ricetta {
         this.steps = steps;
         this.tempo = tempo;
         this.persone = persone;
-        this.isApproved=isApproved;
+        this.isApproved = isApproved;
     }
 
     public class Ingrediente {
@@ -83,7 +83,7 @@ public class Ricetta {
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
             CollectionReference ricetteRef = rootRef.collection("Ricette");
             Query queryrRicettaApprovata = ricetteRef.whereEqualTo("isApproved", true);
-            Task<QuerySnapshot> documentSnapshotTask=queryrRicettaApprovata.limit(10).get();
+            Task<QuerySnapshot> documentSnapshotTask = queryrRicettaApprovata.limit(10).get();
             //Task<QuerySnapshot> documentSnapshotTask = FirebaseFirestore.getInstance().collection("Ricette").limit(10).get();
             List<Ricetta> obj = new ArrayList();
             try {
@@ -98,7 +98,7 @@ public class Ricetta {
                             documentSnapshot.getDocuments().get(i).get("Thumbnail").toString(),
                             (List<Map<String, Object>>) documentSnapshot.getDocuments().get(i).get("Ingredienti"),
                             (List<String>) documentSnapshot.getDocuments().get(i).get("Passaggi"),
-                            (Boolean)documentSnapshot.getDocuments().get(i).get("isApproved")
+                            (Boolean) documentSnapshot.getDocuments().get(i).get("isApproved")
                     ));
                 }
             } catch (ExecutionException e) {
@@ -116,7 +116,7 @@ public class Ricetta {
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
             CollectionReference ricetteRef = rootRef.collection("Ricette");
             Query queryrRicettaApprovata = ricetteRef.whereEqualTo("isApproved", false);
-            Task<QuerySnapshot> documentSnapshotTask=queryrRicettaApprovata.get();
+            Task<QuerySnapshot> documentSnapshotTask = queryrRicettaApprovata.get();
             //Task<QuerySnapshot> documentSnapshotTask = FirebaseFirestore.getInstance().collection("Ricette").limit(10).get();
             List<Ricetta> obj = new ArrayList();
             try {
@@ -131,7 +131,7 @@ public class Ricetta {
                             documentSnapshot.getDocuments().get(i).get("Thumbnail").toString(),
                             (List<Map<String, Object>>) documentSnapshot.getDocuments().get(i).get("Ingredienti"),
                             (List<String>) documentSnapshot.getDocuments().get(i).get("Passaggi"),
-                            (Boolean)documentSnapshot.getDocuments().get(i).get("isApproved")
+                            (Boolean) documentSnapshot.getDocuments().get(i).get("isApproved")
                     ));
                 }
             } catch (ExecutionException e) {
@@ -167,7 +167,7 @@ public class Ricetta {
                         documentSnapshot.getString("Thumbnail"),
                         (List<Map<String, Object>>) documentSnapshot.get("Ingredienti"),
                         (List<String>) documentSnapshot.get("Passaggi"),
-                        (Boolean)documentSnapshot.get("isApproved")
+                        (Boolean) documentSnapshot.get("isApproved")
                 );
             } catch (ExecutionException e) {
                 e.printStackTrace();
@@ -187,12 +187,12 @@ public class Ricetta {
         Utils.SuccessDialog successDialog;
         Utils.ErrorDialog errorDialog;
 
-        public publishRecipe(Activity activity,MenuItem publish, Map ricetta, byte[] imgData) {
+        public publishRecipe(Activity activity, MenuItem publish, Map ricetta, byte[] imgData) {
             this.activity = activity;
             this.ricetta = ricetta;
             this.imgData = imgData;
             this.loadingDialog = new Utils.LoadingDialog(activity);
-            this.publish=publish;
+            this.publish = publish;
         }
 
         public void changeDialogText(String newText) {
@@ -278,24 +278,22 @@ public class Ricetta {
 
         String pathIdUser;
 
-        public getFavRicette(String pathIdUser)
-        {
-            this.pathIdUser=pathIdUser;
+        public getFavRicette(String pathIdUser) {
+            this.pathIdUser = pathIdUser;
         }
 
         @Override
         protected List<Ricetta> doInBackground(Object[] objects) {
-            String documentIdUtente =pathIdUser.split("/")[1];
+            String documentIdUtente = pathIdUser.split("/")[1];
             List<Ricetta> obj = new ArrayList();
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
             DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
-            Task<DocumentSnapshot> documentSnapshotTask=utentiRef.get();
+            Task<DocumentSnapshot> documentSnapshotTask = utentiRef.get();
             try {
-                DocumentSnapshot documentSnapshots=Tasks.await(documentSnapshotTask);
-                List<String> preferiti= (List<String>) documentSnapshots.get("Preferiti");
-                for(int i=0;i<preferiti.size();i++)
-                {
-                    Task<DocumentSnapshot> documentSnapshotRicetteTask=rootRef.collection("Ricette").document(preferiti.get(i)).get();
+                DocumentSnapshot documentSnapshots = Tasks.await(documentSnapshotTask);
+                List<String> preferiti = (List<String>) documentSnapshots.get("Preferiti");
+                for (int i = 0; i < preferiti.size(); i++) {
+                    Task<DocumentSnapshot> documentSnapshotRicetteTask = rootRef.collection("Ricette").document(preferiti.get(i)).get();
                     DocumentSnapshot documentRicetteSnapshot = Tasks.await(documentSnapshotRicetteTask);
                     obj.add(new Ricetta(
                             documentRicetteSnapshot.getId(),
@@ -306,7 +304,7 @@ public class Ricetta {
                             documentRicetteSnapshot.getString("Thumbnail"),
                             (List<Map<String, Object>>) documentRicetteSnapshot.get("Ingredienti"),
                             (List<String>) documentRicetteSnapshot.get("Passaggi"),
-                            (Boolean)documentRicetteSnapshot.get("isApproved")
+                            (Boolean) documentRicetteSnapshot.get("isApproved")
                     ));
                 }
 
@@ -348,9 +346,13 @@ public class Ricetta {
         return persone;
     }
 
-    public String getId(){return id;}
+    public String getId() {
+        return id;
+    }
 
-    public Boolean getIsApproved(){return isApproved;}
+    public Boolean getIsApproved() {
+        return isApproved;
+    }
 
     public void setId(String id) {
         this.id = id;

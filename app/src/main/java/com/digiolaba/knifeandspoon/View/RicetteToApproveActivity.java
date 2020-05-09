@@ -7,19 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-
-import com.digiolaba.knifeandspoon.Controller.Utils;
-import com.digiolaba.knifeandspoon.Model.Ricetta;
-import com.digiolaba.knifeandspoon.R;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.squareup.picasso.Picasso;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +15,16 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import com.digiolaba.knifeandspoon.Controller.Utils;
+import com.digiolaba.knifeandspoon.Model.Ricetta;
+import com.digiolaba.knifeandspoon.R;
+import com.squareup.picasso.Picasso;
+
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -35,6 +32,7 @@ import java.util.concurrent.ExecutionException;
 public class RicetteToApproveActivity extends AppCompatActivity {
 
     private LinearLayout ricetteToReviewLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +41,7 @@ public class RicetteToApproveActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        ricetteToReviewLayout=(LinearLayout)findViewById(R.id.layoutRicetteToApprove);
+        ricetteToReviewLayout = (LinearLayout) findViewById(R.id.layoutRicetteToApprove);
         loadRicetteToReview();
     }
 
@@ -58,18 +56,15 @@ public class RicetteToApproveActivity extends AppCompatActivity {
     }
 
 
-
-    private void loadRicetteToReview()
-    {
+    private void loadRicetteToReview() {
         try {
             ricetteToReviewLayout.removeAllViews();
             final List<Ricetta> ricettas = (List<Ricetta>) new Ricetta.getRecipeToReview().execute().get();
-            if(ricettas.size()==0)
-            {
+            if (ricettas.size() == 0) {
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        switch (which){
+                        switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 closeActivity();
                                 break;
@@ -80,31 +75,28 @@ public class RicetteToApproveActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage(getString(R.string.nothing_to_show_here_admin)).setPositiveButton(getString(R.string.perfect_exclamation_mark), dialogClickListener)
                         .show();
-            }
-            else
-            {
+            } else {
 
-                for(int i=0;i<ricettas.size();i++)
-                {
+                for (int i = 0; i < ricettas.size(); i++) {
                     LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     View addView = layoutInflater.inflate(R.layout.row_feed_layout, null);
-                    TextView txtNomeRicettaFeed=(TextView)addView.findViewById(R.id.txtFeedNomeRicetta);
-                    TextView txtTempoPreparazioneFeed=(TextView)addView.findViewById(R.id.txtFeedTempoPreparazione);
-                    TextView txtPersoneFeed=(TextView)addView.findViewById(R.id.txtFeedPersone);
+                    TextView txtNomeRicettaFeed = (TextView) addView.findViewById(R.id.txtFeedNomeRicetta);
+                    TextView txtTempoPreparazioneFeed = (TextView) addView.findViewById(R.id.txtFeedTempoPreparazione);
+                    TextView txtPersoneFeed = (TextView) addView.findViewById(R.id.txtFeedPersone);
                     final ImageView ricettaImageFeed = (ImageView) addView.findViewById(R.id.imgFeedRicetta);
                     Picasso.get().load(ricettas.get(i).getThumbnail()).into(ricettaImageFeed);
                     txtNomeRicettaFeed.setText(ricettas.get(i).getTitle());
                     txtTempoPreparazioneFeed.setText(ricettas.get(i).getTempo().concat(" minuti"));
-                    String feedPersone="Per ".concat(Utils.personaOrPersone(ricettas.get(i).getPersone()));
+                    String feedPersone = "Per ".concat(Utils.personaOrPersone(ricettas.get(i).getPersone()));
                     txtPersoneFeed.setText(feedPersone);
-                    RelativeLayout layoutContainer=(RelativeLayout)addView.findViewById(R.id.layoutFeedMainAndPic);
+                    RelativeLayout layoutContainer = (RelativeLayout) addView.findViewById(R.id.layoutFeedMainAndPic);
                     final int position = i;
                     layoutContainer.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             try {
-                                Intent intent=new Intent(RicetteToApproveActivity.this,ShowRicettaActivity.class);
-                                Bundle bundle=Utils.loadBundle(ricettas.get(position));
+                                Intent intent = new Intent(RicetteToApproveActivity.this, ShowRicettaActivity.class);
+                                Bundle bundle = Utils.loadBundle(ricettas.get(position));
                                 //Casting from imageSlider to Drawable and conversion into byteArray
                                 Drawable d = ricettaImageFeed.getDrawable();
                                 Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
@@ -112,15 +104,13 @@ public class RicetteToApproveActivity extends AppCompatActivity {
                                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
                                 byte[] bitmapdata = stream.toByteArray();
                                 bundle.putByteArray("Thumbnail", bitmapdata);
-                                bundle.putBoolean("isAdmin",true);
-                                bundle.putString("ThumbnailURL",ricettas.get(position).getThumbnail());
-                                bundle.putString("pathIdUser","admin");
+                                bundle.putBoolean("isAdmin", true);
+                                bundle.putString("ThumbnailURL", ricettas.get(position).getThumbnail());
+                                bundle.putString("pathIdUser", "admin");
                                 intent.putExtras(bundle);
                                 startActivity(intent);
 
-                            }
-                            catch(RuntimeException e)
-                            {
+                            } catch (RuntimeException e) {
                                 e.printStackTrace();
                             }
 
@@ -137,8 +127,7 @@ public class RicetteToApproveActivity extends AppCompatActivity {
         }
     }
 
-    private void closeActivity()
-    {
+    private void closeActivity() {
         this.onBackPressed();
         this.finish();
     }

@@ -32,13 +32,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
@@ -90,34 +86,29 @@ public class ShowRicettaActivity extends AppCompatActivity {
         txtAutore.setText(getUsername(autore));
         loadIngredienti(ingredienti);
         loadPassaggi(passaggi);
-        isFavourite= new Boolean[]{(Boolean) infoToShow.get("isFav")};
-        appoggio= new Boolean[]{(Boolean) infoToShow.get("isFav")};
+        isFavourite = new Boolean[]{(Boolean) infoToShow.get("isFav")};
+        appoggio = new Boolean[]{(Boolean) infoToShow.get("isFav")};
         fabFavouriteSetter();
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId())
-        {
-            case android.R.id.home:
-            {
+        switch (item.getItemId()) {
+            case android.R.id.home: {
                 /*Intent intent = new Intent(ShowRicetta.this, MainActivity.class);
             startActivity(intent);*/
-                if(!infoToShow.getBoolean("isAdmin"))
-                {
+                if (!infoToShow.getBoolean("isAdmin")) {
                     checkFavIsChanged();
                 }
                 this.onBackPressed();
                 this.finish();
                 return true;
             }
-            case R.id.action_approve:
-            {
+            case R.id.action_approve: {
                 adminApprove();
                 return true;
             }
-            case R.id.action_disapprove:
-            {
+            case R.id.action_disapprove: {
                 adminDisapprove();
                 return true;
             }
@@ -128,8 +119,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(!infoToShow.getBoolean("isAdmin"))
-        {
+        if (!infoToShow.getBoolean("isAdmin")) {
             checkFavIsChanged();
         }
         super.onBackPressed();
@@ -137,9 +127,8 @@ public class ShowRicettaActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(infoToShow.getBoolean("isAdmin"))
-        {
-            getMenuInflater().inflate(R.menu.menu_show_ricetta,menu);
+        if (infoToShow.getBoolean("isAdmin")) {
+            getMenuInflater().inflate(R.menu.menu_show_ricetta, menu);
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -152,17 +141,16 @@ public class ShowRicettaActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        if(isFavourite[0]!=appoggio[0])
-        {
-            new Utente.setPreferiti(infoToShow.get("Id").toString(),infoToShow.get("pathIdUser").toString(),isFavourite[0]).execute();
-            appoggio[0]=!appoggio[0];
+        if (isFavourite[0] != appoggio[0]) {
+            new Utente.setPreferiti(this, infoToShow.get("Id").toString(), infoToShow.get("pathIdUser").toString(), isFavourite[0]).execute();
+            appoggio[0] = !appoggio[0];
         }
         super.onPause();
     }
 
     private String getUsername(String autore) {
         try {
-            Utente userRecipe = (Utente) new Utente.getUserInfoByReference(autore).execute().get();
+            Utente userRecipe = (Utente) new Utente.getUserInfoByReference(this, autore).execute().get();
             CircleImageView userImage = (CircleImageView) findViewById(R.id.profile_image);
             Picasso.get().load(userRecipe.getUserImage()).into(userImage);
             return userRecipe.getUserName();
@@ -198,46 +186,33 @@ public class ShowRicettaActivity extends AppCompatActivity {
         }
     }
 
-    private void fabFavouriteSetter()
-    {
-        if(!(infoToShow.get("pathIdUser").toString().equals("anonymous")))
-        {
-            if(!infoToShow.getBoolean("isAdmin"))
-            {
-                if(!isFavourite[0])
-                {
+    private void fabFavouriteSetter() {
+        if (!(infoToShow.get("pathIdUser").toString().equals("anonymous"))) {
+            if (!infoToShow.getBoolean("isAdmin")) {
+                if (!isFavourite[0]) {
                     fab_favourite.setImageResource(R.drawable.favorite);
-                }
-                else
-                {
+                } else {
                     fab_favourite.setImageResource(R.drawable.favorite_full);
                 }
 
                 fab_favourite.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(!isFavourite[0])
-                        {
+                        if (!isFavourite[0]) {
                             fab_favourite.setImageResource(R.drawable.favorite_full);
-                            Utils.showSnackbar(showPassaggiLayout,"Aggiunto ai preferiti");
-                            isFavourite[0] =true;
-                        }
-                        else
-                        {
+                            Utils.showSnackbar(showPassaggiLayout, "Aggiunto ai preferiti");
+                            isFavourite[0] = true;
+                        } else {
                             fab_favourite.setImageResource(R.drawable.favorite);
-                            Utils.showSnackbar(showPassaggiLayout,"Rimosso dai preferiti");
-                            isFavourite[0] =false;
+                            Utils.showSnackbar(showPassaggiLayout, "Rimosso dai preferiti");
+                            isFavourite[0] = false;
                         }
                     }
                 });
-            }
-            else
-            {
+            } else {
                 fab_favourite.setVisibility(View.GONE);
             }
-        }
-        else
-        {
+        } else {
             fab_favourite.setBackgroundTintList(getColorStateList(android.R.color.darker_gray));
             fab_favourite.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -245,7 +220,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
                     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            switch (which){
+                            switch (which) {
                                 case DialogInterface.BUTTON_POSITIVE:
                                     GoogleSignInClient client = GoogleSignIn.getClient(ShowRicettaActivity.this, GoogleSignInOptions.DEFAULT_SIGN_IN);
                                     client.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -278,31 +253,26 @@ public class ShowRicettaActivity extends AppCompatActivity {
 
     }
 
-    private void checkFavIsChanged()
-    {
-        Intent intent=new Intent();
-        if(isFavourite[0]==appoggio[0])
-        {
-            setResult(Activity.RESULT_CANCELED,intent);
-        }
-        else
-        {
-            intent.putExtra("docRicetta",infoToShow.get("Id").toString());
-            intent.putExtra("docUser",infoToShow.get("pathIdUser").toString());
-            intent.putExtra("fav",isFavourite[0]);
-            setResult(Activity.RESULT_OK,intent);
+    private void checkFavIsChanged() {
+        Intent intent = new Intent();
+        if (isFavourite[0] == appoggio[0]) {
+            setResult(Activity.RESULT_CANCELED, intent);
+        } else {
+            intent.putExtra("docRicetta", infoToShow.get("Id").toString());
+            intent.putExtra("docUser", infoToShow.get("pathIdUser").toString());
+            intent.putExtra("fav", isFavourite[0]);
+            setResult(Activity.RESULT_OK, intent);
         }
     }
 
 
-    private void adminApprove()
-    {
+    private void adminApprove() {
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                switch (which){
+                switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
-                            changeBooleanIsApproved();
+                        changeBooleanIsApproved();
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:
                         //No button clicked
@@ -315,14 +285,13 @@ public class ShowRicettaActivity extends AppCompatActivity {
                 .setNegativeButton("No", dialogClickListener).show();
     }
 
-    private void adminDisapprove()
-    {
+    private void adminDisapprove() {
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                switch (which){
+                switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
-                            deleteRicettaAdmin();
+                        deleteRicettaAdmin();
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
@@ -336,27 +305,22 @@ public class ShowRicettaActivity extends AppCompatActivity {
                 .setNegativeButton("No", dialogClickListener).show();
     }
 
-    private void changeBooleanIsApproved()
-    {
+    private void changeBooleanIsApproved() {
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         final DocumentReference ricetteRef = rootRef.collection("Ricette").document((String) infoToShow.get("Id"));
         ricetteRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful())
-                {
-                    DocumentSnapshot documentSnapshot=task.getResult();
-                    if(documentSnapshot.exists())
-                    {
-                        ricetteRef.update("isApproved",true);
+                if (task.isSuccessful()) {
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    if (documentSnapshot.exists()) {
+                        ricetteRef.update("isApproved", true);
                         adminRedirect();
-                    }
-                    else
-                    {
+                    } else {
                         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                switch (which){
+                                switch (which) {
                                     case DialogInterface.BUTTON_POSITIVE:
                                         adminRedirect();
                                         break;
@@ -372,29 +336,24 @@ public class ShowRicettaActivity extends AppCompatActivity {
         });
     }
 
-    private void deleteRicettaAdmin()
-    {
+    private void deleteRicettaAdmin() {
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         final DocumentReference ricetteRef = rootRef.collection("Ricette").document((String) Objects.requireNonNull(infoToShow.get("Id")));
-        final StorageReference photoRef= FirebaseStorage.getInstance().getReferenceFromUrl(Objects.requireNonNull(infoToShow.getString("ThumbnailURL")));
+        final StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(Objects.requireNonNull(infoToShow.getString("ThumbnailURL")));
         ricetteRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful())
-                {
-                    DocumentSnapshot documentSnapshot=task.getResult();
-                    if(documentSnapshot.exists())
-                    {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    if (documentSnapshot.exists()) {
                         photoRef.delete();
                         ricetteRef.delete();
                         adminRedirect();
-                    }
-                    else
-                    {
+                    } else {
                         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                switch (which){
+                                switch (which) {
                                     case DialogInterface.BUTTON_POSITIVE:
                                         adminRedirect();
                                         break;
@@ -410,8 +369,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
         });
     }
 
-    private void adminRedirect()
-    {
+    private void adminRedirect() {
         this.onBackPressed();
         this.finish();
     }

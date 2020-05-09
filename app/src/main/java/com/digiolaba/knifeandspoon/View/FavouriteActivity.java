@@ -12,8 +12,13 @@ import com.digiolaba.knifeandspoon.Controller.Utils;
 import com.digiolaba.knifeandspoon.Model.Ricetta;
 import com.digiolaba.knifeandspoon.Model.Utente;
 import com.digiolaba.knifeandspoon.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 import androidx.annotation.NonNull;
@@ -22,6 +27,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -71,8 +77,7 @@ public class FavouriteActivity extends AppCompatActivity {
         {
             if(resultCode==RESULT_OK)
             {
-                new Utente.setPreferiti(data.getExtras().getString("docRicetta"),data.getExtras().getString("docUser"),data.getExtras().getBoolean("fav")).execute();
-                refresh();
+                updateFav(data.getExtras().getString("docRicetta"));
             }
         }
     }
@@ -178,4 +183,38 @@ public class FavouriteActivity extends AppCompatActivity {
         this.onBackPressed();
         this.finish();
     }
+
+
+    private void updateFav(final String documentIdRicetta)
+    {
+        String documentIdUtente =actualUser.split("/")[1];
+        final FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+        final DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
+        utentiRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful())
+                {
+                    DocumentSnapshot documentSnapshots=task.getResult();
+                    if(documentSnapshots.exists())
+                    {
+                        if(documentIdRicetta==null)
+                        {
+                            Log.e("EEEE","ciao");
+                        }
+
+                        List<String> preferiti= (List<String>) documentSnapshots.get("Preferiti");
+                        preferiti.remove(documentIdRicetta);
+                        for(int i=0;i<preferiti.size();i++)
+                        {
+                            Log.e("CIAO CIAO",preferiti.get(i));
+                        }
+                        utentiRef.update("Preferiti",preferiti);
+                    }
+                }
+                loadRicetteFav();
+            }
+        });
+    }
+
 }

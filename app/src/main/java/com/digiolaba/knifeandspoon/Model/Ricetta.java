@@ -274,6 +274,52 @@ public class Ricetta {
         }
     }
 
+    public static class getFavRicette extends AsyncTask {
+
+        String pathIdUser;
+
+        public getFavRicette(String pathIdUser)
+        {
+            this.pathIdUser=pathIdUser;
+        }
+
+        @Override
+        protected List<Ricetta> doInBackground(Object[] objects) {
+            String documentIdUtente =pathIdUser.split("/")[1];
+            List<Ricetta> obj = new ArrayList();
+            FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+            DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
+            Task<DocumentSnapshot> documentSnapshotTask=utentiRef.get();
+            try {
+                DocumentSnapshot documentSnapshots=Tasks.await(documentSnapshotTask);
+                List<String> preferiti= (List<String>) documentSnapshots.get("Preferiti");
+                for(int i=0;i<preferiti.size();i++)
+                {
+                    Task<DocumentSnapshot> documentSnapshotRicetteTask=rootRef.collection("Ricette").document(preferiti.get(i)).get();
+                    DocumentSnapshot documentRicetteSnapshot = Tasks.await(documentSnapshotRicetteTask);
+                    obj.add(new Ricetta(
+                            documentRicetteSnapshot.getId(),
+                            documentRicetteSnapshot.get("Autore").toString(),
+                            documentRicetteSnapshot.get("Titolo").toString(),
+                            documentRicetteSnapshot.get("Tempo di preparazione").toString(),
+                            documentRicetteSnapshot.get("Numero persone").toString(),
+                            documentRicetteSnapshot.getString("Thumbnail"),
+                            (List<Map<String, Object>>) documentRicetteSnapshot.get("Ingredienti"),
+                            (List<String>) documentRicetteSnapshot.get("Passaggi"),
+                            (Boolean)documentRicetteSnapshot.get("isApproved")
+                    ));
+                }
+
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return obj;
+
+        }
+    }
+
     public String getAuthorId() {
         return this.authorId;
     }

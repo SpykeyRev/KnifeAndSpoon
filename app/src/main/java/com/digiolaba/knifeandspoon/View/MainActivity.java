@@ -359,6 +359,7 @@ public class MainActivity extends AppCompatActivity {
                 else
                 {
                     Intent intent = new Intent(MainActivity.this, FavouriteActivity.class);
+                    intent.putExtra("pathIdUser",actualUser.getUserId());
                     startActivity(intent);
                 }
             }
@@ -399,7 +400,6 @@ public class MainActivity extends AppCompatActivity {
             {
                 new Utente.setPreferiti(data.getExtras().getString("docRicetta"),data.getExtras().getString("docUser"),data.getExtras().getBoolean("fav")).execute();
             }
-
         }
     }
 

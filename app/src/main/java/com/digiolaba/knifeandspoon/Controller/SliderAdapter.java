@@ -38,6 +38,7 @@ public class SliderAdapter extends
     private List<Ricetta> ricettas = new ArrayList<>();
 
     public SliderAdapter(Activity activity, Context context, FirebaseUser fireUser, Utente actualUser) {
+        this.activity=activity;
         this.context = context;
         this.fireUser = fireUser;
         this.actualUser = actualUser;

@@ -236,6 +236,7 @@ public class Utente {
             this.id = id;
             this.username = username;
             this.imgData = imgData;
+            this.loadingDialog = new Utils.LoadingDialog(activity);
         }
 
         @Override
@@ -301,6 +302,7 @@ public class Utente {
             this.activity = activity;
             this.documentIdRicetta = documentIdRicetta;
             this.pathIdUtente = pathIdUtente;
+            this.loadingDialog = new Utils.LoadingDialog(activity);
         }
 
         @Override
@@ -349,7 +351,6 @@ public class Utente {
         String documentIdRicetta, pathIdUtente;
         Boolean fav;
         Activity activity;
-        Utils.LoadingDialog loadingDialog;
 
         public setPreferiti(Activity activity, String documentIdRicetta, String pathIdUtente, Boolean fav) {
             this.documentIdRicetta = documentIdRicetta;
@@ -360,19 +361,11 @@ public class Utente {
         @Override
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    loadingDialog.dismissLoadingDialog();
-                    ;
-                }
-            }, 1000);
         }
 
         @Override
         protected void onPreExecute() {
-            this.loadingDialog.startLoadingDialog();
+
         }
 
         @Override

@@ -311,6 +311,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                if (!fireUser.isAnonymous()) {
+                    intent.putExtra("pathIdUser", actualUser.getUserId());
+                } else {
+                    intent.putExtra("pathIdUser", "anonymous");
+                }
                 startActivity(intent);
             }
         });

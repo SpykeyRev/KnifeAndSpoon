@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,10 +19,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.digiolaba.knifeandspoon.Controller.Utils;
 import com.digiolaba.knifeandspoon.Model.Ricetta;
+import com.digiolaba.knifeandspoon.Model.Utente;
 import com.digiolaba.knifeandspoon.R;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
@@ -36,6 +39,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 
@@ -45,11 +49,15 @@ public class SearchActivity extends AppCompatActivity {
     private ImageButton mSearchBtn;
     private List<Ricetta> ricettas;
     private LinearLayout listLayout;
+    private Intent intentMain;
+    private static int LAUNCH_SHOW_RICETTA_ACTIVITY = 2912;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        intentMain=getIntent();
+        Log.e("Ciao",intentMain.getExtras().getString("pathIdUser"));
 
 
         mSearchBar = (EditText) findViewById(R.id.search_bar);
@@ -75,6 +83,16 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LAUNCH_SHOW_RICETTA_ACTIVITY) {
+            if (resultCode == RESULT_OK) {
+                new Utente.setPreferiti(this, data.getExtras().getString("docRicetta"), data.getExtras().getString("docUser"), data.getExtras().getBoolean("fav")).execute();
+            }
+        }
+    }
+
     private void loadRicettaView() {
 
         listLayout.removeAllViews();
@@ -83,15 +101,13 @@ public class SearchActivity extends AppCompatActivity {
             View addView = layoutInflater.inflate(R.layout.row_feed_layout, null);
             TextView txtNomeRicettaFeed = (TextView) addView.findViewById(R.id.txtFeedNomeRicetta);
             TextView txtTempoPreparazioneFeed = (TextView) addView.findViewById(R.id.txtFeedTempoPreparazione);
-            TextView txtAutore = (TextView) addView.findViewById(R.id.txtAutoreRicetta);
-
-            final ImageView ricettaImage = (ImageView) addView.findViewById(R.id.imgFeedRicetta);
-            Picasso.get().load(ricettas.get(i).getThumbnail()).into(ricettaImage);
-
+            TextView txtPersoneFeed = (TextView) addView.findViewById(R.id.txtFeedPersone);
+            final ImageView ricettaImageFeed = (ImageView) addView.findViewById(R.id.imgFeedRicetta);
+            Picasso.get().load(ricettas.get(i).getThumbnail()).into(ricettaImageFeed);
             txtNomeRicettaFeed.setText(ricettas.get(i).getTitle());
             txtTempoPreparazioneFeed.setText(ricettas.get(i).getTempo().concat(" minuti"));
-            txtAutore.setText(ricettas.get(i).getAuthorId());
-
+            String feedPersone = "Per ".concat(Utils.personaOrPersone(ricettas.get(i).getPersone()));
+            txtPersoneFeed.setText(feedPersone);
             RelativeLayout layoutContainer = (RelativeLayout) addView.findViewById(R.id.layoutFeedMainAndPic);
             final int position = i;
             layoutContainer.setOnClickListener(new View.OnClickListener() {
@@ -99,30 +115,48 @@ public class SearchActivity extends AppCompatActivity {
                 public void onClick(View v) {
 
                     try {
-
-
                         Intent intent = new Intent(SearchActivity.this, ShowRicettaActivity.class);
                         Bundle bundle = Utils.loadBundle(ricettas.get(position));
-
-                        //casting
-                        Drawable drawable = ricettaImage.getDrawable();
-                        Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+                        //Casting from imageSlider to Drawable and conversion into byteArray
+                        Drawable d = ricettaImageFeed.getDrawable();
+                        Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
                         ByteArrayOutputStream stream = new ByteArrayOutputStream();
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
                         byte[] bitmapdata = stream.toByteArray();
                         bundle.putByteArray("Thumbnail", bitmapdata);
                         bundle.putBoolean("isAdmin", false);
+                        if(Objects.requireNonNull(intentMain.getExtras()).getString("pathIdUser").equals("anonymous"))
+                        {
+                            bundle.putBoolean("isFav", false);
+                        }
+                        else
+                        {
+                            bundle.putBoolean("isFav", checkPreferiti(ricettas.get(position).getId()));
+                        }
+                        bundle.putString("pathIdUser",intentMain.getExtras().getString("pathIdUser"));
                         intent.putExtras(bundle);
-                        startActivity(intent);
+                        startActivityForResult(intent, LAUNCH_SHOW_RICETTA_ACTIVITY);
                     } catch (RuntimeException e) {
                         e.printStackTrace();
                     }
+
                 }
             });
             listLayout.addView(addView);
         }
 
+    }
 
+    private Boolean checkPreferiti(String idRicetta) {
+        Boolean found = false;
+        try {
+            found = new Utente.checkPreferiti(this, idRicetta, intentMain.getExtras().getString("pathIdUser")).execute().get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return found;
     }
 
     public static class getRicercaSearch extends AsyncTask {

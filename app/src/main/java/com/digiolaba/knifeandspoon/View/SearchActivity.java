@@ -7,7 +7,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -28,7 +27,6 @@ import com.digiolaba.knifeandspoon.Controller.Utils;
 import com.digiolaba.knifeandspoon.Model.Ricetta;
 import com.digiolaba.knifeandspoon.Model.Utente;
 import com.digiolaba.knifeandspoon.R;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
@@ -274,22 +272,21 @@ public class SearchActivity extends AppCompatActivity {
         protected String doInBackground(Object[] objects) {
             String documentIdUtente = pathIdUtente.split("/")[1];
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-            final String[] nomeUtente = {""};
-            final DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
-            utentiRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful())
-                    {
-                        DocumentSnapshot documentSnapshots = task.getResult();
-                        if (documentSnapshots.exists())
-                        {
-                            nomeUtente[0] = (String) documentSnapshots.get("Nome");
-                        }
-                    }
+            String nomeUtente = null;
+            DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
+            Task<DocumentSnapshot> task=utentiRef.get();
+            try{
+                DocumentSnapshot documentSnapshots = Tasks.await(task);
+                if (documentSnapshots.exists())
+                {
+                    nomeUtente = (String) documentSnapshots.get("Nome");
                 }
-            });
-            return nomeUtente[0];
+            }catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return nomeUtente;
         }
     }
 

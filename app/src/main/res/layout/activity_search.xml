@@ -23,38 +23,42 @@
                 android:textColor="@color/colorPrimary"
                 android:textSize="30sp" />
 
-            <EditText
-                android:id="@+id/search_bar"
-                android:layout_width="321dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="27dp"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="-1dp"
-                android:background="@drawable/search_layout"
-                android:ems="10"
-                android:hint="@string/search_bar"
-                android:inputType="textCapSentences"
-                android:paddingLeft="20dp"
-                android:paddingTop="10dp"
-                android:paddingRight="20dp"
-                android:paddingBottom="10dp"
-                android:textColor="#999999" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal">
 
-            <ImageButton
-                android:id="@+id/btn_search"
-                android:layout_width="60dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="350dp"
-                android:layout_marginTop="-47dp"
-                android:background="@color/white"
-                app:srcCompat="@drawable/search_button" />
+                <EditText
+                    android:id="@+id/search_bar"
+                    android:layout_width="321dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/search_layout"
+                    android:ems="10"
+                    android:hint="@string/search_bar"
+                    android:inputType="textCapSentences"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="20dp"
+                    android:paddingBottom="10dp"
+                    android:textColor="#999999" />
+
+                <ImageButton
+                    android:id="@+id/btn_search"
+                    android:layout_width="60dp"
+                    android:layout_height="50dp"
+                    android:background="@color/white"
+                    app:srcCompat="@drawable/search_button" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/LayoutFeedSearch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
+                android:layout_marginBottom="16dp"
                 android:orientation="vertical"></LinearLayout>
         </LinearLayout>
     </ScrollView>

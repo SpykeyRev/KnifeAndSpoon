@@ -70,7 +70,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String SearchRicetta = mSearchBar.getText().toString();
+                String SearchRicetta = mSearchBar.getText().toString().substring(0,1).toUpperCase()+mSearchBar.getText().toString().substring(1);
                 try {
                     ricettas = (List<Ricetta>) new getRicercaSearch(SearchRicetta).execute().get();
                 } catch (ExecutionException e) {
@@ -94,7 +94,7 @@ public class SearchActivity extends AppCompatActivity {
                         case KeyEvent.KEYCODE_ENTER:
                         {
                             try {
-                                ricettas = (List<Ricetta>) new getRicercaSearch(mSearchBar.getText().toString()).execute().get();
+                                ricettas = (List<Ricetta>) new getRicercaSearch(mSearchBar.getText().toString().substring(0,1).toUpperCase()+mSearchBar.getText().toString().substring(1)).execute().get();
                             } catch (ExecutionException e) {
                                 e.printStackTrace();
                             } catch (InterruptedException e) {
@@ -171,7 +171,6 @@ public class SearchActivity extends AppCompatActivity {
                         } catch (RuntimeException e) {
                             e.printStackTrace();
                         }
-
                     }
                 });
                 listLayout.addView(addView);

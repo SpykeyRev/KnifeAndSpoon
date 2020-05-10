@@ -121,7 +121,7 @@ public class SearchActivity extends AppCompatActivity {
         }
         else
         {
-            String SearchRicetta = mSearchBar.getText().toString().substring(0,1).toUpperCase()+mSearchBar.getText().toString().substring(1);
+            String SearchRicetta = mSearchBar.getText().toString();
             try {
                 ricettas = (List<Ricetta>) new getRicercaSearch(SearchRicetta).execute().get();
             } catch (ExecutionException e) {
@@ -229,24 +229,29 @@ public class SearchActivity extends AppCompatActivity {
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
             CollectionReference ricetteRef = rootRef.collection("Ricette");
             Query search = ricetteRef.whereEqualTo("isApproved", true);
-            Query query = search.whereGreaterThanOrEqualTo("Titolo", SearchRicetta).whereLessThanOrEqualTo("Titolo",SearchRicetta.concat("\uf8ff"));
+            //Query query = search.whereGreaterThanOrEqualTo("Titolo", SearchRicetta).whereLessThanOrEqualTo("Titolo",SearchRicetta.concat("\uf8ff"));
 
-            Task<QuerySnapshot> documentSnapshotTask = query.get();
+            //Task<QuerySnapshot> documentSnapshotTask = query.get();
+            Task<QuerySnapshot> documentSnapshotTask = search.get();
             List<Ricetta> obj = new ArrayList();
             try {
+
                 QuerySnapshot documentSnapshot = Tasks.await(documentSnapshotTask);
                 for (int i = 0; i < documentSnapshot.size(); i++) {
-                    obj.add(new Ricetta(
-                            documentSnapshot.getDocuments().get(i).getId(),
-                            documentSnapshot.getDocuments().get(i).get("Autore").toString(),
-                            documentSnapshot.getDocuments().get(i).get("Titolo").toString(),
-                            documentSnapshot.getDocuments().get(i).get("Tempo di preparazione").toString(),
-                            documentSnapshot.getDocuments().get(i).get("Numero persone").toString(),
-                            documentSnapshot.getDocuments().get(i).get("Thumbnail").toString(),
-                            (List<Map<String, Object>>) documentSnapshot.getDocuments().get(i).get("Ingredienti"),
-                            (List<String>) documentSnapshot.getDocuments().get(i).get("Passaggi"),
-                            (Boolean) documentSnapshot.getDocuments().get(i).get("isApproved")
-                    ));
+                    if(documentSnapshot.getDocuments().get(i).get("Titolo").toString().toLowerCase().contains(SearchRicetta.toLowerCase()))
+                    {
+                        obj.add(new Ricetta(
+                                documentSnapshot.getDocuments().get(i).getId(),
+                                documentSnapshot.getDocuments().get(i).get("Autore").toString(),
+                                documentSnapshot.getDocuments().get(i).get("Titolo").toString(),
+                                documentSnapshot.getDocuments().get(i).get("Tempo di preparazione").toString(),
+                                documentSnapshot.getDocuments().get(i).get("Numero persone").toString(),
+                                documentSnapshot.getDocuments().get(i).get("Thumbnail").toString(),
+                                (List<Map<String, Object>>) documentSnapshot.getDocuments().get(i).get("Ingredienti"),
+                                (List<String>) documentSnapshot.getDocuments().get(i).get("Passaggi"),
+                                (Boolean) documentSnapshot.getDocuments().get(i).get("isApproved")
+                        ));
+                    }
                 }
             } catch (ExecutionException e) {
                 e.printStackTrace();

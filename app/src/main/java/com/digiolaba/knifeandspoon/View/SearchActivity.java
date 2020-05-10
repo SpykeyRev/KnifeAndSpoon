@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -79,6 +80,35 @@ public class SearchActivity extends AppCompatActivity {
                 }
 
                 loadRicettaView();
+            }
+        });
+
+        mSearchBar.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(event.getAction()==KeyEvent.ACTION_DOWN)
+                {
+                    switch (keyCode)
+                    {
+                        case KeyEvent.KEYCODE_DPAD_CENTER:
+                        case KeyEvent.KEYCODE_ENTER:
+                        {
+                            try {
+                                ricettas = (List<Ricetta>) new getRicercaSearch(mSearchBar.getText().toString()).execute().get();
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+
+                            loadRicettaView();
+                        }
+                            return true;
+                        default:
+                            break;
+                    }
+                }
+                return false;
             }
         });
     }

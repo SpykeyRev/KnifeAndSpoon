@@ -19,7 +19,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="32dp"
                 android:layout_marginTop="25dp"
-                android:text="Ricerca ricetta"
+                android:text="@string/ricerca_ricetta"
                 android:textColor="@color/colorPrimary"
                 android:textSize="30sp" />
 
@@ -34,7 +34,7 @@
                 android:background="@drawable/search_layout"
                 android:ems="10"
                 android:hint="@string/search_bar"
-                android:inputType="textPersonName"
+                android:inputType="textCapSentences"
                 android:paddingLeft="20dp"
                 android:paddingTop="10dp"
                 android:paddingRight="20dp"

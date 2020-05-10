@@ -106,6 +106,7 @@
     <string name="remove_preferiti">Rimuovi dai preferiti</string>
     <string name="added_preferiti">Aggiunto dai preferiti</string>
     <string name="removed_preferiti">Rimosso dai preferiti</string>
+    <string name="ricerca_ricetta">Ricerca ricetta</string>
 
 
 </resources>

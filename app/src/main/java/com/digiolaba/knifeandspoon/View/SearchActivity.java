@@ -65,21 +65,27 @@ public class SearchActivity extends AppCompatActivity {
         mSearchBtn = (ImageButton) findViewById(R.id.btn_search);
 
         listLayout = (LinearLayout) findViewById(R.id.LayoutFeedSearch);
+        searchEvent();
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LAUNCH_SHOW_RICETTA_ACTIVITY) {
+            if (resultCode == RESULT_OK) {
+                new Utente.setPreferiti(this, data.getExtras().getString("docRicetta"), data.getExtras().getString("docUser"), data.getExtras().getBoolean("fav")).execute();
+            }
+        }
+    }
+
+    private void searchEvent()
+    {
 
         mSearchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                String SearchRicetta = mSearchBar.getText().toString().substring(0,1).toUpperCase()+mSearchBar.getText().toString().substring(1);
-                try {
-                    ricettas = (List<Ricetta>) new getRicercaSearch(SearchRicetta).execute().get();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                loadRicettaView();
+                loadingListAndView();
             }
         });
 
@@ -93,17 +99,9 @@ public class SearchActivity extends AppCompatActivity {
                         case KeyEvent.KEYCODE_DPAD_CENTER:
                         case KeyEvent.KEYCODE_ENTER:
                         {
-                            try {
-                                ricettas = (List<Ricetta>) new getRicercaSearch(mSearchBar.getText().toString().substring(0,1).toUpperCase()+mSearchBar.getText().toString().substring(1)).execute().get();
-                            } catch (ExecutionException e) {
-                                e.printStackTrace();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-
-                            loadRicettaView();
+                           loadingListAndView();
                         }
-                            return true;
+                        return true;
                         default:
                             break;
                     }
@@ -113,13 +111,24 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == LAUNCH_SHOW_RICETTA_ACTIVITY) {
-            if (resultCode == RESULT_OK) {
-                new Utente.setPreferiti(this, data.getExtras().getString("docRicetta"), data.getExtras().getString("docUser"), data.getExtras().getBoolean("fav")).execute();
+    public void loadingListAndView()
+    {
+        if(mSearchBar.getText().length()<=0)
+        {
+            Utils.showSnackbar(listLayout,"Per favore inserisci qualcosa da ricercare");
+        }
+        else
+        {
+            String SearchRicetta = mSearchBar.getText().toString().substring(0,1).toUpperCase()+mSearchBar.getText().toString().substring(1);
+            try {
+                ricettas = (List<Ricetta>) new getRicercaSearch(SearchRicetta).execute().get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+
+            loadRicettaView();
         }
     }
 
@@ -209,7 +218,7 @@ public class SearchActivity extends AppCompatActivity {
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
             CollectionReference ricetteRef = rootRef.collection("Ricette");
             Query search = ricetteRef.whereEqualTo("isApproved", true);
-            Query query = search.whereGreaterThanOrEqualTo("Titolo", SearchRicetta).whereLessThanOrEqualTo("Titolo",SearchRicetta.concat("\uF7FF"));
+            Query query = search.whereGreaterThanOrEqualTo("Titolo", SearchRicetta).whereLessThanOrEqualTo("Titolo",SearchRicetta.concat("\uf8ff"));
 
             Task<QuerySnapshot> documentSnapshotTask = query.get();
             List<Ricetta> obj = new ArrayList();

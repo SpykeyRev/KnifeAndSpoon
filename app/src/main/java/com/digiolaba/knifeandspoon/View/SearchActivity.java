@@ -28,9 +28,11 @@ import com.digiolaba.knifeandspoon.Controller.Utils;
 import com.digiolaba.knifeandspoon.Model.Ricetta;
 import com.digiolaba.knifeandspoon.Model.Utente;
 import com.digiolaba.knifeandspoon.R;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -148,9 +150,18 @@ public class SearchActivity extends AppCompatActivity {
                 final ImageView ricettaImageFeed = (ImageView) addView.findViewById(R.id.imgFeedRicetta);
                 Picasso.get().load(ricettas.get(i).getThumbnail()).into(ricettaImageFeed);
 
+
                 txtNomeRicettaFeed.setText(ricettas.get(i).getTitle());
                 txtTempoPreparazioneFeed.setText(ricettas.get(i).getTempo().concat(" minuti"));
-                txtAutoreRicette.setText(ricettas.get(i).getAuthorId());
+                String nomeAutore="";
+                try {
+                    nomeAutore= (String) new getNomeAutore(ricettas.get(i).getAuthorId()).execute().get();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                txtAutoreRicette.setText(nomeAutore);
 
                 RelativeLayout layoutContainer = (RelativeLayout) addView.findViewById(R.id.layoutFeedMainAndPic);
                 final int position = i;
@@ -245,6 +256,39 @@ public class SearchActivity extends AppCompatActivity {
             return obj;
         }
     }
+
+    public class getNomeAutore extends AsyncTask
+    {
+        String pathIdUtente;
+
+        public getNomeAutore(String pathIdUtente) {
+            this.pathIdUtente = pathIdUtente;
+        }
+
+        @Override
+        protected String doInBackground(Object[] objects) {
+            String documentIdUtente = pathIdUtente.split("/")[1];
+            FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+            final String[] nomeUtente = {""};
+            final DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
+            utentiRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful())
+                    {
+                        DocumentSnapshot documentSnapshots = task.getResult();
+                        if (documentSnapshots.exists())
+                        {
+                            nomeUtente[0] = (String) documentSnapshots.get("Nome");
+                        }
+                    }
+                }
+            });
+            return nomeUtente[0];
+        }
+    }
+
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

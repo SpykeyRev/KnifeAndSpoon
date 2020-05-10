@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        <com.digiolaba.knifeandspoon.Controller.CustomSwipeToRefresh
             android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -301,7 +301,7 @@
                 </LinearLayout>
             </ScrollView>
 
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </com.digiolaba.knifeandspoon.Controller.CustomSwipeToRefresh>
     </FrameLayout>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

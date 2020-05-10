@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -95,56 +96,63 @@ public class SearchActivity extends AppCompatActivity {
 
     private void loadRicettaView() {
 
+        Toast.makeText(SearchActivity.this, "Started Search", Toast.LENGTH_LONG).show();
         listLayout.removeAllViews();
-        for (int i = 0; i < ricettas.size(); i++) {
-            LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View addView = layoutInflater.inflate(R.layout.row_feed_layout, null);
-            TextView txtNomeRicettaFeed = (TextView) addView.findViewById(R.id.txtFeedNomeRicetta);
-            TextView txtTempoPreparazioneFeed = (TextView) addView.findViewById(R.id.txtFeedTempoPreparazione);
-            TextView txtPersoneFeed = (TextView) addView.findViewById(R.id.txtFeedPersone);
-            final ImageView ricettaImageFeed = (ImageView) addView.findViewById(R.id.imgFeedRicetta);
-            Picasso.get().load(ricettas.get(i).getThumbnail()).into(ricettaImageFeed);
-            txtNomeRicettaFeed.setText(ricettas.get(i).getTitle());
-            txtTempoPreparazioneFeed.setText(ricettas.get(i).getTempo().concat(" minuti"));
-            String feedPersone = "Per ".concat(Utils.personaOrPersone(ricettas.get(i).getPersone()));
-            txtPersoneFeed.setText(feedPersone);
-            RelativeLayout layoutContainer = (RelativeLayout) addView.findViewById(R.id.layoutFeedMainAndPic);
-            final int position = i;
-            layoutContainer.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        if (ricettas.size() != 0) {
+            for (int i = 0; i < ricettas.size(); i++) {
+                LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View addView = layoutInflater.inflate(R.layout.row_feed_layout, null);
 
-                    try {
-                        Intent intent = new Intent(SearchActivity.this, ShowRicettaActivity.class);
-                        Bundle bundle = Utils.loadBundle(ricettas.get(position));
-                        //Casting from imageSlider to Drawable and conversion into byteArray
-                        Drawable d = ricettaImageFeed.getDrawable();
-                        Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
-                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
-                        byte[] bitmapdata = stream.toByteArray();
-                        bundle.putByteArray("Thumbnail", bitmapdata);
-                        bundle.putBoolean("isAdmin", false);
-                        if(Objects.requireNonNull(intentMain.getExtras()).getString("pathIdUser").equals("anonymous"))
-                        {
-                            bundle.putBoolean("isFav", false);
+                TextView txtNomeRicettaFeed = (TextView) addView.findViewById(R.id.txtFeedNomeRicetta);
+                TextView txtTempoPreparazioneFeed = (TextView) addView.findViewById(R.id.txtFeedTempoPreparazione);
+                TextView txtAutoreRicette = (TextView) addView.findViewById(R.id.txtAutoreRicetta);
+
+                final ImageView ricettaImageFeed = (ImageView) addView.findViewById(R.id.imgFeedRicetta);
+                Picasso.get().load(ricettas.get(i).getThumbnail()).into(ricettaImageFeed);
+
+                txtNomeRicettaFeed.setText(ricettas.get(i).getTitle());
+                txtTempoPreparazioneFeed.setText(ricettas.get(i).getTempo().concat(" minuti"));
+                txtAutoreRicette.setText(ricettas.get(i).getAuthorId());
+
+                RelativeLayout layoutContainer = (RelativeLayout) addView.findViewById(R.id.layoutFeedMainAndPic);
+                final int position = i;
+                layoutContainer.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        try {
+                            Intent intent = new Intent(SearchActivity.this, ShowRicettaActivity.class);
+                            Bundle bundle = Utils.loadBundle(ricettas.get(position));
+                            //Casting from imageSlider to Drawable and conversion into byteArray
+                            Drawable d = ricettaImageFeed.getDrawable();
+                            Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
+                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
+                            byte[] bitmapdata = stream.toByteArray();
+                            bundle.putByteArray("Thumbnail", bitmapdata);
+                            bundle.putBoolean("isAdmin", false);
+                            if (Objects.requireNonNull(intentMain.getExtras()).getString("pathIdUser").equals("anonymous")) {
+                                bundle.putBoolean("isFav", false);
+                            } else {
+                                bundle.putBoolean("isFav", checkPreferiti(ricettas.get(position).getId()));
+                            }
+                            bundle.putString("pathIdUser", intentMain.getExtras().getString("pathIdUser"));
+                            intent.putExtras(bundle);
+                            startActivityForResult(intent, LAUNCH_SHOW_RICETTA_ACTIVITY);
+                        } catch (RuntimeException e) {
+                            e.printStackTrace();
                         }
-                        else
-                        {
-                            bundle.putBoolean("isFav", checkPreferiti(ricettas.get(position).getId()));
-                        }
-                        bundle.putString("pathIdUser",intentMain.getExtras().getString("pathIdUser"));
-                        intent.putExtras(bundle);
-                        startActivityForResult(intent, LAUNCH_SHOW_RICETTA_ACTIVITY);
-                    } catch (RuntimeException e) {
-                        e.printStackTrace();
+
                     }
+                });
+                listLayout.addView(addView);
+            }
 
-                }
-            });
-            listLayout.addView(addView);
         }
-
+        else
+            {
+                Toast.makeText(SearchActivity.this, "Ops..Non è stata trovata alcuna ricetta", Toast.LENGTH_LONG).show();
+        }
     }
 
     private Boolean checkPreferiti(String idRicetta) {
@@ -159,7 +167,7 @@ public class SearchActivity extends AppCompatActivity {
         return found;
     }
 
-    public static class getRicercaSearch extends AsyncTask {
+    public class getRicercaSearch extends AsyncTask {
 
         String SearchRicetta;
 

@@ -11,58 +11,53 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/heading_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
+                android:layout_marginTop="25dp"
+                android:text="Ricerca ricetta"
+                android:textColor="@color/colorPrimary"
+                android:textSize="30sp" />
+
+            <EditText
+                android:id="@+id/search_bar"
+                android:layout_width="321dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="27dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="-1dp"
+                android:background="@drawable/search_layout"
+                android:ems="10"
+                android:hint="@string/search_bar"
+                android:inputType="textPersonName"
+                android:paddingLeft="20dp"
+                android:paddingTop="10dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="10dp"
+                android:textColor="#999999" />
+
+            <ImageButton
+                android:id="@+id/btn_search"
+                android:layout_width="60dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="350dp"
+                android:layout_marginTop="-47dp"
+                android:background="@color/white"
+                app:srcCompat="@drawable/search_button" />
+
+            <LinearLayout
+                android:id="@+id/LayoutFeedSearch"
+                android:layout_width="411dp"
+                android:layout_height="607dp"
+                android:layout_marginStart="0dp"
+                android:orientation="vertical"></LinearLayout>
+        </LinearLayout>
     </ScrollView>
-
-    <ImageButton
-        android:id="@+id/btn_search"
-        android:layout_width="60dp"
-        android:layout_height="50dp"
-        android:layout_alignTop="@+id/heading_search"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="44dp"
-        android:layout_marginEnd="4dp"
-        android:background="@color/white"
-        app:srcCompat="@drawable/search_button" />
-
-    <EditText
-        android:id="@+id/search_bar"
-        android:layout_width="321dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="27dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="70dp"
-        android:layout_marginEnd="-1dp"
-        android:layout_toStartOf="@+id/btn_search"
-        android:background="@drawable/search_layout"
-        android:ems="10"
-        android:hint="@string/search_bar"
-        android:inputType="textPersonName"
-        android:paddingLeft="20dp"
-        android:paddingTop="10dp"
-        android:paddingRight="20dp"
-        android:paddingBottom="10dp"
-        android:textColor="#999999" />
-
-    <TextView
-        android:id="@+id/heading_search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="25dp"
-        android:text="Ricerca ricetta"
-        android:textColor="@color/colorPrimary"
-        android:textSize="30sp" />
-
-    <LinearLayout
-        android:id="@+id/LayoutFeedSearch"
-        android:layout_width="411dp"
-        android:layout_height="607dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="0dp"
-        android:orientation="vertical"></LinearLayout>
 
 
 </RelativeLayout>

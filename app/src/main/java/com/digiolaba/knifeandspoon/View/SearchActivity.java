@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,6 +26,7 @@ import com.digiolaba.knifeandspoon.R;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -75,21 +77,22 @@ public class SearchActivity extends AppCompatActivity {
 
     private void loadRicettaView() {
 
+        listLayout.removeAllViews();
         for (int i = 0; i < ricettas.size(); i++) {
             LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View addView = layoutInflater.inflate(R.layout.list_layout, null);
-            TextView txtnomeRicetta = (TextView) addView.findViewById(R.id.nomeRicetta);
-            TextView txtTempoPreparazione = (TextView) addView.findViewById(R.id.tempoPreparazione);
-            TextView txtAutore = (TextView) addView.findViewById(R.id.autoreRicetta);
+            View addView = layoutInflater.inflate(R.layout.row_feed_layout, null);
+            TextView txtNomeRicettaFeed = (TextView) addView.findViewById(R.id.txtFeedNomeRicetta);
+            TextView txtTempoPreparazioneFeed = (TextView) addView.findViewById(R.id.txtFeedTempoPreparazione);
+            TextView txtAutore = (TextView) addView.findViewById(R.id.txtAutoreRicetta);
 
-            final ImageView ricettaImage = (ImageView) addView.findViewById(R.id.imageSearchRicetta);
+            final ImageView ricettaImage = (ImageView) addView.findViewById(R.id.imgFeedRicetta);
             Picasso.get().load(ricettas.get(i).getThumbnail()).into(ricettaImage);
 
-            txtnomeRicetta.setText(ricettas.get(i).getTitle());
-            txtTempoPreparazione.setText(ricettas.get(i).getTempo().concat(" minuti"));
+            txtNomeRicettaFeed.setText(ricettas.get(i).getTitle());
+            txtTempoPreparazioneFeed.setText(ricettas.get(i).getTempo().concat(" minuti"));
             txtAutore.setText(ricettas.get(i).getAuthorId());
 
-            LinearLayout layoutContainer = (LinearLayout) addView.findViewById(R.id.layoutFeedMainAndPic2);
+            RelativeLayout layoutContainer = (RelativeLayout) addView.findViewById(R.id.layoutFeedMainAndPic);
             final int position = i;
             layoutContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -135,8 +138,10 @@ public class SearchActivity extends AppCompatActivity {
         protected List<Ricetta> doInBackground(Object[] objects) {
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
             CollectionReference ricetteRef = rootRef.collection("Ricette");
-            Query search = ricetteRef.whereEqualTo("isApproved", true).startAt(SearchRicetta);
-            Task<QuerySnapshot> documentSnapshotTask = search.get();
+            Query search = ricetteRef.whereEqualTo("isApproved", true);
+            Query query = search.whereGreaterThanOrEqualTo("Titolo", SearchRicetta).whereLessThanOrEqualTo("Titolo",SearchRicetta.concat("\uF7FF"));
+
+            Task<QuerySnapshot> documentSnapshotTask = query.get();
             List<Ricetta> obj = new ArrayList();
             try {
                 QuerySnapshot documentSnapshot = Tasks.await(documentSnapshotTask);

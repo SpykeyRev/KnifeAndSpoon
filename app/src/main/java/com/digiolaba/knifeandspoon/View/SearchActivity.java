@@ -58,7 +58,6 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         intentMain=getIntent();
-        Log.e("Ciao",intentMain.getExtras().getString("pathIdUser"));
 
 
         mSearchBar = (EditText) findViewById(R.id.search_bar);

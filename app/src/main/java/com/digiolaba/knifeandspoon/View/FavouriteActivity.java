@@ -43,7 +43,6 @@ import java.util.function.Function;
 
 public class FavouriteActivity extends AppCompatActivity {
     LinearLayout layoutFeedFav;
-    private static int LAUNCH_SHOW_RICETTA_ACTIVITY = 2912;
     private String actualUser;
 
     @Override
@@ -56,7 +55,6 @@ public class FavouriteActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         actualUser = getIntent().getExtras().get("pathIdUser").toString();
         layoutFeedFav = findViewById(R.id.layoutFeedFav);
-        //loadRicetteFav();
     }
 
     @Override
@@ -75,15 +73,6 @@ public class FavouriteActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == LAUNCH_SHOW_RICETTA_ACTIVITY) {
-            if (resultCode == RESULT_OK) {
-                loadRicetteFav();
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
 
     private void loadRicetteFav() {
         Log.e("Dio","Dio");
@@ -207,6 +196,7 @@ public class FavouriteActivity extends AppCompatActivity {
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
         final Boolean[] found = {false};
+
         utentiRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -220,7 +210,7 @@ public class FavouriteActivity extends AppCompatActivity {
                 Intent intent = new Intent(FavouriteActivity.this, ShowRicettaActivity.class);
                 bundle.putBoolean("isFav",found[0]);
                 intent.putExtras(bundle);
-                startActivityForResult(intent, LAUNCH_SHOW_RICETTA_ACTIVITY);
+                startActivity(intent);
             }
         });
     }

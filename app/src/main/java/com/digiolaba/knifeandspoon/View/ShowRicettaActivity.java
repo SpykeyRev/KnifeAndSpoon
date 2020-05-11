@@ -55,7 +55,6 @@ public class ShowRicettaActivity extends AppCompatActivity {
     private Bundle infoToShow;
     private Boolean[] isFavourite;
     private FloatingActionButton fab_favourite;
-    private Boolean[] appoggio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +87,6 @@ public class ShowRicettaActivity extends AppCompatActivity {
         loadPassaggi(passaggi);
         getAndShowUsername(autore);
         isFavourite = new Boolean[]{(Boolean) infoToShow.get("isFav")};
-        appoggio = new Boolean[]{(Boolean) infoToShow.get("isFav")};
         fabFavouriteSetter();
     }
 
@@ -133,6 +131,8 @@ public class ShowRicettaActivity extends AppCompatActivity {
         String documentIdUtente = infoToShow.get("pathIdUser").toString().split("/")[1];
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         final DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
+        fab_favourite.setClickable(false);
+        fab_favourite.setEnabled(false);
         utentiRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -146,7 +146,6 @@ public class ShowRicettaActivity extends AppCompatActivity {
                                     new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
-                                            Log.e("DIOOOO","addedd pref");
                                         }
                                     }
                             );
@@ -157,7 +156,6 @@ public class ShowRicettaActivity extends AppCompatActivity {
                                     new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
-                                            Log.e("DIOOOO","addedd pref");
 
                                         }
                                     }
@@ -166,6 +164,8 @@ public class ShowRicettaActivity extends AppCompatActivity {
 
                     }
                 }
+                fab_favourite.setClickable(true);
+                fab_favourite.setEnabled(true);
             }
         });
     }
@@ -230,7 +230,6 @@ public class ShowRicettaActivity extends AppCompatActivity {
                 } else {
                     fab_favourite.setImageResource(R.drawable.favorite_full);
                 }
-
                 fab_favourite.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

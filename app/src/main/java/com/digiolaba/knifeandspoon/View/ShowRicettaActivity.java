@@ -22,6 +22,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.bumptech.glide.Glide;
 import com.digiolaba.knifeandspoon.Controller.Utils;
 import com.digiolaba.knifeandspoon.Model.Utente;
 import com.digiolaba.knifeandspoon.R;
@@ -35,6 +36,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
@@ -80,12 +82,11 @@ public class ShowRicettaActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         TextView txtPersone = (TextView) findViewById(R.id.txtNumeroPersoneNumber);
         TextView txtTempo = (TextView) findViewById(R.id.txtTempoPreparazioneNumber);
-        TextView txtAutore = (TextView) findViewById(R.id.txtAutore);
         txtTempo.setText(tempo.concat(" minuti"));
         txtPersone.setText(Utils.personaOrPersone(persone));
-        txtAutore.setText(getUsername(autore));
         loadIngredienti(ingredienti);
         loadPassaggi(passaggi);
+        getAndShowUsername(autore);
         isFavourite = new Boolean[]{(Boolean) infoToShow.get("isFav")};
         appoggio = new Boolean[]{(Boolean) infoToShow.get("isFav")};
         fabFavouriteSetter();
@@ -166,16 +167,30 @@ public class ShowRicettaActivity extends AppCompatActivity {
         });
     }
 
-    private String getUsername(String autore) {
-        try {
-            Utente userRecipe = (Utente) new Utente.getUserInfoByReference(this, autore).execute().get();
-            CircleImageView userImage = (CircleImageView) findViewById(R.id.profile_image);
-            Picasso.get().load(userRecipe.getUserImage()).into(userImage);
-            return userRecipe.getUserName();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-            return null;
-        }
+    private void getAndShowUsername(String autore) {
+        FirebaseFirestore.getInstance().collection("Utenti").document(autore.split("/")[1]).get().addOnCompleteListener(
+                new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            DocumentSnapshot result = task.getResult();
+                            Utente userRecipe = new Utente(
+                                    result.getReference().getPath(),
+                                    result.get("Mail").toString(),
+                                    result.get("Nome").toString(),
+                                    result.get("Immagine").toString(),
+                                    (Boolean) result.get("isAdmin"),
+                                    (List<String>) result.get("Preferiti")
+                            );
+                            CircleImageView userImage = (CircleImageView) findViewById(R.id.profile_image);
+                            Picasso.get().load(userRecipe.getUserImage()).into(userImage);
+                            TextView txtAutore = (TextView) findViewById(R.id.txtAutore);
+                            txtAutore.setText(userRecipe.getUserName());
+                        }
+                    }
+                }
+        );
+        /**/
     }
 
     private void loadIngredienti(List<Map<String, Object>> ingredienti) {

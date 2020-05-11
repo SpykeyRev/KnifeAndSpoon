@@ -16,14 +16,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.bumptech.glide.Glide;
 import com.digiolaba.knifeandspoon.Controller.SliderAdapter;
 import com.digiolaba.knifeandspoon.Controller.Utils;
@@ -50,12 +48,10 @@ import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 import com.squareup.picasso.Picasso;
-
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -139,34 +135,40 @@ public class MainActivity extends AppCompatActivity {
     private void setUserInfo() {
         googleSignInClient = GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN);
         firebaseAuth = FirebaseAuth.getInstance();
-        TextView userName = (TextView) findViewById(R.id.userName);
-        try {
-            fireUser = firebaseAuth.getCurrentUser();
-            if (!fireUser.isAnonymous()) {
-                actualUser = (Utente) new Utente.getUserInfo(this, firebaseAuth.getCurrentUser().getEmail()).execute().get();
-                userName.setText(actualUser.getUserName());
-                CircleImageView userImage = (CircleImageView) findViewById(R.id.profile_image);
-                Picasso.get().load(actualUser.getUserImage()).into(userImage);
-            }
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        fireUser = firebaseAuth.getCurrentUser();
+        if (!fireUser.isAnonymous()) {
+            loadAndShowUserInfo();
         }
+    }
 
+    private void loadAndShowUserInfo(){
+        FirebaseFirestore.getInstance().collection("Utenti").whereEqualTo("Mail", firebaseAuth.getCurrentUser().getEmail()).get().addOnCompleteListener(
+                new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            QuerySnapshot result = task.getResult();
+                            actualUser=new Utente(
+                                    result.getDocuments().get(0).getReference().getPath(),
+                                    result.getDocuments().get(0).get("Mail").toString(),
+                                    result.getDocuments().get(0).get("Nome").toString(),
+                                    result.getDocuments().get(0).get("Immagine").toString(),
+                                    (Boolean) result.getDocuments().get(0).get("isAdmin"),
+                                    (List<String>) result.getDocuments().get(0).get("Preferiti")
+                            );
+                            TextView userName = (TextView) findViewById(R.id.userName);
+                            userName.setText(actualUser.getUserName());
+                            CircleImageView userImage = (CircleImageView) findViewById(R.id.profile_image);
+                            Glide.with(MainActivity.this).load(actualUser.getUserImage()).into(userImage);
+                        }
+                    }
+                }
+        );
     }
 
     private void refresh() {
         loadImageSliderWithRicette();
-        try {
-            actualUser = (Utente) new Utente.getUserInfo(this, firebaseAuth.getCurrentUser().getEmail()).execute().get();
-            CircleImageView userImage = (CircleImageView) findViewById(R.id.profile_image);
-            Glide.with(this).load(actualUser.getUserImage()).into(userImage);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        loadAndShowUserInfo();
         pullToRefresh.setRefreshing(false);
     }
 
@@ -219,31 +221,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-        //Task<QuerySnapshot> documentSnapshotTask = FirebaseFirestore.getInstance().collection("Ricette").limit(10).get();
-        /*try {
-            ricettas = (List<Ricetta>) new Ricetta.getFirstTenRecipe().execute().get();
-            List<SliderItem> sliderItems = new ArrayList<SliderItem>();
-            if (adapter.getCount() != 0) {
-                for (int i = 0; i < ricettas.size(); i++) {
-                    SliderItem sliderItem = new SliderItem();
-                    sliderItem.setDescription(ricettas.get(i).getTitle());
-                    sliderItem.setImageUrl(ricettas.get(i).getThumbnail());
-                    sliderItems.add(sliderItem);
-                }
-                adapter.renewItems(sliderItems, ricettas);
-            } else {
-                for (int i = 0; i < ricettas.size(); i++) {
-                    SliderItem sliderItem = new SliderItem();
-                    sliderItem.setDescription(ricettas.get(i).getTitle());
-                    sliderItem.setImageUrl(ricettas.get(i).getThumbnail());
-                    adapter.addItem(sliderItem, ricettas.get(i));
-                }
-            }
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
     }
 
     private void loadFeed() {
@@ -564,39 +541,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-
- /*   public void getUserInfo(String email) {
-        final List<Utente> users = new ArrayList();
-        FirebaseFirestore storage = FirebaseFirestore.getInstance();
-        Task task = storage.collection("Utenti").whereEqualTo("Mail", email).get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            String id = task.getResult().getDocuments().get(0).getId();
-                            String mail = task.getResult().getDocuments().get(0).get("Mail").toString();
-                            String nome = task.getResult().getDocuments().get(0).get("Nome").toString();
-                            String immagine = task.getResult().getDocuments().get(0).get("Immagine").toString();
-                            Boolean isAdmin = (Boolean) task.getResult().getDocuments().get(0).get("isAdmin");
-                            actualUser = new Utente(id, mail, nome, immagine, isAdmin);
-                            TextView textView = findViewById(R.id.userName);
-                            textView.setText(actualUser.getUserName());
-                        }
-                    }
-                });
-
-    }*/
-
-    /*@Override
-    protected void onPause() {
-        super.onPause();
-        coordinatorLayout.setVisibility(View.INVISIBLE);
-    }
-
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        coordinatorLayout.setVisibility(View.VISIBLE);
-    }*/
 }

@@ -1,10 +1,14 @@
 package com.digiolaba.knifeandspoon.View;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.digiolaba.knifeandspoon.Controller.Utils;
@@ -29,15 +33,39 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-        if (Utils.checkNetworkConnection(this)) {
-            launchCorrectActivity();
-        } else {
-            Utils.showToastMessage(context, "Turn on your internet connection you KNOB");
-            while (!Utils.checkNetworkConnection(this)) {
+        checkConnection();
+    }
 
-            }
+    private void checkConnection()
+    {
+        Boolean conn=isNetworkAvailable();
+        if(!conn)
+        {
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            checkConnection();
+                            break;
+
+                    }
+                }
+            };
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(getString(R.string.error_connection)).setPositiveButton(getString(R.string.error_ok), dialogClickListener)
+                    .show();
+        }
+        else
+        {
             launchCorrectActivity();
         }
+    }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     private void launchCorrectActivity() {

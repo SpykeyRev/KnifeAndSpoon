@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -168,15 +169,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refresh() {
-        loadImageSliderWithRicette();
         loadAndShowUserInfo();
-        pullToRefresh.setRefreshing(false);
+        loadImageSliderWithRicette();
     }
 
     private void loadImageSliderWithRicette() {
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         CollectionReference ricetteRef = rootRef.collection("Ricette");
         Query queryrRicettaApprovata = ricetteRef.whereEqualTo("isApproved", true);
+        obj.clear();
         queryrRicettaApprovata.limit(10).get().addOnCompleteListener(
                 new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -213,11 +214,11 @@ public class MainActivity extends AppCompatActivity {
                                     adapter.addItem(sliderItem, obj.get(i));
                                 }
                             }
-                            if(layoutFeed.getChildCount()!=0)
-                            {
-                                layoutFeed.removeAllViews();
-                            }
+                            layoutFeed.removeAllViews();
                             loadFeed();
+                            if(pullToRefresh.isRefreshing()){
+                                pullToRefresh.setRefreshing(false);
+                            }
                         }
                     }
                 }

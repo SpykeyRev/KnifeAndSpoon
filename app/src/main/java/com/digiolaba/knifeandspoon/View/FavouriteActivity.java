@@ -75,10 +75,8 @@ public class FavouriteActivity extends AppCompatActivity {
 
 
     private void loadRicetteFav() {
-        Log.e("Dio","Dio");
         List<Ricetta> ricettas = new ArrayList<>();
         layoutFeedFav.removeAllViews();
-        Log.e("Dio", String.valueOf(layoutFeedFav.getChildCount()));
         final String documentIdUtente = actualUser.split("/")[1];
         final FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         final DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
@@ -87,7 +85,6 @@ public class FavouriteActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
                     DocumentSnapshot result = task.getResult();
-                    Log.e("Size", String.valueOf(((List<String>) result.get("Preferiti")).size()));
                     final List<String> preferiti = (List<String>) result.get("Preferiti");
                     final List<String> deletedPreferiti = new ArrayList<>();
                     if(preferiti.size()==0){

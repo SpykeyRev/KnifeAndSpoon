@@ -56,7 +56,7 @@ public class FavouriteActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         actualUser = getIntent().getExtras().get("pathIdUser").toString();
         layoutFeedFav = findViewById(R.id.layoutFeedFav);
-        loadRicetteFav();
+        //loadRicetteFav();
     }
 
     @Override
@@ -70,20 +70,27 @@ public class FavouriteActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        loadRicetteFav();
+        super.onResume();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LAUNCH_SHOW_RICETTA_ACTIVITY) {
             if (resultCode == RESULT_OK) {
-                updateFav(data.getExtras().getString("docRicetta"));
+                loadRicetteFav();
             }
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void loadRicetteFav() {
+        Log.e("Dio","Dio");
         List<Ricetta> ricettas = new ArrayList<>();
         layoutFeedFav.removeAllViews();
-        String documentIdUtente = actualUser.split("/")[1];
-        final List<Ricetta> obj = new ArrayList();
+        Log.e("Dio", String.valueOf(layoutFeedFav.getChildCount()));
+        final String documentIdUtente = actualUser.split("/")[1];
         final FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         final DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
         utentiRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -91,6 +98,7 @@ public class FavouriteActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
                     DocumentSnapshot result = task.getResult();
+                    Log.e("Size", String.valueOf(((List<String>) result.get("Preferiti")).size()));
                     final List<String> preferiti = (List<String>) result.get("Preferiti");
                     final List<String> deletedPreferiti = new ArrayList<>();
                     if(preferiti.size()==0){
@@ -111,14 +119,15 @@ public class FavouriteActivity extends AppCompatActivity {
                     }else{
                         for (int i = 0; i < preferiti.size(); i++) {
                             final int j=i;
-                            rootRef.collection("Ricette").document(preferiti.get(i)).get().addOnCompleteListener(
+                            FirebaseFirestore recipeRef = FirebaseFirestore.getInstance();
+                            recipeRef.collection("Ricette").document(preferiti.get(i)).get().addOnCompleteListener(
                                     new OnCompleteListener<DocumentSnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                             if(task.isSuccessful()){
                                                 DocumentSnapshot result = task.getResult();
                                                 if (result.exists()) {
-                                                    obj.add(new Ricetta(
+                                                    addRicetta(new Ricetta(
                                                             result.getId(),
                                                             result.get("Autore").toString(),
                                                             result.get("Titolo").toString(),
@@ -129,7 +138,6 @@ public class FavouriteActivity extends AppCompatActivity {
                                                             (List<String>) result.get("Passaggi"),
                                                             (Boolean) result.get("isApproved")
                                                     ));
-                                                    addRicetta(obj.get(j));
                                                 } else {
                                                     deletedPreferiti.add(preferiti.get(j));
                                                     for (int i = 0; i < deletedPreferiti.size(); i++) {
@@ -187,89 +195,11 @@ public class FavouriteActivity extends AppCompatActivity {
         layoutFeedFav.addView(addView);
     }
 
-    private void showRicetteFav(final List<Ricetta> ricettas){
-        if (ricettas.size() == 0) {
-            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    switch (which) {
-                        case DialogInterface.BUTTON_POSITIVE:
-                            closeActivity();
-                            break;
-
-                    }
-                }
-            };
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(getString(R.string.no_fav_yet)).setPositiveButton(getString(R.string.error_ok), dialogClickListener)
-                    .show();
-        } else {
-            for (int i = 0; i < ricettas.size(); i++) {
-                LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View addView = layoutInflater.inflate(R.layout.row_feed_layout, null);
-                TextView txtNomeRicettaFeed = (TextView) addView.findViewById(R.id.txtFeedNomeRicetta);
-                TextView txtTempoPreparazioneFeed = (TextView) addView.findViewById(R.id.txtFeedTempoPreparazione);
-                TextView txtPersoneFeed = (TextView) addView.findViewById(R.id.txtFeedPersone);
-                final ImageView ricettaImageFeed = (ImageView) addView.findViewById(R.id.imgFeedRicetta);
-                Picasso.get().load(ricettas.get(i).getThumbnail()).into(ricettaImageFeed);
-                txtNomeRicettaFeed.setText(ricettas.get(i).getTitle());
-                txtTempoPreparazioneFeed.setText(ricettas.get(i).getTempo().concat(" minuti"));
-                String feedPersone = "Per ".concat(Utils.personaOrPersone(ricettas.get(i).getPersone()));
-                txtPersoneFeed.setText(feedPersone);
-                RelativeLayout layoutContainer = (RelativeLayout) addView.findViewById(R.id.layoutFeedMainAndPic);
-                final int position = i;
-                layoutContainer.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        try {
-                            Bundle bundle = Utils.loadBundle(ricettas.get(position));
-                            //Casting from imageSlider to Drawable and conversion into byteArray
-                            Drawable d = ricettaImageFeed.getDrawable();
-                            Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
-                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
-                            byte[] bitmapdata = stream.toByteArray();
-                            bundle.putByteArray("Thumbnail", bitmapdata);
-                            bundle.putBoolean("isAdmin", false);
-                            bundle.putString("pathIdUser", actualUser);
-                            checkPreferitiOnFirebase(ricettas.get(position).getId(),bundle);
-                        } catch (RuntimeException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                });
-                layoutFeedFav.addView(addView);
-            }
-        }
-    }
-
     private void closeActivity() {
         this.onBackPressed();
         this.finish();
     }
 
-
-    private void updateFav(final String documentIdRicetta) {
-        String documentIdUtente = actualUser.split("/")[1];
-        final FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-        final DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
-        utentiRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot documentSnapshots = task.getResult();
-                    if (documentSnapshots.exists()) {
-                        List<String> preferiti = (List<String>) documentSnapshots.get("Preferiti");
-                        preferiti.remove(documentIdRicetta);
-                        utentiRef.update("Preferiti", preferiti);
-                    }
-                }
-                loadRicetteFav();
-            }
-        });
-    }
 
     public void checkPreferitiOnFirebase(final String idRicetta, final Bundle bundle)
     {

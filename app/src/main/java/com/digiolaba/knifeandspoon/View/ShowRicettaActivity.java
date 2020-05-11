@@ -128,18 +128,6 @@ public class ShowRicettaActivity extends AppCompatActivity {
         return extras;
     }
 
-    @Override
-    protected void onPause() {
-        if (isFavourite[0] != appoggio[0]) {
-            setPreferiti();
-            appoggio[0] = !appoggio[0];
-            Intent intent=new Intent();
-            intent.putExtra("docRicetta", infoToShow.get("Id").toString());
-            setResult(Activity.RESULT_OK,intent);
-        }
-        super.onPause();
-    }
-
     private void setPreferiti()
     {
         String documentIdUtente = infoToShow.get("pathIdUser").toString().split("/")[1];
@@ -154,11 +142,26 @@ public class ShowRicettaActivity extends AppCompatActivity {
                         if (isFavourite[0]) {
                             List<String> preferiti = (List<String>) documentSnapshots.get("Preferiti");
                             preferiti.add(infoToShow.get("Id").toString());
-                            utentiRef.update("Preferiti", preferiti);
+                            utentiRef.update("Preferiti", preferiti).addOnCompleteListener(
+                                    new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            Log.e("DIOOOO","addedd pref");
+                                        }
+                                    }
+                            );
                         } else {
                             List<String> preferiti = (List<String>) documentSnapshots.get("Preferiti");
                             preferiti.remove(infoToShow.get("Id").toString());
-                            utentiRef.update("Preferiti", preferiti);
+                            utentiRef.update("Preferiti", preferiti).addOnCompleteListener(
+                                    new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            Log.e("DIOOOO","addedd pref");
+
+                                        }
+                                    }
+                            );
                         }
 
                     }
@@ -240,6 +243,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
                             Utils.showSnackbar(showPassaggiLayout, getString(R.string.removed_preferiti));
                             isFavourite[0] = false;
                         }
+                        setPreferiti();
                     }
                 });
             } else {

@@ -250,6 +250,11 @@ public class InsertRicettaActivity extends AppCompatActivity {
                         }
                         bitmap = Bitmap.createBitmap(MediaStore.Images.Media.getBitmap(getContentResolver(), picUri), 0, 0, MediaStore.Images.Media.getBitmap(getContentResolver(), picUri).getWidth(), MediaStore.Images.Media.getBitmap(getContentResolver(), picUri).getHeight(), matrix, true);
                     } catch (IOException e) {
+                        try {
+                            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), picUri);
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
                         e.printStackTrace();
                     }
                 } else {

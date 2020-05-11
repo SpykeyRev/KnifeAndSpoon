@@ -8,13 +8,10 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -36,7 +33,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -173,44 +169,45 @@ public class MainActivity extends AppCompatActivity {
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         CollectionReference ricetteRef = rootRef.collection("Ricette");
         Query queryrRicettaApprovata = ricetteRef.whereEqualTo("isApproved", true);
-        queryrRicettaApprovata.limit(10).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                         @Override
-                                                                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                             QuerySnapshot result = task.getResult();
-                                                                             if(task.isSuccessful()){
-                                                                                 for (int i = 0; i < result.size(); i++) {
-                                                                                     obj.add(new Ricetta(
-                                                                                             result.getDocuments().get(i).getId(),
-                                                                                             result.getDocuments().get(i).get("Autore").toString(),
-                                                                                             result.getDocuments().get(i).get("Titolo").toString(),
-                                                                                             result.getDocuments().get(i).get("Tempo di preparazione").toString(),
-                                                                                             result.getDocuments().get(i).get("Numero persone").toString(),
-                                                                                             result.getDocuments().get(i).get("Thumbnail").toString(),
-                                                                                             (List<Map<String, Object>>) result.getDocuments().get(i).get("Ingredienti"),
-                                                                                             (List<String>) result.getDocuments().get(i).get("Passaggi"),
-                                                                                             (Boolean) result.getDocuments().get(i).get("isApproved")
-                                                                                     ));
-                                                                                 }
-                                                                                 List<SliderItem> sliderItems = new ArrayList<SliderItem>();
-                                                                                 if (adapter.getCount() != 0) {
-                                                                                     for (int i = 0; i < obj.size(); i++) {
-                                                                                         SliderItem sliderItem = new SliderItem();
-                                                                                         sliderItem.setDescription( obj.get(i).getTitle());
-                                                                                         sliderItem.setImageUrl( obj.get(i).getThumbnail());
-                                                                                         sliderItems.add(sliderItem);
-                                                                                     }
-                                                                                     adapter.renewItems(sliderItems, ricettas);
-                                                                                 } else {
-                                                                                     for (int i = 0; i < obj.size(); i++) {
-                                                                                         SliderItem sliderItem = new SliderItem();
-                                                                                         sliderItem.setDescription( obj.get(i).getTitle());
-                                                                                         sliderItem.setImageUrl( obj.get(i).getThumbnail());
-                                                                                         adapter.addItem(sliderItem,  obj.get(i));
-                                                                                     }
-                                                                                 }
-                                                                             }
-                                                                         }
-                                                                     }
+        queryrRicettaApprovata.limit(10).get().addOnCompleteListener(
+                new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        QuerySnapshot result = task.getResult();
+                        if (task.isSuccessful()) {
+                            for (int i = 0; i < result.size(); i++) {
+                                obj.add(new Ricetta(
+                                        result.getDocuments().get(i).getId(),
+                                        result.getDocuments().get(i).get("Autore").toString(),
+                                        result.getDocuments().get(i).get("Titolo").toString(),
+                                        result.getDocuments().get(i).get("Tempo di preparazione").toString(),
+                                        result.getDocuments().get(i).get("Numero persone").toString(),
+                                        result.getDocuments().get(i).get("Thumbnail").toString(),
+                                        (List<Map<String, Object>>) result.getDocuments().get(i).get("Ingredienti"),
+                                        (List<String>) result.getDocuments().get(i).get("Passaggi"),
+                                        (Boolean) result.getDocuments().get(i).get("isApproved")
+                                ));
+                            }
+                            List<SliderItem> sliderItems = new ArrayList<SliderItem>();
+                            if (adapter.getCount() != 0) {
+                                for (int i = 0; i < obj.size(); i++) {
+                                    SliderItem sliderItem = new SliderItem();
+                                    sliderItem.setDescription(obj.get(i).getTitle());
+                                    sliderItem.setImageUrl(obj.get(i).getThumbnail());
+                                    sliderItems.add(sliderItem);
+                                }
+                                adapter.renewItems(sliderItems, ricettas);
+                            } else {
+                                for (int i = 0; i < obj.size(); i++) {
+                                    SliderItem sliderItem = new SliderItem();
+                                    sliderItem.setDescription(obj.get(i).getTitle());
+                                    sliderItem.setImageUrl(obj.get(i).getThumbnail());
+                                    adapter.addItem(sliderItem, obj.get(i));
+                                }
+                            }
+                        }
+                    }
+                }
         );
         //Task<QuerySnapshot> documentSnapshotTask = FirebaseFirestore.getInstance().collection("Ricette").limit(10).get();
         /*try {

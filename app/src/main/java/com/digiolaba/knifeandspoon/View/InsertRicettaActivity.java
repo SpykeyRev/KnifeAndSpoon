@@ -12,6 +12,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -38,12 +39,20 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.digiolaba.knifeandspoon.Controller.Utils;
-import com.digiolaba.knifeandspoon.Model.Ricetta;
 import com.digiolaba.knifeandspoon.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -53,6 +62,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 public class InsertRicettaActivity extends AppCompatActivity {
 
@@ -549,14 +559,72 @@ public class InsertRicettaActivity extends AppCompatActivity {
         return mappaDescrizione;
     }
 
-    private void publishToFirebase(Map ricetta) {
+    private void publishToFirebase(final Map ricetta) {
+        //Disable publish button
         publish.setEnabled(false);
+        //Retrieve image
         img_piatto.setDrawingCacheEnabled(true);
         img_piatto.buildDrawingCache();
         Bitmap bitmap = ((BitmapDrawable) img_piatto.getDrawable()).getBitmap();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] imgData = baos.toByteArray();
-        new Ricetta.publishRecipe(InsertRicettaActivity.this, publish, ricetta, imgData).execute();
+        //Setting up firebase
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        final StorageReference imageRef = storageRef.child(UUID.randomUUID().toString() + ".jpg");
+        //Prepare dialogs
+        final Utils.LoadingDialog loadingDialog= new Utils.LoadingDialog(InsertRicettaActivity.this);
+        loadingDialog.startLoadingDialog();
+        //Publish recipe with image
+        imageRef.putBytes(imgData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        //changeDialogText("Carico la ricetta");
+                        ricetta.put("Thumbnail", uri.toString());
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                        // Add a new document with a generated ID
+                        db.collection("Ricette")
+                                .add(ricetta)
+                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                    @Override
+                                    public void onSuccess(DocumentReference documentReference) {
+                                        loadingDialog.dismissLoadingDialog();
+                                        Utils.SuccessDialog successDialog;
+                                        successDialog = new Utils.SuccessDialog(InsertRicettaActivity.this);
+                                        successDialog.startLoadingDialog();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Utils.ErrorDialog errorDialog;
+                                        errorDialog = new Utils.ErrorDialog(InsertRicettaActivity.this);
+                                        errorDialog.startLoadingDialog();
+                                        publish.setEnabled(true);
+                                    }
+                                });
+                    }
+                });
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                int progress = (int) (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                loadingDialog.updateText("Carico la Foto: " + progress + "%");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Utils.ErrorDialog errorDialog;
+                                        errorDialog = new Utils.ErrorDialog(InsertRicettaActivity.this);
+                                        errorDialog.startLoadingDialog();
+                                        publish.setEnabled(true);
+                                    }
+                                }
+        );
     }
 }

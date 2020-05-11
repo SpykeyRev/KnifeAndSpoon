@@ -35,6 +35,7 @@ import com.squareup.picasso.Picasso;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
 
 public class FavouriteActivity extends AppCompatActivity {
 

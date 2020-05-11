@@ -95,8 +95,6 @@ public class ShowRicettaActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home: {
-                /*Intent intent = new Intent(ShowRicetta.this, MainActivity.class);
-            startActivity(intent);*/
                 if (!infoToShow.getBoolean("isAdmin")) {
                     checkFavIsChanged();
                 }

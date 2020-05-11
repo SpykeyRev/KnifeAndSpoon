@@ -315,7 +315,7 @@ public class MainActivity extends AppCompatActivity {
                     bundle.putString("pathIdUser", "anonymous");
                 }
                 intent.putExtras(bundle);
-                startActivityForResult(intent, LAUNCH_SHOW_RICETTA_ACTIVITY);
+                startActivity(intent);
             }
         });
     }
@@ -457,11 +457,6 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == LAUNCH_SETTINGS_ACTIVITY) {
             if (resultCode == RESULT_OK) {
                 refresh();
-            }
-        }
-        if (requestCode == LAUNCH_SHOW_RICETTA_ACTIVITY) {
-            if (resultCode == RESULT_OK) {
-                new Utente.setPreferiti(this, data.getExtras().getString("docRicetta"), data.getExtras().getString("docUser"), data.getExtras().getBoolean("fav")).execute();
             }
         }
     }

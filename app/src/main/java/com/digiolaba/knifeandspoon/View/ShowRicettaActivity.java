@@ -95,9 +95,6 @@ public class ShowRicettaActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home: {
-                if (!infoToShow.getBoolean("isAdmin")) {
-                    checkFavIsChanged();
-                }
                 this.onBackPressed();
                 this.finish();
                 return true;
@@ -115,13 +112,6 @@ public class ShowRicettaActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onBackPressed() {
-        if (!infoToShow.getBoolean("isAdmin")) {
-            checkFavIsChanged();
-        }
-        super.onBackPressed();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -140,10 +130,37 @@ public class ShowRicettaActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         if (isFavourite[0] != appoggio[0]) {
-            new Utente.setPreferiti(this, infoToShow.get("Id").toString(), infoToShow.get("pathIdUser").toString(), isFavourite[0]).execute();
+            setPreferiti();
             appoggio[0] = !appoggio[0];
         }
         super.onPause();
+    }
+
+    private void setPreferiti()
+    {
+        String documentIdUtente = infoToShow.get("pathIdUser").toString().split("/")[1];
+        FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+        final DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
+        utentiRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot documentSnapshots = task.getResult();
+                    if (documentSnapshots.exists()) {
+                        if (isFavourite[0]) {
+                            List<String> preferiti = (List<String>) documentSnapshots.get("Preferiti");
+                            preferiti.add(infoToShow.get("Id").toString());
+                            utentiRef.update("Preferiti", preferiti);
+                        } else {
+                            List<String> preferiti = (List<String>) documentSnapshots.get("Preferiti");
+                            preferiti.remove(infoToShow.get("Id").toString());
+                            utentiRef.update("Preferiti", preferiti);
+                        }
+
+                    }
+                }
+            }
+        });
     }
 
     private String getUsername(String autore) {
@@ -261,19 +278,6 @@ public class ShowRicettaActivity extends AppCompatActivity {
         });
 
     }
-
-    private void checkFavIsChanged() {
-        Intent intent = new Intent();
-        if (isFavourite[0] == appoggio[0]) {
-            setResult(Activity.RESULT_CANCELED, intent);
-        } else {
-            intent.putExtra("docRicetta", infoToShow.get("Id").toString());
-            intent.putExtra("docUser", infoToShow.get("pathIdUser").toString());
-            intent.putExtra("fav", isFavourite[0]);
-            setResult(Activity.RESULT_OK, intent);
-        }
-    }
-
 
     private void adminApprove() {
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {

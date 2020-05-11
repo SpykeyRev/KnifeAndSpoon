@@ -538,6 +538,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
                     Map<String, Object> ricettaToPush = new HashMap<>();
                     ricettaToPush.put("Autore", actualUser);
                     ricettaToPush.put("Titolo", etTitolo.getText().toString().trim());
+                    ricettaToPush.put("Categoria", spCategoria.getSelectedItem().toString());
                     ricettaToPush.put("Tempo di preparazione", tempoPreparazione.getText().toString());
                     ricettaToPush.put("Numero persone", numeroPersone.getText().toString());
                     ricettaToPush.put("Passaggi", getInfoPassaggi());

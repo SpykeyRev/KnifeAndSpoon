@@ -1,25 +1,9 @@
 package com.digiolaba.knifeandspoon.Model;
 
-import android.os.AsyncTask;
-import android.util.Log;
+import com.google.firebase.Timestamp;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 
 public class Ricetta {
     private String id;
@@ -31,9 +15,10 @@ public class Ricetta {
     private List<Map<String, Object>> ingredienti;
     private List<String> steps;
     private Boolean isApproved;
+    private Timestamp timestamp;
 
 
-    public Ricetta(String id, String authorId, String title, String tempo, String persone, String thumbnail, List<Map<String, Object>> ingredienti, List<String> steps, Boolean isApproved) {
+    public Ricetta(String id, String authorId, String title, String tempo, String persone, String thumbnail, List<Map<String, Object>> ingredienti, List<String> steps, Boolean isApproved,Timestamp timestamp) {
         this.id = id;
         this.authorId = authorId;
         this.title = title;
@@ -43,6 +28,7 @@ public class Ricetta {
         this.tempo = tempo;
         this.persone = persone;
         this.isApproved = isApproved;
+        this.timestamp=timestamp;
     }
 
     public String getAuthorId() {
@@ -81,6 +67,10 @@ public class Ricetta {
         return isApproved;
     }
 
+    public Timestamp getTimestamp() {
+        return this.timestamp;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -111,5 +101,9 @@ public class Ricetta {
 
     public void setSteps(List<String> steps) {
         this.steps = steps;
+    }
+
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp=timestamp;
     }
 }

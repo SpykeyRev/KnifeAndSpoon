@@ -29,6 +29,7 @@ import com.digiolaba.knifeandspoon.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -121,7 +122,8 @@ public class FavouriteActivity extends AppCompatActivity {
                                                             result.getString("Thumbnail"),
                                                             (List<Map<String, Object>>) result.get("Ingredienti"),
                                                             (List<String>) result.get("Passaggi"),
-                                                            (Boolean) result.get("isApproved")
+                                                            (Boolean) result.get("isApproved"),
+                                                            (Timestamp) result.get("Timestamp")
                                                     ));
                                                 } else {
                                                     deletedPreferiti.add(preferiti.get(j));

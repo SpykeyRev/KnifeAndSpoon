@@ -26,6 +26,7 @@ import com.digiolaba.knifeandspoon.Model.Ricetta;
 import com.digiolaba.knifeandspoon.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -117,7 +118,8 @@ public class SearchActivity extends AppCompatActivity {
                                                 result.getDocuments().get(i).get("Thumbnail").toString(),
                                                 (List<Map<String, Object>>) result.getDocuments().get(i).get("Ingredienti"),
                                                 (List<String>) result.getDocuments().get(i).get("Passaggi"),
-                                                (Boolean) result.getDocuments().get(i).get("isApproved")
+                                                (Boolean) result.getDocuments().get(i).get("isApproved"),
+                                                (Timestamp) result.getDocuments().get(i).get("Timestamp")
                                         ));
                                     }
                                 }

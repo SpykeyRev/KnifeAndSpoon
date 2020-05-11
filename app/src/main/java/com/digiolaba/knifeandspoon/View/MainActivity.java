@@ -37,6 +37,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseUser fireUser;
     private static int LAUNCH_SHOW_RICETTA_ACTIVITY = 2912;
     private static int LAUNCH_SETTINGS_ACTIVITY = 1998;
+    private String category_selected=null;
     private final List<Ricetta> obj = new ArrayList();
 
 
@@ -115,6 +117,8 @@ public class MainActivity extends AppCompatActivity {
         fab_anticlock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_anticlock);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinateLayout);
         layoutFeed = (LinearLayout) findViewById(R.id.layoutFeed);
+        //Set Category listeners
+        setCategoryListeners();
         //Setting up firebase for userInfo
         setUserInfo();
         //Setting up imageSlider
@@ -131,6 +135,49 @@ public class MainActivity extends AppCompatActivity {
         loadImageSliderWithRicette();
         FABClickManagement();
         FABLongClickManagement();
+    }
+
+    private void setCategoryListeners(){
+        RelativeLayout antipasto= (RelativeLayout) findViewById(R.id.antipasto_view);
+        antipasto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                category_selected="Antipasto";
+                loadImageSliderWithCategoryRicette();
+            }
+        });
+        RelativeLayout primo= (RelativeLayout) findViewById(R.id.primo_view);
+        primo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                category_selected="Primo";
+                loadImageSliderWithCategoryRicette();
+            }
+        });
+        RelativeLayout secondo= (RelativeLayout) findViewById(R.id.secondo_view);
+        secondo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                category_selected="Secondo";
+                loadImageSliderWithCategoryRicette();
+            }
+        });
+        RelativeLayout contorno= (RelativeLayout) findViewById(R.id.contorno_view);
+        contorno.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                category_selected="Contorno";
+                loadImageSliderWithCategoryRicette();
+            }
+        });
+        RelativeLayout dolce= (RelativeLayout) findViewById(R.id.dolce_view);
+        dolce.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                category_selected="Dolce";
+                loadImageSliderWithCategoryRicette();
+            }
+        });
     }
 
     private void setUserInfo() {
@@ -173,10 +220,62 @@ public class MainActivity extends AppCompatActivity {
         loadImageSliderWithRicette();
     }
 
+    private void loadImageSliderWithCategoryRicette(){
+        pullToRefresh.setRefreshing(true);
+        FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+        CollectionReference ricetteRef = rootRef.collection("Ricette");
+        Query queryrRicettaApprovata = ricetteRef.whereEqualTo("isApproved", true).whereEqualTo("Categoria",category_selected);
+        final List<Ricetta> filtered=new ArrayList<Ricetta>();
+        queryrRicettaApprovata.limit(10).get().addOnCompleteListener(
+                new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        QuerySnapshot result = task.getResult();
+                        if (task.isSuccessful()) {
+                            for (int i = 0; i < result.size(); i++) {
+                                filtered.add(new Ricetta(
+                                        result.getDocuments().get(i).getId(),
+                                        result.getDocuments().get(i).get("Autore").toString(),
+                                        result.getDocuments().get(i).get("Titolo").toString(),
+                                        result.getDocuments().get(i).get("Tempo di preparazione").toString(),
+                                        result.getDocuments().get(i).get("Numero persone").toString(),
+                                        result.getDocuments().get(i).get("Thumbnail").toString(),
+                                        (List<Map<String, Object>>) result.getDocuments().get(i).get("Ingredienti"),
+                                        (List<String>) result.getDocuments().get(i).get("Passaggi"),
+                                        (Boolean) result.getDocuments().get(i).get("isApproved"),
+                                        (Timestamp) result.getDocuments().get(i).get("Timestamp")
+                                ));
+                            }
+                            List<SliderItem> sliderItems = new ArrayList<SliderItem>();
+                            if (adapter.getCount() != 0) {
+                                for (int i = 0; i < filtered.size(); i++) {
+                                    SliderItem sliderItem = new SliderItem();
+                                    sliderItem.setDescription(filtered.get(i).getTitle());
+                                    sliderItem.setImageUrl(filtered.get(i).getThumbnail());
+                                    sliderItems.add(sliderItem);
+                                }
+                                adapter.renewItems(sliderItems, filtered);
+                            } else {
+                                for (int i = 0; i < filtered.size(); i++) {
+                                    SliderItem sliderItem = new SliderItem();
+                                    sliderItem.setDescription(filtered.get(i).getTitle());
+                                    sliderItem.setImageUrl(filtered.get(i).getThumbnail());
+                                    adapter.addItem(sliderItem, filtered.get(i));
+                                }
+                            }
+                            if(pullToRefresh.isRefreshing()){
+                                pullToRefresh.setRefreshing(false);
+                            }
+                        }
+                    }
+                }
+        );
+    }
+
     private void loadImageSliderWithRicette() {
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         CollectionReference ricetteRef = rootRef.collection("Ricette");
-        Query queryrRicettaApprovata = ricetteRef.whereEqualTo("isApproved", true);
+        Query queryrRicettaApprovata = ricetteRef.orderBy("Timestamp",Query.Direction.DESCENDING).whereEqualTo("isApproved", true);
         obj.clear();
         queryrRicettaApprovata.limit(10).get().addOnCompleteListener(
                 new OnCompleteListener<QuerySnapshot>() {
@@ -194,7 +293,8 @@ public class MainActivity extends AppCompatActivity {
                                         result.getDocuments().get(i).get("Thumbnail").toString(),
                                         (List<Map<String, Object>>) result.getDocuments().get(i).get("Ingredienti"),
                                         (List<String>) result.getDocuments().get(i).get("Passaggi"),
-                                        (Boolean) result.getDocuments().get(i).get("isApproved")
+                                        (Boolean) result.getDocuments().get(i).get("isApproved"),
+                                        (Timestamp) result.getDocuments().get(i).get("Timestamp")
                                 ));
                             }
                             List<SliderItem> sliderItems = new ArrayList<SliderItem>();

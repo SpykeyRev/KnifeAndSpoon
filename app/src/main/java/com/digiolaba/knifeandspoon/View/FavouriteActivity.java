@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,19 +28,20 @@ import com.digiolaba.knifeandspoon.Model.Utente;
 import com.digiolaba.knifeandspoon.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 
 public class FavouriteActivity extends AppCompatActivity {
-
-    private List<Ricetta> ricettas;
     LinearLayout layoutFeedFav;
     private static int LAUNCH_SHOW_RICETTA_ACTIVITY = 2912;
     private String actualUser;
@@ -78,14 +80,115 @@ public class FavouriteActivity extends AppCompatActivity {
     }
 
     private void loadRicetteFav() {
+        Log.e("DIo","DIO");
+        List<Ricetta> ricettas = new ArrayList<>();
         layoutFeedFav.removeAllViews();
-        try {
-            ricettas = (List<Ricetta>) new Ricetta.getFavRicette(actualUser).execute().get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        String documentIdUtente = actualUser.split("/")[1];
+        final List<Ricetta> obj = new ArrayList();
+        final FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+        final DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
+        utentiRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot result = task.getResult();
+                    final List<String> preferiti = (List<String>) result.get("Preferiti");
+                    final List<String> deletedPreferiti = new ArrayList<>();
+                    if(preferiti.size()==0){
+                        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                    case DialogInterface.BUTTON_POSITIVE:
+                                        closeActivity();
+                                        break;
+
+                                }
+                            }
+                        };
+                        AlertDialog.Builder builder = new AlertDialog.Builder(FavouriteActivity.this);
+                        builder.setMessage(getString(R.string.no_fav_yet)).setPositiveButton(getString(R.string.error_ok), dialogClickListener)
+                                .show();
+                    }else{
+                        for (int i = 0; i < preferiti.size(); i++) {
+                            final int j=i;
+                            rootRef.collection("Ricette").document(preferiti.get(i)).get().addOnCompleteListener(
+                                    new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if(task.isSuccessful()){
+                                                DocumentSnapshot result = task.getResult();
+                                                if (result.exists()) {
+                                                    obj.add(new Ricetta(
+                                                            result.getId(),
+                                                            result.get("Autore").toString(),
+                                                            result.get("Titolo").toString(),
+                                                            result.get("Tempo di preparazione").toString(),
+                                                            result.get("Numero persone").toString(),
+                                                            result.getString("Thumbnail"),
+                                                            (List<Map<String, Object>>) result.get("Ingredienti"),
+                                                            (List<String>) result.get("Passaggi"),
+                                                            (Boolean) result.get("isApproved")
+                                                    ));
+                                                    addRicetta(obj.get(j));
+                                                } else {
+                                                    deletedPreferiti.add(preferiti.get(j));
+                                                    for (int i = 0; i < deletedPreferiti.size(); i++) {
+                                                        preferiti.remove(deletedPreferiti.get(i));
+                                                    }
+                                                    utentiRef.update("Preferiti", preferiti);
+                                                }
+                                            }
+                                        }
+                                    }
+                            );
+                        }
+                    }
+                }
+
+            }
+        });
+    }
+
+    private void addRicetta(final Ricetta ricetta){
+        LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View addView = layoutInflater.inflate(R.layout.row_feed_layout, null);
+        TextView txtNomeRicettaFeed = (TextView) addView.findViewById(R.id.txtFeedNomeRicetta);
+        TextView txtTempoPreparazioneFeed = (TextView) addView.findViewById(R.id.txtFeedTempoPreparazione);
+        TextView txtPersoneFeed = (TextView) addView.findViewById(R.id.txtFeedPersone);
+        final ImageView ricettaImageFeed = (ImageView) addView.findViewById(R.id.imgFeedRicetta);
+        Picasso.get().load(ricetta.getThumbnail()).into(ricettaImageFeed);
+        txtNomeRicettaFeed.setText(ricetta.getTitle());
+        txtTempoPreparazioneFeed.setText(ricetta.getTempo().concat(" minuti"));
+        String feedPersone = "Per ".concat(Utils.personaOrPersone(ricetta.getPersone()));
+        txtPersoneFeed.setText(feedPersone);
+        RelativeLayout layoutContainer = (RelativeLayout) addView.findViewById(R.id.layoutFeedMainAndPic);
+        layoutContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                try {
+                    Bundle bundle = Utils.loadBundle(ricetta);
+                    //Casting from imageSlider to Drawable and conversion into byteArray
+                    Drawable d = ricettaImageFeed.getDrawable();
+                    Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
+                    byte[] bitmapdata = stream.toByteArray();
+                    bundle.putByteArray("Thumbnail", bitmapdata);
+                    bundle.putBoolean("isAdmin", false);
+                    bundle.putString("pathIdUser", actualUser);
+                    checkPreferitiOnFirebase(ricetta.getId(),bundle);
+                } catch (RuntimeException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+        layoutFeedFav.addView(addView);
+    }
+
+    private void showRicetteFav(final List<Ricetta> ricettas){
         if (ricettas.size() == 0) {
             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                 @Override
@@ -141,7 +244,6 @@ public class FavouriteActivity extends AppCompatActivity {
                 layoutFeedFav.addView(addView);
             }
         }
-
     }
 
     private void closeActivity() {

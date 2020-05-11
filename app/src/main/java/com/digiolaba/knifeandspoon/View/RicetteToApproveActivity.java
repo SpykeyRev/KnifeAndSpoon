@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -64,12 +65,13 @@ public class RicetteToApproveActivity extends AppCompatActivity {
 
 
     private void loadRicetteToReview() {
+        Log.e("DIoCAn","DIOCAN");
         ricetteToReviewLayout.removeAllViews();
         final List<Ricetta> obj = new ArrayList();
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         CollectionReference ricetteRef = rootRef.collection("Ricette");
         Query queryrRicettaApprovata = ricetteRef.whereEqualTo("isApproved", false);
-        queryrRicettaApprovata.limit(10).get().addOnCompleteListener(
+        queryrRicettaApprovata.get().addOnCompleteListener(
                 new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -159,11 +161,5 @@ public class RicetteToApproveActivity extends AppCompatActivity {
     private void closeActivity() {
         this.onBackPressed();
         this.finish();
-    }
-
-    @Override
-    protected void onResume() {
-        loadRicetteToReview();
-        super.onResume();
     }
 }

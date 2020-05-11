@@ -295,17 +295,20 @@ public class Ricetta {
                 for (int i = 0; i < preferiti.size(); i++) {
                     Task<DocumentSnapshot> documentSnapshotRicetteTask = rootRef.collection("Ricette").document(preferiti.get(i)).get();
                     DocumentSnapshot documentRicetteSnapshot = Tasks.await(documentSnapshotRicetteTask);
-                    obj.add(new Ricetta(
-                            documentRicetteSnapshot.getId(),
-                            documentRicetteSnapshot.get("Autore").toString(),
-                            documentRicetteSnapshot.get("Titolo").toString(),
-                            documentRicetteSnapshot.get("Tempo di preparazione").toString(),
-                            documentRicetteSnapshot.get("Numero persone").toString(),
-                            documentRicetteSnapshot.getString("Thumbnail"),
-                            (List<Map<String, Object>>) documentRicetteSnapshot.get("Ingredienti"),
-                            (List<String>) documentRicetteSnapshot.get("Passaggi"),
-                            (Boolean) documentRicetteSnapshot.get("isApproved")
-                    ));
+                    if(documentRicetteSnapshot.exists())
+                    {
+                        obj.add(new Ricetta(
+                                documentRicetteSnapshot.getId(),
+                                documentRicetteSnapshot.get("Autore").toString(),
+                                documentRicetteSnapshot.get("Titolo").toString(),
+                                documentRicetteSnapshot.get("Tempo di preparazione").toString(),
+                                documentRicetteSnapshot.get("Numero persone").toString(),
+                                documentRicetteSnapshot.getString("Thumbnail"),
+                                (List<Map<String, Object>>) documentRicetteSnapshot.get("Ingredienti"),
+                                (List<String>) documentRicetteSnapshot.get("Passaggi"),
+                                (Boolean) documentRicetteSnapshot.get("isApproved")
+                        ));
+                    }
                 }
 
             } catch (ExecutionException e) {

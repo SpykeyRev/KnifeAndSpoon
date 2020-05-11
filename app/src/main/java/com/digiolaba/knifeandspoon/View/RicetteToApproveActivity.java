@@ -65,8 +65,6 @@ public class RicetteToApproveActivity extends AppCompatActivity {
 
 
     private void loadRicetteToReview() {
-        Log.e("DIoCAn","DIOCAN");
-        ricetteToReviewLayout.removeAllViews();
         final List<Ricetta> obj = new ArrayList();
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         CollectionReference ricetteRef = rootRef.collection("Ricette");
@@ -89,6 +87,10 @@ public class RicetteToApproveActivity extends AppCompatActivity {
                                         (List<String>) result.getDocuments().get(i).get("Passaggi"),
                                         (Boolean) result.getDocuments().get(i).get("isApproved")
                                 ));
+                            }
+                            if(ricetteToReviewLayout.getChildCount()!=0)
+                            {
+                                ricetteToReviewLayout.removeAllViews();
                             }
                             showRecipes(obj);
                         }
@@ -161,5 +163,10 @@ public class RicetteToApproveActivity extends AppCompatActivity {
     private void closeActivity() {
         this.onBackPressed();
         this.finish();
+    }
+
+    protected void onResume() {
+        loadRicetteToReview();
+        super.onResume();
     }
 }

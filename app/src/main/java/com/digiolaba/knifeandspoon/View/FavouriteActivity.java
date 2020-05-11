@@ -80,7 +80,6 @@ public class FavouriteActivity extends AppCompatActivity {
     }
 
     private void loadRicetteFav() {
-        Log.e("DIo","DIO");
         List<Ricetta> ricettas = new ArrayList<>();
         layoutFeedFav.removeAllViews();
         String documentIdUtente = actualUser.split("/")[1];

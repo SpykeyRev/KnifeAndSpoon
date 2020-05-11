@@ -45,13 +45,13 @@ public class SplashScreenActivity extends AppCompatActivity {
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
             if (currentUser.isAnonymous()) {
-                try {
+                /*try {
                     List<Ricetta> ricettas = (List<Ricetta>) new Ricetta.getFirstTenRecipe().execute().get();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                }
+                }*/
                 Intent intent = new Intent(getApplicationContext(),
                         MainActivity.class);
                 startActivity(intent);

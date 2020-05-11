@@ -36,10 +36,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
@@ -48,6 +53,7 @@ import com.squareup.picasso.Picasso;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -163,7 +169,51 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadImageSliderWithRicette() {
-        try {
+        final List<Ricetta> obj = new ArrayList();
+        FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+        CollectionReference ricetteRef = rootRef.collection("Ricette");
+        Query queryrRicettaApprovata = ricetteRef.whereEqualTo("isApproved", true);
+        queryrRicettaApprovata.limit(10).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                         @Override
+                                                                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                             QuerySnapshot result = task.getResult();
+                                                                             if(task.isSuccessful()){
+                                                                                 for (int i = 0; i < result.size(); i++) {
+                                                                                     obj.add(new Ricetta(
+                                                                                             result.getDocuments().get(i).getId(),
+                                                                                             result.getDocuments().get(i).get("Autore").toString(),
+                                                                                             result.getDocuments().get(i).get("Titolo").toString(),
+                                                                                             result.getDocuments().get(i).get("Tempo di preparazione").toString(),
+                                                                                             result.getDocuments().get(i).get("Numero persone").toString(),
+                                                                                             result.getDocuments().get(i).get("Thumbnail").toString(),
+                                                                                             (List<Map<String, Object>>) result.getDocuments().get(i).get("Ingredienti"),
+                                                                                             (List<String>) result.getDocuments().get(i).get("Passaggi"),
+                                                                                             (Boolean) result.getDocuments().get(i).get("isApproved")
+                                                                                     ));
+                                                                                 }
+                                                                                 List<SliderItem> sliderItems = new ArrayList<SliderItem>();
+                                                                                 if (adapter.getCount() != 0) {
+                                                                                     for (int i = 0; i < obj.size(); i++) {
+                                                                                         SliderItem sliderItem = new SliderItem();
+                                                                                         sliderItem.setDescription( obj.get(i).getTitle());
+                                                                                         sliderItem.setImageUrl( obj.get(i).getThumbnail());
+                                                                                         sliderItems.add(sliderItem);
+                                                                                     }
+                                                                                     adapter.renewItems(sliderItems, ricettas);
+                                                                                 } else {
+                                                                                     for (int i = 0; i < obj.size(); i++) {
+                                                                                         SliderItem sliderItem = new SliderItem();
+                                                                                         sliderItem.setDescription( obj.get(i).getTitle());
+                                                                                         sliderItem.setImageUrl( obj.get(i).getThumbnail());
+                                                                                         adapter.addItem(sliderItem,  obj.get(i));
+                                                                                     }
+                                                                                 }
+                                                                             }
+                                                                         }
+                                                                     }
+        );
+        //Task<QuerySnapshot> documentSnapshotTask = FirebaseFirestore.getInstance().collection("Ricette").limit(10).get();
+        /*try {
             ricettas = (List<Ricetta>) new Ricetta.getFirstTenRecipe().execute().get();
             List<SliderItem> sliderItems = new ArrayList<SliderItem>();
             if (adapter.getCount() != 0) {
@@ -186,11 +236,11 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     private void loadFeed() {
-        for (int i = 0; i < ricettas.size(); i++) {
+        /*for (int i = 0; i < ricettas.size(); i++) {
             LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View addView = layoutInflater.inflate(R.layout.row_feed_layout, null);
             TextView txtNomeRicettaFeed = (TextView) addView.findViewById(R.id.txtFeedNomeRicetta);
@@ -235,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             layoutFeed.addView(addView);
-        }
+        }*/
     }
 
     private Boolean checkPreferiti(String idRicetta) {

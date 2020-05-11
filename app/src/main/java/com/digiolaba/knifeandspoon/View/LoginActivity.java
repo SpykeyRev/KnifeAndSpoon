@@ -190,13 +190,13 @@ public class LoginActivity extends AppCompatActivity {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInAnonymously:success");
                     FirebaseUser user = firebaseAuth.getCurrentUser();
-                    try {
+                    /*try {
                         List<Ricetta> ricettas = (List<Ricetta>) new Ricetta.getFirstTenRecipe().execute().get();
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
-                    }
+                    }*/
                     launchMainActivity();
 
                 } else {

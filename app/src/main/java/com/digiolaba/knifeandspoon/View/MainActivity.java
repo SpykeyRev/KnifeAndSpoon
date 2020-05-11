@@ -156,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
                                     (Boolean) result.getDocuments().get(0).get("isAdmin"),
                                     (List<String>) result.getDocuments().get(0).get("Preferiti")
                             );
+                            adapter.setActualUser(actualUser);
                             TextView userName = (TextView) findViewById(R.id.userName);
                             userName.setText(actualUser.getUserName());
                             CircleImageView userImage = (CircleImageView) findViewById(R.id.profile_image);

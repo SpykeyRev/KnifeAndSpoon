@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +18,7 @@ import com.digiolaba.knifeandspoon.Controller.Utils;
 import com.digiolaba.knifeandspoon.Model.Utente;
 import com.digiolaba.knifeandspoon.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,6 +29,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
@@ -104,7 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
         List<String> preferiti = new ArrayList<String>();
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser fireUser = firebaseAuth.getCurrentUser();
-        Map<String, Object> user = new HashMap<>();
+        final Map<String, Object> user = new HashMap<>();
         user.put("Mail", fireUser.getEmail().toString());
         user.put("Nome", nome.getText().toString());
         user.put("isAdmin", false);
@@ -117,6 +120,22 @@ public class RegisterActivity extends AppCompatActivity {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] imgData = baos.toByteArray();
-        new Utente.registerUser(RegisterActivity.this, user, imgData).execute();
+        imageRef.putBytes(imgData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        user.put("Immagine", uri.toString());
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                        // Add a new document with a generated ID
+                        db.collection("Utenti")
+                                .add(user);
+                        MainActivity.startActivity(RegisterActivity.this);
+                        RegisterActivity.this.finish();
+                    }
+                });
+            }
+        });
     }
 }

@@ -45,28 +45,6 @@ public class Ricetta {
         this.isApproved = isApproved;
     }
 
-    public class Ingrediente {
-        final String Nome;
-        final Double Quantità;
-        final String Ut;
-
-        public Ingrediente(String Nome, Double Quantità, String Ut) {
-            this.Nome = Nome;
-            this.Quantità = Quantità;
-            this.Ut = Ut;
-        }
-    }
-
-    public class Step {
-        final int Numero;
-        final String Testo;
-
-        public Step(int Numero, String Testo) {
-            this.Numero = Numero;
-            this.Testo = Testo;
-        }
-    }
-
     public String getAuthorId() {
         return this.authorId;
     }

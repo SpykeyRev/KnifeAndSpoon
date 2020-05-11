@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -20,15 +19,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.digiolaba.knifeandspoon.Controller.Utils;
 import com.digiolaba.knifeandspoon.Model.Ricetta;
-import com.digiolaba.knifeandspoon.Model.Utente;
 import com.digiolaba.knifeandspoon.R;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -42,8 +39,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -58,7 +53,7 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        intentMain=getIntent();
+        intentMain = getIntent();
 
 
         mSearchBar = (EditText) findViewById(R.id.search_bar);
@@ -69,18 +64,7 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == LAUNCH_SHOW_RICETTA_ACTIVITY) {
-            if (resultCode == RESULT_OK) {
-                new Utente.setPreferiti(this, data.getExtras().getString("docRicetta"), data.getExtras().getString("docUser"), data.getExtras().getBoolean("fav")).execute();
-            }
-        }
-    }
-
-    private void searchEvent()
-    {
+    private void searchEvent() {
 
         mSearchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,18 +72,14 @@ public class SearchActivity extends AppCompatActivity {
                 loadingListAndView();
             }
         });
-
         mSearchBar.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(event.getAction()==KeyEvent.ACTION_DOWN)
-                {
-                    switch (keyCode)
-                    {
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    switch (keyCode) {
                         case KeyEvent.KEYCODE_DPAD_CENTER:
-                        case KeyEvent.KEYCODE_ENTER:
-                        {
-                           loadingListAndView();
+                        case KeyEvent.KEYCODE_ENTER: {
+                            loadingListAndView();
                         }
                         return true;
                         default:
@@ -111,24 +91,41 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
-    public void loadingListAndView()
-    {
-        if(mSearchBar.getText().length()<=0)
-        {
-            Utils.showSnackbar(listLayout,"Per favore inserisci qualcosa da ricercare");
-        }
-        else
-        {
-            String SearchRicetta = mSearchBar.getText().toString();
-            try {
-                ricettas = (List<Ricetta>) new getRicercaSearch(SearchRicetta).execute().get();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            loadRicettaView();
+    public void loadingListAndView() {
+        if (mSearchBar.getText().length() <= 0) {
+            Utils.showSnackbar(listLayout, "Per favore inserisci qualcosa da ricercare");
+        } else {
+            final String SearchRicetta = mSearchBar.getText().toString();
+            FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+            CollectionReference ricetteRef = rootRef.collection("Ricette");
+            Query queryrRicettaApprovata = ricetteRef.whereEqualTo("isApproved", true);
+            ricettas=new ArrayList<Ricetta>();
+            queryrRicettaApprovata.get().addOnCompleteListener(
+                    new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            QuerySnapshot result = task.getResult();
+                            if (task.isSuccessful()) {
+                                for (int i = 0; i < result.size(); i++) {
+                                    if (result.getDocuments().get(i).get("Titolo").toString().toLowerCase().contains(SearchRicetta.toLowerCase())) {
+                                        ricettas.add(new Ricetta(
+                                                result.getDocuments().get(i).getId(),
+                                                result.getDocuments().get(i).get("Autore").toString(),
+                                                result.getDocuments().get(i).get("Titolo").toString(),
+                                                result.getDocuments().get(i).get("Tempo di preparazione").toString(),
+                                                result.getDocuments().get(i).get("Numero persone").toString(),
+                                                result.getDocuments().get(i).get("Thumbnail").toString(),
+                                                (List<Map<String, Object>>) result.getDocuments().get(i).get("Ingredienti"),
+                                                (List<String>) result.getDocuments().get(i).get("Passaggi"),
+                                                (Boolean) result.getDocuments().get(i).get("isApproved")
+                                        ));
+                                    }
+                                }
+                                loadRicettaView();
+                            }
+                        }
+                    }
+            );
         }
     }
 
@@ -139,11 +136,11 @@ public class SearchActivity extends AppCompatActivity {
         if (ricettas.size() != 0) {
             for (int i = 0; i < ricettas.size(); i++) {
                 LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View addView = layoutInflater.inflate(R.layout.row_feed_layout, null);
+                final View addView = layoutInflater.inflate(R.layout.row_feed_layout, null);
 
                 TextView txtNomeRicettaFeed = (TextView) addView.findViewById(R.id.txtFeedNomeRicetta);
                 TextView txtTempoPreparazioneFeed = (TextView) addView.findViewById(R.id.txtFeedTempoPreparazione);
-                TextView txtAutoreRicette = (TextView) addView.findViewById(R.id.txtAutoreRicetta);
+                final TextView txtAutoreRicette = (TextView) addView.findViewById(R.id.txtAutoreRicetta);
 
                 final ImageView ricettaImageFeed = (ImageView) addView.findViewById(R.id.imgFeedRicetta);
                 Picasso.get().load(ricettas.get(i).getThumbnail()).into(ricettaImageFeed);
@@ -151,146 +148,76 @@ public class SearchActivity extends AppCompatActivity {
 
                 txtNomeRicettaFeed.setText(ricettas.get(i).getTitle());
                 txtTempoPreparazioneFeed.setText(ricettas.get(i).getTempo().concat(" minuti"));
-                String nomeAutore="";
-                try {
-                    nomeAutore= (String) new getNomeAutore(ricettas.get(i).getAuthorId()).execute().get();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                txtAutoreRicette.setText(nomeAutore);
-
-                RelativeLayout layoutContainer = (RelativeLayout) addView.findViewById(R.id.layoutFeedMainAndPic);
-                final int position = i;
-                layoutContainer.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        try {
-                            Intent intent = new Intent(SearchActivity.this, ShowRicettaActivity.class);
-                            Bundle bundle = Utils.loadBundle(ricettas.get(position));
-                            //Casting from imageSlider to Drawable and conversion into byteArray
-                            Drawable d = ricettaImageFeed.getDrawable();
-                            Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
-                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
-                            byte[] bitmapdata = stream.toByteArray();
-                            bundle.putByteArray("Thumbnail", bitmapdata);
-                            bundle.putBoolean("isAdmin", false);
-                            if (Objects.requireNonNull(intentMain.getExtras()).getString("pathIdUser").equals("anonymous")) {
-                                bundle.putBoolean("isFav", false);
-                            } else {
-                                bundle.putBoolean("isFav", checkPreferiti(ricettas.get(position).getId()));
+                final int finalI = i;
+                FirebaseFirestore.getInstance().collection("Utenti").document(ricettas.get(i).getAuthorId().split("/")[1]).get().addOnCompleteListener(
+                        new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot result = task.getResult();
+                                    txtAutoreRicette.setText(result.get("Nome").toString());
+                                    RelativeLayout layoutContainer = (RelativeLayout) addView.findViewById(R.id.layoutFeedMainAndPic);
+                                    final int position = finalI;
+                                    layoutContainer.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            try {
+                                                final Intent intent = new Intent(SearchActivity.this, ShowRicettaActivity.class);
+                                                final Bundle bundle = Utils.loadBundle(ricettas.get(position));
+                                                //Casting from imageSlider to Drawable and conversion into byteArray
+                                                Drawable d = ricettaImageFeed.getDrawable();
+                                                Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
+                                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
+                                                byte[] bitmapdata = stream.toByteArray();
+                                                bundle.putByteArray("Thumbnail", bitmapdata);
+                                                bundle.putBoolean("isAdmin", false);
+                                                bundle.putString("pathIdUser", intentMain.getExtras().getString("pathIdUser"));
+                                                if (Objects.requireNonNull(intentMain.getExtras()).getString("pathIdUser").equals("anonymous")) {
+                                                    bundle.putBoolean("isFav", false);
+                                                    intent.putExtras(bundle);
+                                                    startActivityForResult(intent, LAUNCH_SHOW_RICETTA_ACTIVITY);
+                                                } else {
+                                                    String documentIdUtente = intentMain.getExtras().getString("pathIdUser").split("/")[1];
+                                                    FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+                                                    DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
+                                                    utentiRef.get().addOnCompleteListener(
+                                                            new OnCompleteListener<DocumentSnapshot>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                    if (task.isSuccessful()) {
+                                                                        DocumentSnapshot result = task.getResult();
+                                                                        List<String> preferiti = (List<String>) result.get("Preferiti");
+                                                                        Boolean found = false;
+                                                                        for (int i = 0; i < preferiti.size(); i++) {
+                                                                            if (preferiti.get(i).equals(ricettas.get(position).getId())) {
+                                                                                found = true;
+                                                                            }
+                                                                        }
+                                                                        bundle.putBoolean("isFav", found);
+                                                                        intent.putExtras(bundle);
+                                                                        startActivityForResult(intent, LAUNCH_SHOW_RICETTA_ACTIVITY);
+                                                                    }
+                                                                }
+                                                            }
+                                                    );
+                                                }
+                                            } catch (RuntimeException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    });
+                                    listLayout.addView(addView);
+                                }
                             }
-                            bundle.putString("pathIdUser", intentMain.getExtras().getString("pathIdUser"));
-                            intent.putExtras(bundle);
-                            startActivityForResult(intent, LAUNCH_SHOW_RICETTA_ACTIVITY);
-                        } catch (RuntimeException e) {
-                            e.printStackTrace();
                         }
-                    }
-                });
-                listLayout.addView(addView);
+                );
             }
 
-        }
-        else
-            {
-                Toast.makeText(SearchActivity.this, "Ops..Non è stata trovata alcuna ricetta", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(SearchActivity.this, "Ops..Non è stata trovata alcuna ricetta", Toast.LENGTH_LONG).show();
         }
     }
-
-    private Boolean checkPreferiti(String idRicetta) {
-        Boolean found = false;
-        try {
-            found = new Utente.checkPreferiti(this, idRicetta, intentMain.getExtras().getString("pathIdUser")).execute().get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return found;
-    }
-
-    public class getRicercaSearch extends AsyncTask {
-
-        String SearchRicetta;
-
-        public getRicercaSearch(String SearchRicetta) {
-            this.SearchRicetta = SearchRicetta;
-        }
-
-
-        @Override
-        protected List<Ricetta> doInBackground(Object[] objects) {
-            FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-            CollectionReference ricetteRef = rootRef.collection("Ricette");
-            Query search = ricetteRef.whereEqualTo("isApproved", true);
-            //Query query = search.whereGreaterThanOrEqualTo("Titolo", SearchRicetta).whereLessThanOrEqualTo("Titolo",SearchRicetta.concat("\uf8ff"));
-
-            //Task<QuerySnapshot> documentSnapshotTask = query.get();
-            Task<QuerySnapshot> documentSnapshotTask = search.get();
-            List<Ricetta> obj = new ArrayList();
-            try {
-
-                QuerySnapshot documentSnapshot = Tasks.await(documentSnapshotTask);
-                for (int i = 0; i < documentSnapshot.size(); i++) {
-                    if(documentSnapshot.getDocuments().get(i).get("Titolo").toString().toLowerCase().contains(SearchRicetta.toLowerCase()))
-                    {
-                        obj.add(new Ricetta(
-                                documentSnapshot.getDocuments().get(i).getId(),
-                                documentSnapshot.getDocuments().get(i).get("Autore").toString(),
-                                documentSnapshot.getDocuments().get(i).get("Titolo").toString(),
-                                documentSnapshot.getDocuments().get(i).get("Tempo di preparazione").toString(),
-                                documentSnapshot.getDocuments().get(i).get("Numero persone").toString(),
-                                documentSnapshot.getDocuments().get(i).get("Thumbnail").toString(),
-                                (List<Map<String, Object>>) documentSnapshot.getDocuments().get(i).get("Ingredienti"),
-                                (List<String>) documentSnapshot.getDocuments().get(i).get("Passaggi"),
-                                (Boolean) documentSnapshot.getDocuments().get(i).get("isApproved")
-                        ));
-                    }
-                }
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return obj;
-        }
-    }
-
-    public class getNomeAutore extends AsyncTask
-    {
-        String pathIdUtente;
-
-        public getNomeAutore(String pathIdUtente) {
-            this.pathIdUtente = pathIdUtente;
-        }
-
-        @Override
-        protected String doInBackground(Object[] objects) {
-            String documentIdUtente = pathIdUtente.split("/")[1];
-            FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-            String nomeUtente = "";
-            DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
-            Task<DocumentSnapshot> task=utentiRef.get();
-            try{
-                DocumentSnapshot documentSnapshots = Tasks.await(task);
-                if (documentSnapshots.exists())
-                {
-                    nomeUtente = (String) documentSnapshots.get("Nome");
-                }
-            }catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return nomeUtente;
-        }
-    }
-
-
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

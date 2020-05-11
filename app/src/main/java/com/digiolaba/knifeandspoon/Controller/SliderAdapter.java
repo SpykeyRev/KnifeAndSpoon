@@ -8,11 +8,14 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 import com.digiolaba.knifeandspoon.Model.Ricetta;
@@ -20,7 +23,13 @@ import com.digiolaba.knifeandspoon.Model.SliderItem;
 import com.digiolaba.knifeandspoon.Model.Utente;
 import com.digiolaba.knifeandspoon.R;
 import com.digiolaba.knifeandspoon.View.ShowRicettaActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.smarteist.autoimageslider.SliderViewAdapter;
 
 import java.io.ByteArrayOutputStream;
@@ -42,6 +51,10 @@ public class SliderAdapter extends
         this.context = context;
         this.fireUser = fireUser;
         this.actualUser = actualUser;
+    }
+
+    public void setActualUser(Utente actualUser){
+        this.actualUser=actualUser;
     }
 
     public void renewItems(List<SliderItem> sliderItems, List<Ricetta> ricettas) {
@@ -82,8 +95,8 @@ public class SliderAdapter extends
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, ShowRicettaActivity.class);
-                Bundle bundle = Utils.loadBundle(ricettas.get(position));
+                final Intent intent = new Intent(context, ShowRicettaActivity.class);
+                final Bundle bundle = Utils.loadBundle(ricettas.get(position));
                 //Casting from imageSlider to Drawable and conversion into byteArray
                 Drawable d = viewHolder.imageViewBackground.getDrawable();
                 Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
@@ -93,27 +106,42 @@ public class SliderAdapter extends
                 bundle.putByteArray("Thumbnail", bitmapdata);
                 if (!fireUser.isAnonymous()) {
                     bundle.putString("pathIdUser", actualUser.getUserId());
-                    bundle.putBoolean("isFav", checkPreferiti(ricettas.get(position).getId()));
+                    String documentIdUtente = actualUser.getUserId().split("/")[1];
+                    FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+                    DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
+                    utentiRef.get().addOnCompleteListener(
+                            new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if(task.isSuccessful()){
+                                        DocumentSnapshot result = task.getResult();
+                                        List<String> preferiti = (List<String>) result.get("Preferiti");
+                                        Boolean found=false;
+                                        for (int i = 0; i < preferiti.size(); i++) {
+                                            if (preferiti.get(i).equals(ricettas.get(position).getId())) {
+                                                found = true;
+                                            }
+                                        }
+                                        bundle.putBoolean("isFav", found);
+                                        intent.putExtras(bundle);
+                                        context.startActivity(intent);
+                                    }
+                                }
+                            }
+                    );
+
                 } else {
                     bundle.putString("pathIdUser", "anonymous");
                     bundle.putBoolean("isFav", false);
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
                 }
-                intent.putExtras(bundle);
-                context.startActivity(intent);
             }
         });
     }
 
-    private Boolean checkPreferiti(String idRicetta) {
-        Boolean found = false;
-        try {
-            found = new Utente.checkPreferiti(activity, idRicetta, actualUser.getUserId()).execute().get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return found;
+    private void checkPreferiti(final String idRicetta) {
+
     }
 
     @Override

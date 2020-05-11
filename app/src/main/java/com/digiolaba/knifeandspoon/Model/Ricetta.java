@@ -292,6 +292,7 @@ public class Ricetta {
             try {
                 DocumentSnapshot documentSnapshots = Tasks.await(documentSnapshotTask);
                 List<String> preferiti = (List<String>) documentSnapshots.get("Preferiti");
+                List<String> deletedPreferiti=new ArrayList<>();
                 for (int i = 0; i < preferiti.size(); i++) {
                     Task<DocumentSnapshot> documentSnapshotRicetteTask = rootRef.collection("Ricette").document(preferiti.get(i)).get();
                     DocumentSnapshot documentRicetteSnapshot = Tasks.await(documentSnapshotRicetteTask);
@@ -309,6 +310,19 @@ public class Ricetta {
                                 (Boolean) documentRicetteSnapshot.get("isApproved")
                         ));
                     }
+                    else
+                    {
+                        deletedPreferiti.add(preferiti.get(i));
+                        //Log.e("CIAO",preferiti.get(i))
+                    }
+                }
+                if(deletedPreferiti.size()!=0)
+                {
+                    for(int i=0;i<deletedPreferiti.size();i++)
+                    {
+                        preferiti.remove(deletedPreferiti.get(i));
+                    }
+                    utentiRef.update("Preferiti", preferiti);
                 }
 
             } catch (ExecutionException e) {

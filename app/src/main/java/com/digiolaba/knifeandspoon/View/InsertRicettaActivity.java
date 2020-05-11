@@ -539,6 +539,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
                     ricettaToPush.put("Autore", actualUser);
                     ricettaToPush.put("Titolo", etTitolo.getText().toString().trim());
                     ricettaToPush.put("Categoria", spCategoria.getSelectedItem().toString());
+                    ricettaToPush.put("Timestamp",com.google.firebase.firestore.FieldValue.serverTimestamp());
                     ricettaToPush.put("Tempo di preparazione", tempoPreparazione.getText().toString());
                     ricettaToPush.put("Numero persone", numeroPersone.getText().toString());
                     ricettaToPush.put("Passaggi", getInfoPassaggi());

@@ -133,6 +133,12 @@ public class ShowRicettaActivity extends AppCompatActivity {
             setPreferiti();
             appoggio[0] = !appoggio[0];
         }
+        if(isFavourite[0]!=infoToShow.getBoolean("fav"))
+        {
+            Intent intent=new Intent();
+            intent.putExtra("docRicetta", infoToShow.get("Id").toString());
+            setResult(Activity.RESULT_OK,intent);
+        }
         super.onPause();
     }
 

@@ -75,7 +75,6 @@ public class FavouriteActivity extends AppCompatActivity {
 
 
     private void loadRicetteFav() {
-        List<Ricetta> ricettas = new ArrayList<>();
         layoutFeedFav.removeAllViews();
         final String documentIdUtente = actualUser.split("/")[1];
         final FirebaseFirestore rootRef = FirebaseFirestore.getInstance();

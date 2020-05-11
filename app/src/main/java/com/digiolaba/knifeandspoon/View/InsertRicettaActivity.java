@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -238,7 +240,15 @@ public class InsertRicettaActivity extends AppCompatActivity {
                 if (getPickImageResultUri(intent) != null) {
                     Uri picUri = getPickImageResultUri(intent);
                     try {
-                        bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), picUri);
+                        ExifInterface exif = new ExifInterface(picUri.getPath());
+                        int rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                        int rotationInDegrees = exifToDegrees(rotation);
+                        Matrix matrix = new Matrix();
+                        if (rotation != 0)
+                        {
+                            matrix.preRotate(rotationInDegrees);
+                        }
+                        bitmap = Bitmap.createBitmap(MediaStore.Images.Media.getBitmap(getContentResolver(), picUri), 0, 0, MediaStore.Images.Media.getBitmap(getContentResolver(), picUri).getWidth(), MediaStore.Images.Media.getBitmap(getContentResolver(), picUri).getHeight(), matrix, true);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -250,9 +260,17 @@ public class InsertRicettaActivity extends AppCompatActivity {
             if (bitmap != null) {
                 Glide.with(InsertRicettaActivity.this).load(bitmap).centerCrop().into(img_piatto);
                 //img_piatto.setImageBitmap(bitmap);
+
             }
 
         }
+    }
+
+    private static int exifToDegrees(int exifOrientation) {
+        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) { return 90; }
+        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {  return 180; }
+        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {  return 270; }
+        return 0;
     }
 
     private Uri getPickImageResultUri(Intent data) {

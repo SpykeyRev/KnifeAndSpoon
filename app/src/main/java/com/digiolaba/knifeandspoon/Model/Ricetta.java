@@ -313,7 +313,6 @@ public class Ricetta {
                     else
                     {
                         deletedPreferiti.add(preferiti.get(i));
-                        //Log.e("CIAO",preferiti.get(i))
                     }
                 }
                 if(deletedPreferiti.size()!=0)
@@ -324,7 +323,6 @@ public class Ricetta {
                     }
                     utentiRef.update("Preferiti", preferiti);
                 }
-
             } catch (ExecutionException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {

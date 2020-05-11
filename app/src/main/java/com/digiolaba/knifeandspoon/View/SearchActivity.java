@@ -272,7 +272,7 @@ public class SearchActivity extends AppCompatActivity {
         protected String doInBackground(Object[] objects) {
             String documentIdUtente = pathIdUtente.split("/")[1];
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-            String nomeUtente = null;
+            String nomeUtente = "";
             DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
             Task<DocumentSnapshot> task=utentiRef.get();
             try{

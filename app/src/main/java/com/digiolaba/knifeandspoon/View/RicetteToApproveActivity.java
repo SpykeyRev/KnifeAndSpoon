@@ -50,7 +50,6 @@ public class RicetteToApproveActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         ricetteToReviewLayout = (LinearLayout) findViewById(R.id.layoutRicetteToApprove);
-        loadRicetteToReview();
     }
 
     @Override

@@ -121,7 +121,6 @@ public class FavouriteActivity extends AppCompatActivity {
                     public void onClick(View v) {
 
                         try {
-                            Intent intent = new Intent(FavouriteActivity.this, ShowRicettaActivity.class);
                             Bundle bundle = Utils.loadBundle(ricettas.get(position));
                             //Casting from imageSlider to Drawable and conversion into byteArray
                             Drawable d = ricettaImageFeed.getDrawable();
@@ -132,9 +131,7 @@ public class FavouriteActivity extends AppCompatActivity {
                             bundle.putByteArray("Thumbnail", bitmapdata);
                             bundle.putBoolean("isAdmin", false);
                             bundle.putString("pathIdUser", actualUser);
-                            bundle.putBoolean("isFav", checkPreferiti(ricettas.get(position).getId()));
-                            intent.putExtras(bundle);
-                            startActivityForResult(intent, LAUNCH_SHOW_RICETTA_ACTIVITY);
+                            checkPreferitiOnFirebase(ricettas.get(position).getId(),bundle);
                         } catch (RuntimeException e) {
                             e.printStackTrace();
                         }
@@ -145,22 +142,6 @@ public class FavouriteActivity extends AppCompatActivity {
             }
         }
 
-    }
-
-    private Boolean checkPreferiti(String idRicetta) {
-        Boolean found = false;
-        try {
-            found = new Utente.checkPreferiti(this, idRicetta, actualUser).execute().get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return found;
-    }
-
-    private void refresh() {
-        loadRicetteFav();
     }
 
     private void closeActivity() {
@@ -189,4 +170,27 @@ public class FavouriteActivity extends AppCompatActivity {
         });
     }
 
+    public void checkPreferitiOnFirebase(final String idRicetta, final Bundle bundle)
+    {
+        String documentIdUtente = actualUser.split("/")[1];
+        FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+        DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
+        final Boolean[] found = {false};
+        utentiRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot documentSnapshots=task.getResult();
+                List<String>preferiti=(List<String>) documentSnapshots.get("Preferiti");
+                for (int i = 0; i < preferiti.size(); i++) {
+                    if (preferiti.get(i).equals(idRicetta)) {
+                        found[0] = true;
+                    }
+                }
+                Intent intent = new Intent(FavouriteActivity.this, ShowRicettaActivity.class);
+                bundle.putBoolean("isFav",found[0]);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, LAUNCH_SHOW_RICETTA_ACTIVITY);
+            }
+        });
+    }
 }

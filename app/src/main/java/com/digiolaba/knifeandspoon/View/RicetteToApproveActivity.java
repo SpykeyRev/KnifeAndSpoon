@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,6 +36,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -99,6 +103,10 @@ public class RicetteToApproveActivity extends AppCompatActivity {
                     }
                 }
         );
+    }
+    public void getLoadRicetteToReview()
+    {
+        loadRicetteToReview();
     }
 
     private void showRecipes(final List<Ricetta> ricettas) {
@@ -168,7 +176,50 @@ public class RicetteToApproveActivity extends AppCompatActivity {
     }
 
     protected void onResume() {
-        loadRicetteToReview();
+        checkConnection("loadRicetteToReview");
         super.onResume();
+    }
+
+    private void checkConnection(final String methodInString)
+    {
+        try {
+            final Method method=getClass().getMethod("get"+methodInString.substring(0,1).toUpperCase()+methodInString.substring(1));
+            boolean conn=isNetworkAvailable();
+            if(!conn)
+            {
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                checkConnection(methodInString);
+                                break;
+
+                        }
+                    }
+                };
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(getString(R.string.error_connection)).setPositiveButton(getString(R.string.error_ok), dialogClickListener).setCancelable(false)
+                        .show();
+            }
+            else
+            {
+                try {
+                    method.invoke(RicetteToApproveActivity.this);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+    }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

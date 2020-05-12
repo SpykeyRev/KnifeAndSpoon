@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,6 +38,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +74,7 @@ public class FavouriteActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        loadRicetteFav();
+        checkConnection("loadRicetteFav");
         super.onResume();
     }
 
@@ -145,6 +149,11 @@ public class FavouriteActivity extends AppCompatActivity {
         });
     }
 
+    public void getLoadRicetteFav()
+    {
+        loadRicetteFav();
+    }
+
     private void addRicetta(final Ricetta ricetta){
         LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View addView = layoutInflater.inflate(R.layout.row_feed_layout, null);
@@ -212,5 +221,48 @@ public class FavouriteActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private void checkConnection(final String methodInString)
+    {
+        try {
+            final Method method=getClass().getMethod("get"+methodInString.substring(0,1).toUpperCase()+methodInString.substring(1));
+            boolean conn=isNetworkAvailable();
+            if(!conn)
+            {
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                checkConnection(methodInString);
+                                break;
+
+                        }
+                    }
+                };
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(getString(R.string.error_connection)).setPositiveButton(getString(R.string.error_ok), dialogClickListener).setCancelable(false)
+                        .show();
+            }
+            else
+            {
+                try {
+                    method.invoke(FavouriteActivity.this);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+    }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

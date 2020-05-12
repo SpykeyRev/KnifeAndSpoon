@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,6 +43,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -191,6 +195,10 @@ public class ShowRicettaActivity extends AppCompatActivity {
         });
     }
 
+    public void getSetPreferiti()
+    {
+        setPreferiti();
+    }
     private void getAndShowUsername(String autore) {
         FirebaseFirestore.getInstance().collection("Utenti").document(autore).get().addOnCompleteListener(
                 new OnCompleteListener<DocumentSnapshot>() {
@@ -263,7 +271,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
                             Utils.showSnackbar(showPassaggiLayout, getString(R.string.removed_preferiti));
                             isFavourite[0] = false;
                         }
-                        setPreferiti();
+                        checkConnection("setPreferiti");
                     }
                 });
             } else {
@@ -327,7 +335,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
-                        changeBooleanIsApproved();
+                        checkConnection("changeBooleanIsApproved");
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:
                         //No button clicked
@@ -346,7 +354,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
-                        deleteRicettaAdmin();
+                        checkConnection("deleteRicettaAdmin");
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
@@ -390,6 +398,10 @@ public class ShowRicettaActivity extends AppCompatActivity {
             }
         });
     }
+    public void getChangeBooleanIsApproved()
+    {
+        changeBooleanIsApproved();
+    }
 
     private void deleteRicettaAdmin() {
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
@@ -424,8 +436,56 @@ public class ShowRicettaActivity extends AppCompatActivity {
         });
     }
 
+    public void getDeleteRicettaAdmin()
+    {
+        deleteRicettaAdmin();
+    }
+
     private void adminRedirect() {
         this.onBackPressed();
         this.finish();
+    }
+
+    private void checkConnection(final String methodInString)
+    {
+        try {
+            final Method method=getClass().getMethod("get"+methodInString.substring(0,1).toUpperCase()+methodInString.substring(1));
+            boolean conn=isNetworkAvailable();
+            if(!conn)
+            {
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                checkConnection(methodInString);
+                                break;
+
+                        }
+                    }
+                };
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(getString(R.string.error_connection)).setPositiveButton(getString(R.string.error_ok), dialogClickListener).setCancelable(false)
+                        .show();
+            }
+            else
+            {
+                try {
+                    method.invoke(ShowRicettaActivity.this);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+    }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

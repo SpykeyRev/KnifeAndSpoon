@@ -125,7 +125,7 @@ public class RegisterActivity extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
-        final StorageReference imageRef = storageRef.child(user.get("Nome") + "_profilo.jpg");
+        final StorageReference imageRef = storageRef.child(user.get("Nome") + ".jpg");
         Bitmap bitmap = ((BitmapDrawable) userImage.getDrawable()).getBitmap();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);

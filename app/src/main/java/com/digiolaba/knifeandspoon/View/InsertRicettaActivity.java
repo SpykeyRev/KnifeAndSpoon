@@ -404,8 +404,10 @@ public class InsertRicettaActivity extends AppCompatActivity {
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         if (spinner.getSelectedItem().toString().equals("q.b.")) {
                             etQuantita.setEnabled(false);
+                            etQuantita.setText("0");
                             t.setVisibility(View.GONE);
                         } else {
+                            etQuantita.setText("");
                             etQuantita.setEnabled(true);
                             t.setVisibility(View.VISIBLE);
                         }

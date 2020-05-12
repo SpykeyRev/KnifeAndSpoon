@@ -233,7 +233,14 @@ public class ShowRicettaActivity extends AppCompatActivity {
             TextView quantitaIngrediente = addView.findViewById(R.id.txtQuantitaIngrediente);
             TextView unitaMisuraIngrediente = addView.findViewById(R.id.txtUnitaMisuraIngrediente);
             nomeIngrediente.setText(Objects.requireNonNull(ingredienti.get(i).get("Nome")).toString().concat(" "));
-            quantitaIngrediente.setText(Objects.requireNonNull(ingredienti.get(i).get("Quantità")).toString().concat(" "));
+            if(!Objects.requireNonNull(ingredienti.get(i).get("Quantità")).toString().equals("0"))
+            {
+                quantitaIngrediente.setText(Objects.requireNonNull(ingredienti.get(i).get("Quantità")).toString().concat(" "));
+            }
+            else
+            {
+                quantitaIngrediente.setText("");
+            }
             unitaMisuraIngrediente.setText(Objects.requireNonNull(ingredienti.get(i).get("Unità misura")).toString().concat(" "));
             showIngredientiLayout.addView(addView);
         }

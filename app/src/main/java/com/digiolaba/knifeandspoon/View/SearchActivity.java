@@ -113,6 +113,7 @@ public class SearchActivity extends AppCompatActivity {
                                                 result.getDocuments().get(i).getId(),
                                                 result.getDocuments().get(i).get("Autore").toString(),
                                                 result.getDocuments().get(i).get("Titolo").toString(),
+                                                result.getDocuments().get(i).get("Categoria").toString(),
                                                 result.getDocuments().get(i).get("Tempo di preparazione").toString(),
                                                 result.getDocuments().get(i).get("Numero persone").toString(),
                                                 result.getDocuments().get(i).get("Thumbnail").toString(),

@@ -79,8 +79,29 @@ public class ShowRicettaActivity extends AppCompatActivity {
         fab_favourite = (FloatingActionButton) findViewById(R.id.fab_favourite);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        TextView txtCategoria = (TextView) findViewById(R.id.txtCategory);
         TextView txtPersone = (TextView) findViewById(R.id.txtNumeroPersoneNumber);
         TextView txtTempo = (TextView) findViewById(R.id.txtTempoPreparazioneNumber);
+        txtCategoria.setText(infoToShow.getString("Categoria"));
+        ImageView category=(ImageView) findViewById(R.id.categoryImage);
+        switch(infoToShow.getString("Categoria")) {
+            case "Primo":
+                category.setBackgroundResource(R.drawable.primo);
+                break;
+            case "Secondo":
+                category.setBackgroundResource(R.drawable.secondo);
+                break;
+            case "Contorno":
+                category.setBackgroundResource(R.drawable.contorno);
+                break;
+            case "Antipasto":
+                category.setBackgroundResource(R.drawable.antipasto);
+                break;
+            case "Dolce":
+                category.setBackgroundResource(R.drawable.dolce);
+                break;
+            default:
+        };
         txtTempo.setText(tempo.concat(" minuti"));
         txtPersone.setText(Utils.personaOrPersone(persone));
         loadIngredienti(ingredienti);

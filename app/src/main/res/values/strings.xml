@@ -16,6 +16,7 @@
     <string name="menu">Menu</string>
     <string name="insert_foto">Inserisci una foto del piatto</string>
     <string name="feed_title">Le ultime 10 ricette</string>
+    <string name="category">Categoria</string>
     <string name="ingredienti">Ingredienti</string>
     <string name="passaggi">Passaggi</string>
     <string name="ingrediente">Ingrediente</string>

@@ -16,9 +16,10 @@ public class Ricetta {
     private List<String> steps;
     private Boolean isApproved;
     private Timestamp timestamp;
+    private String categoria;
 
 
-    public Ricetta(String id, String authorId, String title, String tempo, String persone, String thumbnail, List<Map<String, Object>> ingredienti, List<String> steps, Boolean isApproved,Timestamp timestamp) {
+    public Ricetta(String id, String authorId, String title, String categoria,String tempo, String persone, String thumbnail, List<Map<String, Object>> ingredienti, List<String> steps, Boolean isApproved,Timestamp timestamp) {
         this.id = id;
         this.authorId = authorId;
         this.title = title;
@@ -28,6 +29,7 @@ public class Ricetta {
         this.tempo = tempo;
         this.persone = persone;
         this.isApproved = isApproved;
+        this.categoria=categoria;
         this.timestamp=timestamp;
     }
 
@@ -37,6 +39,10 @@ public class Ricetta {
 
     public String getTitle() {
         return this.title;
+    }
+
+    public String getCategoria() {
+        return this.categoria;
     }
 
     public String getThumbnail() {
@@ -77,6 +83,10 @@ public class Ricetta {
 
     public void setAuthorId(String authorId) {
         this.authorId = authorId;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
     }
 
     public void setThumbnail(String thumbnail) {

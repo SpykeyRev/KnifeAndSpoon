@@ -112,7 +112,8 @@
 
                     <HorizontalScrollView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:scrollbars="none">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -123,7 +124,7 @@
                             <RelativeLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_marginStart="10dp">
+                                android:layout_marginStart="16dp">
 
                                 <com.google.android.material.imageview.ShapeableImageView
                                     android:layout_width="150dp"
@@ -132,7 +133,7 @@
                                     android:scaleType="centerCrop"
                                     app:shapeAppearanceOverlay="@style/category_button"
                                     android:focusable="true"
-                                    app:srcCompat="@drawable/antipasto"
+                                    app:srcCompat="@drawable/antipastomain"
                                     />
 
                                 <TextView
@@ -180,7 +181,7 @@
                                     android:scaleType="centerCrop"
                                     app:shapeAppearanceOverlay="@style/category_button"
                                     android:focusable="true"
-                                    app:srcCompat="@drawable/primo"/>
+                                    app:srcCompat="@drawable/primomain"/>
 
                                 <TextView
                                     android:id="@+id/primoText"
@@ -222,7 +223,7 @@
                                     android:clickable="true"
                                     android:scaleType="centerCrop"
                                     app:shapeAppearanceOverlay="@style/category_button"
-                                    app:srcCompat="@drawable/secondo"
+                                    app:srcCompat="@drawable/secondomain"
                                     android:focusable="true" />
 
                                 <TextView
@@ -265,7 +266,7 @@
                                     android:clickable="true"
                                     android:scaleType="centerCrop"
                                     app:shapeAppearanceOverlay="@style/category_button"
-                                    app:srcCompat="@drawable/contorno"
+                                    app:srcCompat="@drawable/contornomain"
                                     android:focusable="true" />
 
                                 <TextView
@@ -299,6 +300,7 @@
 
                             <RelativeLayout
                                 android:layout_marginStart="10dp"
+                                android:layout_marginEnd="16dp"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent">
 

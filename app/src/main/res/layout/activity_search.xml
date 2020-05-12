@@ -10,14 +10,14 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/heading_search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="32dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="25dp"
                 android:text="@string/ricerca_ricetta"
                 android:textColor="@color/colorPrimary"
@@ -26,15 +26,18 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
+                android:weightSum="1"
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <EditText
                     android:id="@+id/search_bar"
-                    android:layout_width="321dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="16dp"
                     android:background="@drawable/search_layout"
                     android:ems="10"
                     android:hint="@string/search_bar"
@@ -43,13 +46,17 @@
                     android:paddingTop="10dp"
                     android:paddingRight="20dp"
                     android:paddingBottom="10dp"
-                    android:textColor="#999999" />
+                    android:textColor="#999999"
+                    android:textCursorDrawable="@drawable/textcursor"
+                    />
 
                 <ImageButton
                     android:id="@+id/btn_search"
-                    android:layout_width="60dp"
-                    android:layout_height="50dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:background="@color/white"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="16dp"
                     app:srcCompat="@drawable/search_button" />
             </LinearLayout>
 

@@ -159,6 +159,7 @@ public class Utils {
         bundle.putString("Tempo", ricettas.getTempo());
         bundle.putString("Persone", ricettas.getPersone());
         bundle.putString("Id", ricettas.getId());
+        bundle.putString("Categoria", ricettas.getCategoria());
         return bundle;
     }
 

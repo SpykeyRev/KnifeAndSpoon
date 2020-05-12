@@ -117,6 +117,7 @@ public class FavouriteActivity extends AppCompatActivity {
                                                             result.getId(),
                                                             result.get("Autore").toString(),
                                                             result.get("Titolo").toString(),
+                                                            result.get("Categoria").toString(),
                                                             result.get("Tempo di preparazione").toString(),
                                                             result.get("Numero persone").toString(),
                                                             result.getString("Thumbnail"),

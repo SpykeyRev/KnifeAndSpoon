@@ -1,9 +1,12 @@
 package com.digiolaba.knifeandspoon.View;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -12,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.digiolaba.knifeandspoon.Controller.Utils;
@@ -33,6 +37,8 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,7 +69,7 @@ public class RegisterActivity extends AppCompatActivity {
         continua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                checkName();
+                checkConnection("checkName");
             }
         });
     }
@@ -78,6 +84,10 @@ public class RegisterActivity extends AppCompatActivity {
         } else {
             checkIfNameExists();
         }
+    }
+    public void getCheckName()
+    {
+        checkName();
     }
 
 
@@ -137,5 +147,48 @@ public class RegisterActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    private void checkConnection(final String methodInString)
+    {
+        try {
+            final Method method=getClass().getMethod("get"+methodInString.substring(0,1).toUpperCase()+methodInString.substring(1));
+            boolean conn=isNetworkAvailable();
+            if(!conn)
+            {
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                checkConnection(methodInString);
+                                break;
+
+                        }
+                    }
+                };
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(getString(R.string.error_connection)).setPositiveButton(getString(R.string.error_ok), dialogClickListener).setCancelable(false)
+                        .show();
+            }
+            else
+            {
+                try {
+                    method.invoke(RegisterActivity.this);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+    }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

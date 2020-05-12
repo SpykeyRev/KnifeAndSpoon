@@ -50,8 +50,12 @@ import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
+
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -90,6 +94,12 @@ public class MainActivity extends AppCompatActivity {
     private static int LAUNCH_SETTINGS_ACTIVITY = 1998;
     private String category_selected=null;
     private final List<Ricetta> obj = new ArrayList();
+    private Boolean clickedCategoria = false;
+    private TextView antipastoText;
+    private TextView primoText;
+    private TextView secondoText;
+    private TextView contornoText;
+    private TextView dolceText;
 
 
 
@@ -117,6 +127,11 @@ public class MainActivity extends AppCompatActivity {
         fab_anticlock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_anticlock);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinateLayout);
         layoutFeed = (LinearLayout) findViewById(R.id.layoutFeed);
+        antipastoText=(TextView)findViewById(R.id.antipastoText);
+        primoText=(TextView)findViewById(R.id.primoText);
+        secondoText=(TextView)findViewById(R.id.secondoText);
+        contornoText=(TextView)findViewById(R.id.contornoText);
+        dolceText=(TextView)findViewById(R.id.tortaText);
         //Set Category listeners
         setCategoryListeners();
         //Setting up firebase for userInfo
@@ -139,45 +154,106 @@ public class MainActivity extends AppCompatActivity {
 
     private void setCategoryListeners(){
         RelativeLayout antipasto= (RelativeLayout) findViewById(R.id.antipasto_view);
+        RelativeLayout primo= (RelativeLayout) findViewById(R.id.primo_view);
+        RelativeLayout secondo= (RelativeLayout) findViewById(R.id.secondo_view);
+        RelativeLayout contorno= (RelativeLayout) findViewById(R.id.contorno_view);
+        RelativeLayout dolce= (RelativeLayout) findViewById(R.id.dolce_view);
+        TextView[] txts={antipastoText,primoText,secondoText,contornoText,dolceText};
+        final List<TextView> listTextViewsToRemoveVerified = new ArrayList<>(Arrays.asList(txts));
         antipasto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                category_selected="Antipasto";
-                loadImageSliderWithCategoryRicette();
+                if(!clickedCategoria)
+                {
+                    category_selected="Antipasto";
+                    loadImageSliderWithCategoryRicette();
+                    antipastoText.append("\uD83C\uDF55");
+                    clickedCategoria=true;
+                }
+                else
+                {
+                    returnToAllRicetteImageSlider(listTextViewsToRemoveVerified);
+                }
             }
         });
-        RelativeLayout primo= (RelativeLayout) findViewById(R.id.primo_view);
         primo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                category_selected="Primo";
-                loadImageSliderWithCategoryRicette();
+                if(!clickedCategoria)
+                {
+                    category_selected=primoText.getText().toString();
+                    loadImageSliderWithCategoryRicette();
+                    primoText.append("\uD83C\uDF55");
+                    clickedCategoria =true;
+                }
+                else
+                {
+                    returnToAllRicetteImageSlider(listTextViewsToRemoveVerified);
+                }
             }
         });
-        RelativeLayout secondo= (RelativeLayout) findViewById(R.id.secondo_view);
+
         secondo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                category_selected="Secondo";
-                loadImageSliderWithCategoryRicette();
+                if(!clickedCategoria)
+                {
+                    category_selected=secondoText.getText().toString();
+                    loadImageSliderWithCategoryRicette();
+                    secondoText.append("\uD83C\uDF55");
+                    clickedCategoria =true;
+                }
+                else
+                {
+                    returnToAllRicetteImageSlider(listTextViewsToRemoveVerified);
+                }
+
             }
         });
-        RelativeLayout contorno= (RelativeLayout) findViewById(R.id.contorno_view);
         contorno.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                category_selected="Contorno";
-                loadImageSliderWithCategoryRicette();
+                if(!clickedCategoria)
+                {
+                    category_selected=contornoText.getText().toString();
+                    loadImageSliderWithCategoryRicette();
+                    contornoText.append("\uD83C\uDF55");
+                    clickedCategoria =true;
+                }
+                else {
+                    returnToAllRicetteImageSlider(listTextViewsToRemoveVerified);
+                }
+
             }
         });
-        RelativeLayout dolce= (RelativeLayout) findViewById(R.id.dolce_view);
         dolce.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                category_selected="Dolce";
-                loadImageSliderWithCategoryRicette();
+                if(!clickedCategoria)
+                {
+                    category_selected=dolceText.getText().toString();
+                    loadImageSliderWithCategoryRicette();
+                    dolceText.append("\uD83C\uDF55");
+                    clickedCategoria =true;
+                }
+                else
+                {
+                    returnToAllRicetteImageSlider(listTextViewsToRemoveVerified);
+                }
+
             }
         });
+    }
+
+    private void returnToAllRicetteImageSlider(List<TextView> listTextViewsToRemoveVerified)
+    {
+        for(int i=0;i<listTextViewsToRemoveVerified.size();i++)
+        {
+            listTextViewsToRemoveVerified.get(i).setText(listTextViewsToRemoveVerified.get(i).getText().toString().replace("\uD83C\uDF55",""));
+        }
+        loadImageSliderWithRicette();
+        pullToRefresh.setRefreshing(true);
+        clickedCategoria=false;
     }
 
     private void setUserInfo() {
@@ -221,6 +297,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadImageSliderWithCategoryRicette(){
+
         pullToRefresh.setRefreshing(true);
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         CollectionReference ricetteRef = rootRef.collection("Ricette");
@@ -275,9 +352,9 @@ public class MainActivity extends AppCompatActivity {
     private void loadImageSliderWithRicette() {
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         CollectionReference ricetteRef = rootRef.collection("Ricette");
-        Query queryrRicettaApprovata = ricetteRef.orderBy("Timestamp",Query.Direction.DESCENDING).whereEqualTo("isApproved", true);
+        Query queryRicettaApprovata = ricetteRef.orderBy("Timestamp",Query.Direction.DESCENDING).whereEqualTo("isApproved", true);
         obj.clear();
-        queryrRicettaApprovata.limit(10).get().addOnCompleteListener(
+        queryRicettaApprovata.limit(10).get().addOnCompleteListener(
                 new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {

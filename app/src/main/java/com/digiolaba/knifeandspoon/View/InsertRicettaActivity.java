@@ -18,6 +18,7 @@ import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -403,8 +404,8 @@ public class InsertRicettaActivity extends AppCompatActivity {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         if (spinner.getSelectedItem().toString().equals("q.b.")) {
-                            etQuantita.setEnabled(false);
                             etQuantita.setText("0");
+                            etQuantita.setEnabled(false);
                             t.setVisibility(View.GONE);
                         } else {
                             etQuantita.setText("");
@@ -459,7 +460,6 @@ public class InsertRicettaActivity extends AppCompatActivity {
     }
 
     private void checkEmptyMainEditText(final EditText e) {
-
         e.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -492,16 +492,15 @@ public class InsertRicettaActivity extends AppCompatActivity {
     }
 
     private void checkEmptyQuantitaEditText(View v, int id_et, final Spinner spinner) {
-
         final EditText e = (EditText) v.findViewById(id_et);
         e.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (spinner.getSelectedItem().toString().equals("q.b.")) {
-                    e.setText("");
+                    e.setText("0");
                 } else {
                     if (!hasFocus) {
-                        if (e.getText().toString().length() == 0 || e.getText().toString().trim().equals("")) {
+                        if (e.getText().toString().length() == 0 || e.getText().toString().trim().equals("") || Float.parseFloat(e.getText().toString())==0) {
                             Animation shake = AnimationUtils.loadAnimation(InsertRicettaActivity.this, R.anim.shake);
                             v.setAnimation(shake);
                             e.setError(getString(R.string.error_empty_thing));
@@ -525,16 +524,31 @@ public class InsertRicettaActivity extends AppCompatActivity {
             List<String> passaggi = getInfoPassaggi();
             if (ingredienti != null && passaggi != null) {
                 for (int i = 0; i < passaggi.size(); i++) {
-                    if (passaggi.get(i).toString().trim().equals("")) {
-                        passaggi.remove(passaggi.get(i));
+                        if (passaggi.get(i).toString().trim().equals("")) {
+                            passaggi.remove(passaggi.get(i));
                     }
                 }
+                Boolean error=false;
                 for (int i = 0; i < ingredienti.size(); i++) {
-                    if (ingredienti.get(i).get("Nome").toString().trim().equals("") && ingredienti.get(i).get("Quantità").toString().trim().equals("")) {
-                        ingredienti.remove(ingredienti.get(i));
+                    if(ingredienti.get(i).get("Nome").toString().trim().equals("")){
+                        error=true;
+                        break;
+                    }else{
+                        if(ingredienti.get(i).get("Quantità").toString().trim().equals("")){
+                            Log.e("LOG","DIO2");
+                            error=true;
+                            break;
+                        }else{
+                            if(!ingredienti.get(i).get("Unità misura").equals("q.b.")){
+                                if(Float.parseFloat(ingredienti.get(i).get("Quantità").toString())==0){
+                                    error=true;
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
-                if (passaggi.size() == 0 || ingredienti.size() == 0) {
+                if (passaggi.size() == 0 || ingredienti.size() == 0 || error==true) {
                     Utils.errorDialog(InsertRicettaActivity.this, R.string.error_no_passaggi_ingredienti, R.string.error_ok);
                 } else {
                     Map<String, Object> ricettaToPush = new HashMap<>();
@@ -576,7 +590,6 @@ public class InsertRicettaActivity extends AppCompatActivity {
     private List<String> getInfoPassaggi() {
         List<String> mappaDescrizione = new ArrayList<String>();
         for (int i = 0; i < allDescrizione.size(); i++) {
-
             try {
                 mappaDescrizione.add(((EditText) ((FrameLayout) ((TextInputLayout) ((LinearLayout) ((RelativeLayout) allDescrizione.get(i)).getChildAt(0)).getChildAt(1)).getChildAt(0)).getChildAt(0)).getText().toString().trim());
             } catch (Exception e) {

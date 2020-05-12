@@ -152,7 +152,7 @@ public class SearchActivity extends AppCompatActivity {
                 txtNomeRicettaFeed.setText(ricettas.get(i).getTitle());
                 txtTempoPreparazioneFeed.setText(ricettas.get(i).getTempo().concat(" minuti"));
                 final int finalI = i;
-                FirebaseFirestore.getInstance().collection("Utenti").document(ricettas.get(i).getAuthorId().split("/")[1]).get().addOnCompleteListener(
+                FirebaseFirestore.getInstance().collection("Utenti").document(ricettas.get(i).getAuthorId()).get().addOnCompleteListener(
                         new OnCompleteListener<DocumentSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -181,7 +181,7 @@ public class SearchActivity extends AppCompatActivity {
                                                     intent.putExtras(bundle);
                                                     startActivityForResult(intent, LAUNCH_SHOW_RICETTA_ACTIVITY);
                                                 } else {
-                                                    String documentIdUtente = intentMain.getExtras().getString("pathIdUser").split("/")[1];
+                                                    String documentIdUtente = intentMain.getExtras().getString("pathIdUser");
                                                     FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
                                                     DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
                                                     utentiRef.get().addOnCompleteListener(

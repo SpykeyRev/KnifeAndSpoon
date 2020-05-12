@@ -330,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
                         if(task.isSuccessful()){
                             QuerySnapshot result = task.getResult();
                             actualUser=new Utente(
-                                    result.getDocuments().get(0).getReference().getPath(),
+                                    result.getDocuments().get(0).getId(),
                                     result.getDocuments().get(0).get("Mail").toString(),
                                     result.getDocuments().get(0).get("Nome").toString(),
                                     result.getDocuments().get(0).get("Immagine").toString(),
@@ -520,7 +520,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkPreferitiOnFirebase(final String idRicetta, final Bundle bundle)
     {
-        String documentIdUtente = actualUser.getUserId().split("/")[1];
+        String documentIdUtente = actualUser.getUserId();
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
         final Boolean[] found = {false};

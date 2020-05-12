@@ -149,7 +149,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
 
     private void setPreferiti()
     {
-        String documentIdUtente = infoToShow.get("pathIdUser").toString().split("/")[1];
+        String documentIdUtente = infoToShow.get("pathIdUser").toString();
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         final DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
         fab_favourite.setClickable(false);
@@ -192,14 +192,14 @@ public class ShowRicettaActivity extends AppCompatActivity {
     }
 
     private void getAndShowUsername(String autore) {
-        FirebaseFirestore.getInstance().collection("Utenti").document(autore.split("/")[1]).get().addOnCompleteListener(
+        FirebaseFirestore.getInstance().collection("Utenti").document(autore).get().addOnCompleteListener(
                 new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if(task.isSuccessful()){
                             DocumentSnapshot result = task.getResult();
                             Utente userRecipe = new Utente(
-                                    result.getReference().getPath(),
+                                    result.getId(),
                                     result.get("Mail").toString(),
                                     result.get("Nome").toString(),
                                     result.get("Immagine").toString(),

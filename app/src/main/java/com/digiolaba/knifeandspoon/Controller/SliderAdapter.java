@@ -106,7 +106,7 @@ public class SliderAdapter extends
                 bundle.putByteArray("Thumbnail", bitmapdata);
                 if (!fireUser.isAnonymous()) {
                     bundle.putString("pathIdUser", actualUser.getUserId());
-                    String documentIdUtente = actualUser.getUserId().split("/")[1];
+                    String documentIdUtente = actualUser.getUserId();
                     FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
                     DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
                     utentiRef.get().addOnCompleteListener(

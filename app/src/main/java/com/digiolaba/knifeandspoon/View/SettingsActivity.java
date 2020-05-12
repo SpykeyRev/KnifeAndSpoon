@@ -244,7 +244,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void loadImageToFirebase(final byte[] imgData) {
-        String documentID = id.split("/")[1];
+        String documentID = id;
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         final DocumentReference utentiRef = rootRef.collection("Utenti").document(documentID);
         utentiRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

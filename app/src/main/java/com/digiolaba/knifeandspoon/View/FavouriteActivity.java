@@ -77,7 +77,7 @@ public class FavouriteActivity extends AppCompatActivity {
 
     private void loadRicetteFav() {
         layoutFeedFav.removeAllViews();
-        final String documentIdUtente = actualUser.split("/")[1];
+        final String documentIdUtente = actualUser;
         final FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         final DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
         utentiRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -191,7 +191,7 @@ public class FavouriteActivity extends AppCompatActivity {
 
     public void checkPreferitiOnFirebase(final String idRicetta, final Bundle bundle)
     {
-        String documentIdUtente = actualUser.split("/")[1];
+        String documentIdUtente = actualUser;
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
         final Boolean[] found = {false};

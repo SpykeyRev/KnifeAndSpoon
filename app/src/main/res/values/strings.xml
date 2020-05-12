@@ -66,6 +66,7 @@
         <item>litri</item>
         <item>cucchiaio</item>
         <item>cucchiaino</item>
+        <item>millilitri</item>
         <item>q.b.</item>
     </string-array>
     <string name="welcome_visitatore">visitatore</string>

@@ -241,9 +241,41 @@ public class ShowRicettaActivity extends AppCompatActivity {
             {
                 quantitaIngrediente.setText("");
             }
-            unitaMisuraIngrediente.setText(Objects.requireNonNull(ingredienti.get(i).get("Unità misura")).toString().concat(" "));
+            unitaMisuraIngrediente.setText(getCorrectUtForm(ingredienti.get(i).get("Unità misura").toString(),ingredienti.get(i).get("Quantità").toString()));
             showIngredientiLayout.addView(addView);
         }
+    }
+
+    private String getCorrectUtForm(String ut,String qt){
+        Float quant=Float.parseFloat(qt);
+        String correctForm="";
+        if(quant==1){
+            if(ut.equals("grammi")){
+                correctForm="grammo";
+            }else if (ut.equals("litri")){
+                correctForm="litro";
+            } else if (ut.equals("millilitri")){
+                correctForm="millilitro";
+            }
+            else{
+                correctForm=ut;
+            }
+        }else{
+            if(ut.equals("bicchiere")){
+                if(quant>=2){
+                    correctForm="bicchieri";
+                }else{
+                    correctForm=ut;
+                }
+            }else if(ut.equals("cucchiaio")){
+                correctForm="cucchiai";
+            }else if(ut.equals("cucchiaino")){
+                correctForm="cucchiaini";
+            }else{
+                correctForm=ut;
+            }
+        }
+        return correctForm;
     }
 
     private void loadPassaggi(List<String> passaggi) {

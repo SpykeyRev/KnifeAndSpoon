@@ -21,6 +21,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -33,32 +35,43 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-        checkConnection();
+        checkConnection("launchCorrectActivity");
     }
 
-    private void checkConnection()
+    private void checkConnection(final String methodInString)
     {
-        Boolean conn=isNetworkAvailable();
-        if(!conn)
-        {
-            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    switch (which) {
-                        case DialogInterface.BUTTON_POSITIVE:
-                            checkConnection();
-                            break;
+        try {
+            final Method method=getClass().getMethod("get"+methodInString.substring(0,1).toUpperCase()+methodInString.substring(1));
+            boolean conn=isNetworkAvailable();
+            if(!conn)
+            {
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                checkConnection(methodInString);
+                                break;
 
+                        }
                     }
+                };
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(getString(R.string.error_connection)).setPositiveButton(getString(R.string.error_ok), dialogClickListener).setCancelable(false)
+                        .show();
+            }
+            else
+            {
+                try {
+                    method.invoke(SplashScreenActivity.this);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
                 }
-            };
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(getString(R.string.error_connection)).setPositiveButton(getString(R.string.error_ok), dialogClickListener)
-                    .show();
-        }
-        else
-        {
-            launchCorrectActivity();
+            }
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
         }
     }
     private boolean isNetworkAvailable() {
@@ -66,6 +79,11 @@ public class SplashScreenActivity extends AppCompatActivity {
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public void getLaunchCorrectActivity()
+    {
+        launchCorrectActivity();
     }
 
     private void launchCorrectActivity() {

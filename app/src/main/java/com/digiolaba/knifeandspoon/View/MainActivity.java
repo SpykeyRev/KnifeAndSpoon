@@ -82,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton fab_main;
     private ExtendedFloatingActionButton fab_add, fab_search, fab_settings, fab_favourite;
     private Animation fab_open, fab_close, fab_clock, fab_anticlock;
-    private List<Ricetta> ricettas;
     private Boolean isOpen = false;
     private Context context = MainActivity.this;
     private CoordinatorLayout coordinatorLayout;
@@ -95,11 +94,12 @@ public class MainActivity extends AppCompatActivity {
     private String category_selected=null;
     private final List<Ricetta> obj = new ArrayList();
     private Boolean clickedCategoria = false;
-    private TextView antipastoText;
-    private TextView primoText;
-    private TextView secondoText;
-    private TextView contornoText;
-    private TextView dolceText;
+    private ImageView antipastoTick;
+    private ImageView primoTick;
+    private ImageView secondoTick;
+    private ImageView contornoTick;
+    private ImageView dolceTick;
+
 
 
 
@@ -127,11 +127,11 @@ public class MainActivity extends AppCompatActivity {
         fab_anticlock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_anticlock);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinateLayout);
         layoutFeed = (LinearLayout) findViewById(R.id.layoutFeed);
-        antipastoText=(TextView)findViewById(R.id.antipastoText);
-        primoText=(TextView)findViewById(R.id.primoText);
-        secondoText=(TextView)findViewById(R.id.secondoText);
-        contornoText=(TextView)findViewById(R.id.contornoText);
-        dolceText=(TextView)findViewById(R.id.tortaText);
+        antipastoTick=(ImageView)findViewById(R.id.antipastoTick);
+        primoTick=(ImageView)findViewById(R.id.primoTick);
+        secondoTick=(ImageView)findViewById(R.id.secondoTick);
+        contornoTick=(ImageView)findViewById(R.id.contornoTick);
+        dolceTick=(ImageView)findViewById(R.id.dolceTick);
         //Set Category listeners
         setCategoryListeners();
         //Setting up firebase for userInfo
@@ -158,8 +158,8 @@ public class MainActivity extends AppCompatActivity {
         RelativeLayout secondo= (RelativeLayout) findViewById(R.id.secondo_view);
         RelativeLayout contorno= (RelativeLayout) findViewById(R.id.contorno_view);
         RelativeLayout dolce= (RelativeLayout) findViewById(R.id.dolce_view);
-        TextView[] txts={antipastoText,primoText,secondoText,contornoText,dolceText};
-        final List<TextView> listTextViewsToRemoveVerified = new ArrayList<>(Arrays.asList(txts));
+        ImageView[] ticks={antipastoTick,primoTick,secondoTick,contornoTick,dolceTick};
+        final List<ImageView> listImageViewToRemoveVerified = new ArrayList<ImageView>(Arrays.asList(ticks));
         antipasto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -167,12 +167,23 @@ public class MainActivity extends AppCompatActivity {
                 {
                     category_selected="Antipasto";
                     loadImageSliderWithCategoryRicette();
-                    antipastoText.append("\uD83C\uDF55");
+                    antipastoTick.setVisibility(View.VISIBLE);
                     clickedCategoria=true;
                 }
                 else
                 {
-                    returnToAllRicetteImageSlider(listTextViewsToRemoveVerified);
+                    if(category_selected!="Antipasto"){
+                        for(int i=0;i<listImageViewToRemoveVerified.size();i++)
+                        {
+                            listImageViewToRemoveVerified.get(i).setVisibility(View.GONE);
+                        }
+                        category_selected="Antipasto";
+                        loadImageSliderWithCategoryRicette();
+                        antipastoTick.setVisibility(View.VISIBLE);
+                        clickedCategoria=true;
+                    }else{
+                        returnToAllRicetteImageSlider(listImageViewToRemoveVerified);
+                    }
                 }
             }
         });
@@ -181,14 +192,25 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(!clickedCategoria)
                 {
-                    category_selected=primoText.getText().toString();
+                    category_selected="Primo";
                     loadImageSliderWithCategoryRicette();
-                    primoText.append("\uD83C\uDF55");
+                    primoTick.setVisibility(View.VISIBLE);
                     clickedCategoria =true;
                 }
                 else
                 {
-                    returnToAllRicetteImageSlider(listTextViewsToRemoveVerified);
+                    if(category_selected!="Primo"){
+                        for(int i=0;i<listImageViewToRemoveVerified.size();i++)
+                        {
+                            listImageViewToRemoveVerified.get(i).setVisibility(View.GONE);
+                        }
+                        category_selected="Primo";
+                        loadImageSliderWithCategoryRicette();
+                        primoTick.setVisibility(View.VISIBLE);
+                        clickedCategoria=true;
+                    }else{
+                        returnToAllRicetteImageSlider(listImageViewToRemoveVerified);
+                    }
                 }
             }
         });
@@ -198,16 +220,26 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(!clickedCategoria)
                 {
-                    category_selected=secondoText.getText().toString();
+                    category_selected="Secondo";
                     loadImageSliderWithCategoryRicette();
-                    secondoText.append("\uD83C\uDF55");
+                    secondoTick.setVisibility(View.VISIBLE);
                     clickedCategoria =true;
                 }
                 else
                 {
-                    returnToAllRicetteImageSlider(listTextViewsToRemoveVerified);
+                    if(category_selected!="Secondo"){
+                        for(int i=0;i<listImageViewToRemoveVerified.size();i++)
+                        {
+                            listImageViewToRemoveVerified.get(i).setVisibility(View.GONE);
+                        }
+                        category_selected="Secondo";
+                        loadImageSliderWithCategoryRicette();
+                        secondoTick.setVisibility(View.VISIBLE);
+                        clickedCategoria=true;
+                    }else{
+                        returnToAllRicetteImageSlider(listImageViewToRemoveVerified);
+                    }
                 }
-
             }
         });
         contorno.setOnClickListener(new View.OnClickListener() {
@@ -215,15 +247,25 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(!clickedCategoria)
                 {
-                    category_selected=contornoText.getText().toString();
+                    category_selected="Contorno";
                     loadImageSliderWithCategoryRicette();
-                    contornoText.append("\uD83C\uDF55");
+                    contornoTick.setVisibility(View.VISIBLE);
                     clickedCategoria =true;
                 }
                 else {
-                    returnToAllRicetteImageSlider(listTextViewsToRemoveVerified);
+                    if(category_selected!="Contorno"){
+                        for(int i=0;i<listImageViewToRemoveVerified.size();i++)
+                        {
+                            listImageViewToRemoveVerified.get(i).setVisibility(View.GONE);
+                        }
+                        category_selected="Contorno";
+                        loadImageSliderWithCategoryRicette();
+                        contornoTick.setVisibility(View.VISIBLE);
+                        clickedCategoria=true;
+                    }else{
+                        returnToAllRicetteImageSlider(listImageViewToRemoveVerified);
+                    }
                 }
-
             }
         });
         dolce.setOnClickListener(new View.OnClickListener() {
@@ -231,25 +273,35 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(!clickedCategoria)
                 {
-                    category_selected=dolceText.getText().toString();
+                    category_selected="Dolce";
                     loadImageSliderWithCategoryRicette();
-                    dolceText.append("\uD83C\uDF55");
+                    dolceTick.setVisibility(View.VISIBLE);
                     clickedCategoria =true;
                 }
                 else
                 {
-                    returnToAllRicetteImageSlider(listTextViewsToRemoveVerified);
+                    if(category_selected!="Dolce"){
+                        for(int i=0;i<listImageViewToRemoveVerified.size();i++)
+                        {
+                            listImageViewToRemoveVerified.get(i).setVisibility(View.GONE);
+                        }
+                        category_selected="Dolce";
+                        loadImageSliderWithCategoryRicette();
+                        dolceTick.setVisibility(View.VISIBLE);
+                        clickedCategoria=true;
+                    }else{
+                        returnToAllRicetteImageSlider(listImageViewToRemoveVerified);
+                    }
                 }
-
             }
         });
     }
 
-    private void returnToAllRicetteImageSlider(List<TextView> listTextViewsToRemoveVerified)
+    private void returnToAllRicetteImageSlider(List<ImageView> listImageViewToRemoveVerified)
     {
-        for(int i=0;i<listTextViewsToRemoveVerified.size();i++)
+        for(int i=0;i<listImageViewToRemoveVerified.size();i++)
         {
-            listTextViewsToRemoveVerified.get(i).setText(listTextViewsToRemoveVerified.get(i).getText().toString().replace("\uD83C\uDF55",""));
+            listImageViewToRemoveVerified.get(i).setVisibility(View.GONE);
         }
         loadImageSliderWithRicette();
         pullToRefresh.setRefreshing(true);
@@ -297,7 +349,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadImageSliderWithCategoryRicette(){
-
         pullToRefresh.setRefreshing(true);
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         CollectionReference ricetteRef = rootRef.collection("Ricette");
@@ -382,7 +433,7 @@ public class MainActivity extends AppCompatActivity {
                                     sliderItem.setImageUrl(obj.get(i).getThumbnail());
                                     sliderItems.add(sliderItem);
                                 }
-                                adapter.renewItems(sliderItems, ricettas);
+                                adapter.renewItems(sliderItems, obj);
                             } else {
                                 for (int i = 0; i < obj.size(); i++) {
                                     SliderItem sliderItem = new SliderItem();

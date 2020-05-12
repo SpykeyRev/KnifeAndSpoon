@@ -146,10 +146,23 @@
                                     android:layout_marginBottom="20dp"
                                     android:text="@string/antipasto"
                                     android:textColor="@color/white" />
+
+                                <ImageView
+                                    android:id="@+id/antipastoTick"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_marginStart="120dp"
+                                    android:layout_marginTop="60dp"
+                                    android:layout_marginBottom="10dp"
+                                    android:visibility="gone"
+                                    fab:srcCompat="@drawable/done" />
+
                                 <RelativeLayout
                                     android:id="@+id/antipasto_view"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent">
+
                                 </RelativeLayout>
                             </RelativeLayout>
 
@@ -180,6 +193,16 @@
                                     android:layout_marginBottom="20dp"
                                     android:text="@string/primo"
                                     android:textColor="@color/white" />
+                                <ImageView
+                                    android:id="@+id/primoTick"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_marginStart="120dp"
+                                    android:layout_marginTop="60dp"
+                                    android:layout_marginBottom="10dp"
+                                    android:visibility="gone"
+                                    fab:srcCompat="@drawable/done" />
                                 <RelativeLayout
                                     android:id="@+id/primo_view"
                                     android:layout_width="match_parent"
@@ -213,6 +236,16 @@
                                     android:layout_marginBottom="20dp"
                                     android:text="@string/secondo"
                                     android:textColor="@color/white" />
+                                <ImageView
+                                    android:id="@+id/secondoTick"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_marginStart="120dp"
+                                    android:layout_marginTop="60dp"
+                                    android:layout_marginBottom="10dp"
+                                    android:visibility="gone"
+                                    fab:srcCompat="@drawable/done" />
                                 <RelativeLayout
                                     android:id="@+id/secondo_view"
                                     android:layout_width="match_parent"
@@ -246,6 +279,17 @@
                                     android:layout_marginBottom="20dp"
                                     android:text="@string/contorno"
                                     android:textColor="@color/white" />
+
+                                <ImageView
+                                    android:id="@+id/contornoTick"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_marginStart="120dp"
+                                    android:layout_marginTop="60dp"
+                                    android:layout_marginBottom="10dp"
+                                    android:visibility="gone"
+                                    fab:srcCompat="@drawable/done" />
                                 <RelativeLayout
                                     android:id="@+id/contorno_view"
                                     android:layout_width="match_parent"
@@ -278,6 +322,16 @@
                                     android:layout_marginTop="60dp"
                                     android:layout_marginBottom="20dp"
                                     android:text="@string/dolce" />
+                                <ImageView
+                                    android:id="@+id/dolceTick"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_marginStart="120dp"
+                                    android:layout_marginTop="60dp"
+                                    android:layout_marginBottom="10dp"
+                                    android:visibility="gone"
+                                    fab:srcCompat="@drawable/done" />
                                 <RelativeLayout
                                     android:id="@+id/dolce_view"
                                     android:layout_width="match_parent"
@@ -313,6 +367,15 @@
                             app:sliderStartAutoCycle="true" />
 
                     </androidx.cardview.widget.CardView>
+
+                    <TextView
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:id="@+id/textView2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/feed_title"
+                        android:textSize="20sp"/>
 
                     <LinearLayout
                         android:id="@+id/layoutFeed"

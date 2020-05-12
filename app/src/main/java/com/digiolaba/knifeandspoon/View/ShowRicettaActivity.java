@@ -249,21 +249,27 @@ public class ShowRicettaActivity extends AppCompatActivity {
     private String getCorrectUtForm(String ut,String qt){
         Float quant=Float.parseFloat(qt);
         String correctForm="";
-        if(quant==0){
-            if(ut=="grammi"){
+        if(quant==1){
+            if(ut.equals("grammi")){
                 correctForm="grammo";
-            }else if (ut=="litri"){
+            }else if (ut.equals("litri")){
                 correctForm="litro";
+            } else if (ut.equals("millilitri")){
+                correctForm="millilitro";
             }
             else{
                 correctForm=ut;
             }
         }else{
-            if(ut=="bicchiere"){
-                correctForm="bicchieri";
-            }else if(ut=="cucchiaio"){
+            if(ut.equals("bicchiere")){
+                if(quant>=2){
+                    correctForm="bicchieri";
+                }else{
+                    correctForm=ut;
+                }
+            }else if(ut.equals("cucchiaio")){
                 correctForm="cucchiai";
-            }else if(ut=="cucchiaino"){
+            }else if(ut.equals("cucchiaino")){
                 correctForm="cucchiaini";
             }else{
                 correctForm=ut;

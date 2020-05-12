@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -566,6 +567,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 FABShowDifferentUsers();
+                final Handler handler  = new Handler();
+                final Runnable runnable = new Runnable()
+                {
+                    @Override
+                    public void run() {
+                        if(isOpen)
+                        fab_main.performClick();
+                    }
+                };
+                handler.postDelayed(runnable,10000);
             }
         });
         fab_add.setOnClickListener(new View.OnClickListener() {

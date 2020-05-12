@@ -7,6 +7,8 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,6 +56,8 @@ import com.squareup.picasso.Picasso;
 import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -87,9 +91,8 @@ public class MainActivity extends AppCompatActivity {
     private CoordinatorLayout coordinatorLayout;
     private SliderView sliderView;
     private LinearLayout layoutFeed;
-    SliderAdapter adapter;
+    private SliderAdapter adapter;
     private FirebaseUser fireUser;
-    private static int LAUNCH_SHOW_RICETTA_ACTIVITY = 2912;
     private static int LAUNCH_SETTINGS_ACTIVITY = 1998;
     private String category_selected=null;
     private final List<Ricetta> obj = new ArrayList();
@@ -135,6 +138,8 @@ public class MainActivity extends AppCompatActivity {
         //Set Category listeners
         setCategoryListeners();
         //Setting up firebase for userInfo
+
+
         setUserInfo();
         //Setting up imageSlider
         sliderView = findViewById(R.id.imageSlider);
@@ -166,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
                 if(!clickedCategoria)
                 {
                     category_selected="Antipasto";
-                    loadImageSliderWithCategoryRicette();
+                    checkConnection("loadImageSliderWithCategoryRicette");
                     antipastoTick.setVisibility(View.VISIBLE);
                     clickedCategoria=true;
                 }
@@ -178,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
                             listImageViewToRemoveVerified.get(i).setVisibility(View.GONE);
                         }
                         category_selected="Antipasto";
-                        loadImageSliderWithCategoryRicette();
+                        checkConnection("loadImageSliderWithCategoryRicette");
                         antipastoTick.setVisibility(View.VISIBLE);
                         clickedCategoria=true;
                     }else{
@@ -193,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
                 if(!clickedCategoria)
                 {
                     category_selected="Primo";
-                    loadImageSliderWithCategoryRicette();
+                    checkConnection("loadImageSliderWithCategoryRicette");
                     primoTick.setVisibility(View.VISIBLE);
                     clickedCategoria =true;
                 }
@@ -205,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
                             listImageViewToRemoveVerified.get(i).setVisibility(View.GONE);
                         }
                         category_selected="Primo";
-                        loadImageSliderWithCategoryRicette();
+                        checkConnection("loadImageSliderWithCategoryRicette");
                         primoTick.setVisibility(View.VISIBLE);
                         clickedCategoria=true;
                     }else{
@@ -221,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
                 if(!clickedCategoria)
                 {
                     category_selected="Secondo";
-                    loadImageSliderWithCategoryRicette();
+                    checkConnection("loadImageSliderWithCategoryRicette");
                     secondoTick.setVisibility(View.VISIBLE);
                     clickedCategoria =true;
                 }
@@ -233,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
                             listImageViewToRemoveVerified.get(i).setVisibility(View.GONE);
                         }
                         category_selected="Secondo";
-                        loadImageSliderWithCategoryRicette();
+                        checkConnection("loadImageSliderWithCategoryRicette");
                         secondoTick.setVisibility(View.VISIBLE);
                         clickedCategoria=true;
                     }else{
@@ -248,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
                 if(!clickedCategoria)
                 {
                     category_selected="Contorno";
-                    loadImageSliderWithCategoryRicette();
+                    checkConnection("loadImageSliderWithCategoryRicette");
                     contornoTick.setVisibility(View.VISIBLE);
                     clickedCategoria =true;
                 }
@@ -259,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
                             listImageViewToRemoveVerified.get(i).setVisibility(View.GONE);
                         }
                         category_selected="Contorno";
-                        loadImageSliderWithCategoryRicette();
+                        checkConnection("loadImageSliderWithCategoryRicette");
                         contornoTick.setVisibility(View.VISIBLE);
                         clickedCategoria=true;
                     }else{
@@ -274,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
                 if(!clickedCategoria)
                 {
                     category_selected="Dolce";
-                    loadImageSliderWithCategoryRicette();
+                    checkConnection("loadImageSliderWithCategoryRicette");
                     dolceTick.setVisibility(View.VISIBLE);
                     clickedCategoria =true;
                 }
@@ -286,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
                             listImageViewToRemoveVerified.get(i).setVisibility(View.GONE);
                         }
                         category_selected="Dolce";
-                        loadImageSliderWithCategoryRicette();
+                        checkConnection("loadImageSliderWithCategoryRicette");
                         dolceTick.setVisibility(View.VISIBLE);
                         clickedCategoria=true;
                     }else{
@@ -303,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
         {
             listImageViewToRemoveVerified.get(i).setVisibility(View.GONE);
         }
-        loadImageSliderWithRicette();
+        checkConnection("loadImageSliderWithRicette");
         pullToRefresh.setRefreshing(true);
         clickedCategoria=false;
     }
@@ -315,6 +320,11 @@ public class MainActivity extends AppCompatActivity {
         if (!fireUser.isAnonymous()) {
             loadAndShowUserInfo();
         }
+    }
+
+    public void getSetUserInfo()
+    {
+        setUserInfo();
     }
 
     private void loadAndShowUserInfo(){
@@ -342,10 +352,14 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
     }
+    public void getLoadAndShowUserInfo()
+    {
+        checkConnection("loadAndShowUserInfo");
+    }
 
     private void refresh() {
-        loadAndShowUserInfo();
-        loadImageSliderWithRicette();
+        checkConnection("loadAndShowUserInfo");
+        checkConnection("loadImageSliderWithRicette");
     }
 
     private void loadImageSliderWithCategoryRicette(){
@@ -401,6 +415,12 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
+    public void getLoadImageSliderWithCategoryRicette()
+    {
+        loadImageSliderWithCategoryRicette();
+    }
+
+
     private void loadImageSliderWithRicette() {
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         CollectionReference ricetteRef = rootRef.collection("Ricette");
@@ -453,6 +473,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+    }
+
+    public void getLoadImageSliderWithRicette()
+    {
+        loadImageSliderWithRicette();
     }
 
     private void loadFeed() {
@@ -772,5 +797,48 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    private void checkConnection(final String methodInString)
+    {
+        try {
+            final Method method=getClass().getMethod("get"+methodInString.substring(0,1).toUpperCase()+methodInString.substring(1));
+            boolean conn=isNetworkAvailable();
+            if(!conn)
+            {
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                checkConnection(methodInString);
+                                break;
+
+                        }
+                    }
+                };
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(getString(R.string.error_connection)).setPositiveButton(getString(R.string.error_ok), dialogClickListener).setCancelable(false)
+                        .show();
+            }
+            else
+            {
+                try {
+                    method.invoke(MainActivity.this);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+    }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

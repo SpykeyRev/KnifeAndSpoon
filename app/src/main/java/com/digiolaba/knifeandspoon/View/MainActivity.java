@@ -349,6 +349,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refresh() {
+        ImageView[] ticks={antipastoTick,primoTick,secondoTick,contornoTick,dolceTick};
+        final List<ImageView> listImageViewToRemoveVerified = new ArrayList<ImageView>(Arrays.asList(ticks));
+        for(int i=0;i<listImageViewToRemoveVerified.size();i++)
+        {
+            listImageViewToRemoveVerified.get(i).setVisibility(View.GONE);
+        }
         checkConnection("loadImageSliderWithRicette");
         loadAndShowUserInfo();
     }

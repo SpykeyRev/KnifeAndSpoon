@@ -322,11 +322,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void getSetUserInfo()
-    {
-        setUserInfo();
-    }
-
     private void loadAndShowUserInfo(){
         FirebaseFirestore.getInstance().collection("Utenti").whereEqualTo("Mail", firebaseAuth.getCurrentUser().getEmail()).get().addOnCompleteListener(
                 new OnCompleteListener<QuerySnapshot>() {
@@ -352,14 +347,10 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
     }
-    public void getLoadAndShowUserInfo()
-    {
-        checkConnection("loadAndShowUserInfo");
-    }
 
     private void refresh() {
-        checkConnection("loadAndShowUserInfo");
         checkConnection("loadImageSliderWithRicette");
+        loadAndShowUserInfo();
     }
 
     private void loadImageSliderWithCategoryRicette(){

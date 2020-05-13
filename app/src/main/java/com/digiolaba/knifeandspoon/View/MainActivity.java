@@ -357,6 +357,7 @@ public class MainActivity extends AppCompatActivity {
             listImageViewToRemoveVerified.get(i).setVisibility(View.GONE);
         }
         checkConnection("loadImageSliderWithRicette");
+        if(!fireUser.isAnonymous())
         loadAndShowUserInfo();
     }
 
@@ -521,9 +522,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkPreferitiOnFirebase(final String idRicetta, final Bundle bundle)
     {
-        Intent intent = new Intent(MainActivity.this, ShowRicettaActivity.class);
+        final Intent intent = new Intent(MainActivity.this, ShowRicettaActivity.class);
 
-        if(!fireUser.isAnonymous())
+        if(fireUser.isAnonymous())
+        {
+            bundle.putBoolean("isFav",false);
+            bundle.putString("pathIdUser", "anonymous");
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
+        else
         {
             String documentIdUtente = actualUser.getUserId();
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
@@ -541,16 +549,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                     bundle.putBoolean("isFav",found[0]);
                     bundle.putString("pathIdUser", actualUser.getUserId());
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 }
             });
         }
-        else
-        {
-            bundle.putBoolean("isFav",false);
-            bundle.putString("pathIdUser", "anonymous");
-        }
-        intent.putExtras(bundle);
-        startActivity(intent);
+
 
     }
 
@@ -579,8 +583,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                 };
                 handler.postDelayed(runnable,10000);
+
             }
         });
+
         fab_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

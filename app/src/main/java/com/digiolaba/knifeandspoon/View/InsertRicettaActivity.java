@@ -535,7 +535,6 @@ public class InsertRicettaActivity extends AppCompatActivity {
                         break;
                     }else{
                         if(ingredienti.get(i).get("Quantità").toString().trim().equals("")){
-                            Log.e("LOG","DIO2");
                             error=true;
                             break;
                         }else{

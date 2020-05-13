@@ -14,6 +14,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -45,6 +46,7 @@ import java.util.List;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    private ImageButton back;
     private Button logOut;
     private Button changeProPic;
     private Button reviewRicettaAdmin;
@@ -64,6 +66,13 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
+        back=(ImageButton) findViewById(R.id.backButton);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         userImage = (ImageView) findViewById(R.id.profile_image);
         Glide.with(this).load(extras.get("userProPic"))
                 .centerCrop()

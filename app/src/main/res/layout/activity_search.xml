@@ -13,15 +13,34 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/heading_search"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="25dp"
-                android:text="@string/ricerca_ricetta"
-                android:textColor="@color/colorPrimary"
-                android:textSize="30sp" />
+                android:layout_marginTop="30dp"
+                android:gravity="left|center">
+
+                <ImageButton
+                    android:id="@+id/backButton"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitXY"
+                    android:tint="@color/colorPrimary"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/abc_vector_test" />
+
+                <TextView
+                    android:layout_marginStart="8dp"
+                    android:id="@+id/heading_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ricerca_ricetta"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="30sp" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

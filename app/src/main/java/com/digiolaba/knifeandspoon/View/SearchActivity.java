@@ -43,6 +43,7 @@ import java.util.Objects;
 
 public class SearchActivity extends AppCompatActivity {
 
+    private ImageButton back;
     private EditText mSearchBar;
     private ImageButton mSearchBtn;
     private List<Ricetta> ricettas;
@@ -56,6 +57,13 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         intentMain = getIntent();
 
+        back=(ImageButton) findViewById(R.id.backButton);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         mSearchBar = (EditText) findViewById(R.id.search_bar);
         mSearchBtn = (ImageButton) findViewById(R.id.btn_search);

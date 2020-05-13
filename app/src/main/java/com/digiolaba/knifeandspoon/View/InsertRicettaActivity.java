@@ -149,7 +149,6 @@ public class InsertRicettaActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
         switch (item.getItemId()) {
             case android.R.id.home: {
                 this.onBackPressed();
@@ -163,7 +162,6 @@ public class InsertRicettaActivity extends AppCompatActivity {
             default: {
                 return super.onOptionsItemSelected(item);
             }
-
         }
     }
 

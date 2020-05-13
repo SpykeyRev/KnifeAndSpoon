@@ -550,17 +550,36 @@ public class InsertRicettaActivity extends AppCompatActivity {
                 if (passaggi.size() == 0 || ingredienti.size() == 0 || error==true) {
                     Utils.errorDialog(InsertRicettaActivity.this, R.string.error_no_passaggi_ingredienti, R.string.error_ok);
                 } else {
-                    Map<String, Object> ricettaToPush = new HashMap<>();
-                    ricettaToPush.put("Autore", actualUser);
-                    ricettaToPush.put("Titolo", etTitolo.getText().toString().trim());
-                    ricettaToPush.put("Categoria", spCategoria.getSelectedItem().toString());
-                    ricettaToPush.put("Timestamp",com.google.firebase.firestore.FieldValue.serverTimestamp());
-                    ricettaToPush.put("Tempo di preparazione", tempoPreparazione.getText().toString());
-                    ricettaToPush.put("Numero persone", numeroPersone.getText().toString());
-                    ricettaToPush.put("Passaggi", getInfoPassaggi());
-                    ricettaToPush.put("Ingredienti", getInfoIngredienti());
-                    ricettaToPush.put("isApproved", false);
-                    publishToFirebase(ricettaToPush);
+                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case DialogInterface.BUTTON_POSITIVE:
+                                {
+                                    Map<String, Object> ricettaToPush = new HashMap<>();
+                                    ricettaToPush.put("Autore", actualUser);
+                                    ricettaToPush.put("Titolo", etTitolo.getText().toString().trim());
+                                    ricettaToPush.put("Categoria", spCategoria.getSelectedItem().toString());
+                                    ricettaToPush.put("Timestamp",com.google.firebase.firestore.FieldValue.serverTimestamp());
+                                    ricettaToPush.put("Tempo di preparazione", tempoPreparazione.getText().toString());
+                                    ricettaToPush.put("Numero persone", numeroPersone.getText().toString());
+                                    ricettaToPush.put("Passaggi", getInfoPassaggi());
+                                    ricettaToPush.put("Ingredienti", getInfoIngredienti());
+                                    ricettaToPush.put("isApproved", false);
+                                    publishToFirebase(ricettaToPush);
+                                    break;
+                                }
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    //No button clicked
+                                    break;
+                            }
+                        }
+                    };
+                    AlertDialog.Builder builder = new AlertDialog.Builder(InsertRicettaActivity.this);
+                    builder.setMessage(getString(R.string.are_you_sure_about_that_inserimento)).setPositiveButton(getString(R.string.yes), dialogClickListener)
+                            .setNegativeButton(getString(R.string.no), dialogClickListener).show();
+
+
                 }
             } else {
                 Utils.errorDialog(InsertRicettaActivity.this, R.string.error_no_passaggi_ingredienti, R.string.error_ok);

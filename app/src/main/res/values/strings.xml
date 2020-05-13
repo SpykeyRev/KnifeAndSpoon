@@ -31,7 +31,7 @@
     <string name="numero_persone_ask">Numero persone</string>
     <string name="tempo_preparazione_ask">Tempo in minuti</string>
     <string name="error_message">Oops, qualcosa è andato storto</string>
-    <string name="success_message">Operazione effettuata</string>
+    <string name="success_message">Perfetto! La tua ricetta è in fase di approvazione.</string>
     <string name="error_empty_thing">Questo campo non può essere vuoto.</string>
     <string name="error_no_passaggi_ingredienti">Per favore inserisci almeno un ingrediente e un passsaggio.</string>
     <string name="error_no_titolo">Per favore inserisci il titolo della ricetta.</string>
@@ -110,6 +110,7 @@
     <string name="removed_preferiti">Rimosso dai preferiti</string>
     <string name="ricerca_ricetta">Ricerca ricetta</string>
     <string name="error_connection">Per favore abilita la tua connessione internet!</string>
-
-
+    <string name="are_you_sure_about_that_inserimento">Sei sicuro di voler pubblicare questa ricetta?\nSuccessivamente non potrai più modificarla e/o eliminarla.</string>
+    <string name="yes">Si</string>
+    <string name="no">No</string>
 </resources>

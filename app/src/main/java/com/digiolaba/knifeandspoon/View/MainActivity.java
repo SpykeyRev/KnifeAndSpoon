@@ -521,16 +521,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkPreferitiOnFirebase(final String idRicetta, final Bundle bundle)
     {
-        String documentIdUtente = actualUser.getUserId();
-        FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-        DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
-        final Boolean[] found = {false};
-        utentiRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                Intent intent = new Intent(MainActivity.this, ShowRicettaActivity.class);
-                if(!fireUser.isAnonymous())
-                {
+        Intent intent = new Intent(MainActivity.this, ShowRicettaActivity.class);
+
+        if(!fireUser.isAnonymous())
+        {
+            String documentIdUtente = actualUser.getUserId();
+            FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+            DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
+            final Boolean[] found = {false};
+            utentiRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     DocumentSnapshot documentSnapshots=task.getResult();
                     List<String>preferiti=(List<String>) documentSnapshots.get("Preferiti");
                     for (int i = 0; i < preferiti.size(); i++) {
@@ -541,15 +542,16 @@ public class MainActivity extends AppCompatActivity {
                     bundle.putBoolean("isFav",found[0]);
                     bundle.putString("pathIdUser", actualUser.getUserId());
                 }
-                else
-                {
-                    bundle.putBoolean("isFav",false);
-                    bundle.putString("pathIdUser", "anonymous");
-                }
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
+            });
+        }
+        else
+        {
+            bundle.putBoolean("isFav",false);
+            bundle.putString("pathIdUser", "anonymous");
+        }
+        intent.putExtras(bundle);
+        startActivity(intent);
+
     }
 
 

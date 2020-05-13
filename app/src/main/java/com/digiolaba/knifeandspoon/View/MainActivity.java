@@ -103,7 +103,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageView secondoTick;
     private ImageView contornoTick;
     private ImageView dolceTick;
-
+    private Handler handler;
+    private Runnable runnable;
 
 
 
@@ -139,8 +140,6 @@ public class MainActivity extends AppCompatActivity {
         //Set Category listeners
         setCategoryListeners();
         //Setting up firebase for userInfo
-
-
         setUserInfo();
         //Setting up imageSlider
         sliderView = findViewById(R.id.imageSlider);
@@ -156,6 +155,15 @@ public class MainActivity extends AppCompatActivity {
         loadImageSliderWithRicette();
         FABClickManagement();
         FABLongClickManagement();
+        handler  = new Handler();
+        runnable = new Runnable()
+        {
+            @Override
+            public void run() {
+                if(isOpen)
+                    fab_main.performClick();
+            }
+        };
     }
 
     private void setCategoryListeners(){
@@ -573,15 +581,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 FABShowDifferentUsers();
-                final Handler handler  = new Handler();
-                final Runnable runnable = new Runnable()
-                {
-                    @Override
-                    public void run() {
-                        if(isOpen)
-                        fab_main.performClick();
-                    }
-                };
                 handler.postDelayed(runnable,10000);
 
             }
@@ -728,6 +727,7 @@ public class MainActivity extends AppCompatActivity {
                 fab_favourite.setEnabled(false);
                 isOpen = false;
             } else {
+                handler.removeCallbacks(runnable);
                 fab_add.startAnimation(fab_open);
                 fab_search.startAnimation(fab_open);
                 fab_favourite.startAnimation(fab_open);
@@ -757,6 +757,7 @@ public class MainActivity extends AppCompatActivity {
                 fab_favourite.setEnabled(false);
                 isOpen = false;
             } else {
+                handler.removeCallbacks(runnable);
                 fab_add.startAnimation(fab_open);
                 fab_search.startAnimation(fab_open);
                 fab_settings.startAnimation(fab_open);

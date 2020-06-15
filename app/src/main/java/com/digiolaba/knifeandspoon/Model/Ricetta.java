@@ -1,11 +1,15 @@
 package com.digiolaba.knifeandspoon.Model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.Timestamp;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Ricetta {
+public class Ricetta implements Parcelable {
     private String id;
     private String authorId;
     private String thumbnail;
@@ -32,6 +36,32 @@ public class Ricetta {
         this.categoria=categoria;
         this.timestamp=timestamp;
     }
+
+    protected Ricetta(Parcel in) {
+        id = in.readString();
+        authorId = in.readString();
+        thumbnail = in.readString();
+        title = in.readString();
+        persone = in.readString();
+        tempo = in.readString();
+        steps = in.createStringArrayList();
+        byte tmpIsApproved = in.readByte();
+        isApproved = tmpIsApproved == 0 ? null : tmpIsApproved == 1;
+        timestamp = in.readParcelable(Timestamp.class.getClassLoader());
+        categoria = in.readString();
+    }
+
+    public static final Creator<Ricetta> CREATOR = new Creator<Ricetta>() {
+        @Override
+        public Ricetta createFromParcel(Parcel in) {
+            return new Ricetta(in);
+        }
+
+        @Override
+        public Ricetta[] newArray(int size) {
+            return new Ricetta[size];
+        }
+    };
 
     public String getAuthorId() {
         return this.authorId;
@@ -116,4 +146,25 @@ public class Ricetta {
     public void setTimestamp(Timestamp timestamp) {
         this.timestamp=timestamp;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeString(this.authorId);
+        dest.writeString(this.thumbnail);
+        dest.writeString(this.title);
+        dest.writeString(this.persone);
+        dest.writeString(this.tempo);
+        dest.writeList(this.ingredienti);
+        dest.writeStringList(this.steps);
+        dest.writeValue(this.isApproved);
+        dest.writeParcelable(this.timestamp, flags);
+        dest.writeString(this.categoria);
+    }
+
 }

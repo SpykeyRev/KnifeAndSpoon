@@ -57,6 +57,7 @@ import com.squareup.picasso.Picasso;
 import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -488,6 +489,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadFeed() {
+        FeedFragment feedFragment=new FeedFragment();
+        Bundle bundle=new Bundle();
+        bundle.putSerializable("ricettas", (Serializable) obj);
+        bundle.putString("class",getClass().getSimpleName());
+        if(fireUser.isAnonymous())
+        {
+            bundle.putString("pathIdUser", "anonymous");
+        }
+        else
+        {
+            bundle.putString("pathIdUser", actualUser.getUserId());
+        }
+        feedFragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction().add(R.id.layoutFeed,feedFragment).commit();
+        /*
         for (int i = 0; i < obj.size(); i++) {
             LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View addView = layoutInflater.inflate(R.layout.row_feed_layout, null);
@@ -525,10 +541,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             layoutFeed.addView(addView);
-        }
+        }*/
     }
 
-    private void checkPreferitiOnFirebase(final String idRicetta, final Bundle bundle)
+ /*   private void checkPreferitiOnFirebase(final String idRicetta, final Bundle bundle)
     {
         final Intent intent = new Intent(MainActivity.this, ShowRicettaActivity.class);
 
@@ -564,7 +580,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-    }
+    }*/
 
 
 

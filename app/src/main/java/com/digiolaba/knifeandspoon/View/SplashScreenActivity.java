@@ -40,22 +40,22 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     private void checkConnection(final String methodInString)
     {
-        try {
-            final Method method=getClass().getMethod("get"+methodInString.substring(0,1).toUpperCase()+methodInString.substring(1));
-            boolean conn=isNetworkAvailable();
-            if(!conn)
-            {
-                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case DialogInterface.BUTTON_POSITIVE:
-                                checkConnection(methodInString);
-                                break;
+                try {
+                    final Method method=getClass().getMethod("get"+methodInString.substring(0,1).toUpperCase()+methodInString.substring(1));
+                    boolean conn=isNetworkAvailable();
+                    if(!conn)
+                    {
+                        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                    case DialogInterface.BUTTON_POSITIVE:
+                                        checkConnection(methodInString);
+                                        break;
 
-                        }
-                    }
-                };
+                                }
+                            }
+                        };
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage(getString(R.string.error_connection)).setPositiveButton(getString(R.string.error_ok), dialogClickListener).setCancelable(false)
                         .show();

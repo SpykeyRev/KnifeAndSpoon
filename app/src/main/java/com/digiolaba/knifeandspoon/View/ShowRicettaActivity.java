@@ -87,8 +87,8 @@ public class ShowRicettaActivity extends AppCompatActivity {
         TextView txtPersone = (TextView) findViewById(R.id.txtNumeroPersoneNumber);
         TextView txtTempo = (TextView) findViewById(R.id.txtTempoPreparazioneNumber);
         txtCategoria.setText(infoToShow.getString("Categoria"));
-        ImageView category=(ImageView) findViewById(R.id.categoryImage);
-        switch(infoToShow.getString("Categoria")) {
+        ImageView category = (ImageView) findViewById(R.id.categoryImage);
+        switch (infoToShow.getString("Categoria")) {
             case "Primo":
                 category.setBackgroundResource(R.drawable.primo);
                 break;
@@ -105,7 +105,8 @@ public class ShowRicettaActivity extends AppCompatActivity {
                 category.setBackgroundResource(R.drawable.dolce);
                 break;
             default:
-        };
+        }
+        ;
         txtTempo.setText(tempo.concat(" minuti"));
         txtPersone.setText(Utils.personaOrPersone(persone));
         loadIngredienti(ingredienti);
@@ -151,8 +152,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
         return extras;
     }
 
-    private void setPreferiti()
-    {
+    private void setPreferiti() {
         String documentIdUtente = infoToShow.get("pathIdUser").toString();
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         final DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
@@ -195,16 +195,16 @@ public class ShowRicettaActivity extends AppCompatActivity {
         });
     }
 
-    public void getSetPreferiti()
-    {
+    public void getSetPreferiti() {
         setPreferiti();
     }
+
     private void getAndShowUsername(String autore) {
         FirebaseFirestore.getInstance().collection("Utenti").document(autore).get().addOnCompleteListener(
                 new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             DocumentSnapshot result = task.getResult();
                             Utente userRecipe = new Utente(
                                     result.getId(),
@@ -233,46 +233,42 @@ public class ShowRicettaActivity extends AppCompatActivity {
             TextView quantitaIngrediente = addView.findViewById(R.id.txtQuantitaIngrediente);
             TextView unitaMisuraIngrediente = addView.findViewById(R.id.txtUnitaMisuraIngrediente);
             nomeIngrediente.setText(Objects.requireNonNull(ingredienti.get(i).get("Nome")).toString().concat(" "));
-            if(!Objects.requireNonNull(ingredienti.get(i).get("Quantità")).toString().equals("0"))
-            {
+            if (!Objects.requireNonNull(ingredienti.get(i).get("Quantità")).toString().equals("0")) {
                 quantitaIngrediente.setText(Objects.requireNonNull(ingredienti.get(i).get("Quantità")).toString().concat(" "));
-            }
-            else
-            {
+            } else {
                 quantitaIngrediente.setText("");
             }
-            unitaMisuraIngrediente.setText(getCorrectUtForm(ingredienti.get(i).get("Unità misura").toString(),ingredienti.get(i).get("Quantità").toString()));
+            unitaMisuraIngrediente.setText(getCorrectUtForm(ingredienti.get(i).get("Unità misura").toString(), ingredienti.get(i).get("Quantità").toString()));
             showIngredientiLayout.addView(addView);
         }
     }
 
-    private String getCorrectUtForm(String ut,String qt){
-        Float quant=Float.parseFloat(qt);
-        String correctForm="";
-        if(quant==1){
-            if(ut.equals("grammi")){
-                correctForm="grammo";
-            }else if (ut.equals("litri")){
-                correctForm="litro";
-            } else if (ut.equals("millilitri")){
-                correctForm="millilitro";
+    private String getCorrectUtForm(String ut, String qt) {
+        Float quant = Float.parseFloat(qt);
+        String correctForm = "";
+        if (quant == 1) {
+            if (ut.equals("grammi")) {
+                correctForm = "grammo";
+            } else if (ut.equals("litri")) {
+                correctForm = "litro";
+            } else if (ut.equals("millilitri")) {
+                correctForm = "millilitro";
+            } else {
+                correctForm = ut;
             }
-            else{
-                correctForm=ut;
-            }
-        }else{
-            if(ut.equals("bicchiere")){
-                if(quant>=2){
-                    correctForm="bicchieri";
-                }else{
-                    correctForm=ut;
+        } else {
+            if (ut.equals("bicchiere")) {
+                if (quant >= 2) {
+                    correctForm = "bicchieri";
+                } else {
+                    correctForm = ut;
                 }
-            }else if(ut.equals("cucchiaio")){
-                correctForm="cucchiai";
-            }else if(ut.equals("cucchiaino")){
-                correctForm="cucchiaini";
-            }else{
-                correctForm=ut;
+            } else if (ut.equals("cucchiaio")) {
+                correctForm = "cucchiai";
+            } else if (ut.equals("cucchiaino")) {
+                correctForm = "cucchiaini";
+            } else {
+                correctForm = ut;
             }
         }
         return correctForm;
@@ -437,8 +433,8 @@ public class ShowRicettaActivity extends AppCompatActivity {
             }
         });
     }
-    public void getChangeBooleanIsApproved()
-    {
+
+    public void getChangeBooleanIsApproved() {
         changeBooleanIsApproved();
     }
 
@@ -475,8 +471,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
         });
     }
 
-    public void getDeleteRicettaAdmin()
-    {
+    public void getDeleteRicettaAdmin() {
         deleteRicettaAdmin();
     }
 
@@ -485,13 +480,11 @@ public class ShowRicettaActivity extends AppCompatActivity {
         this.finish();
     }
 
-    private void checkConnection(final String methodInString)
-    {
+    private void checkConnection(final String methodInString) {
         try {
-            final Method method=getClass().getMethod("get"+methodInString.substring(0,1).toUpperCase()+methodInString.substring(1));
-            boolean conn=isNetworkAvailable();
-            if(!conn)
-            {
+            final Method method = getClass().getMethod("get" + methodInString.substring(0, 1).toUpperCase() + methodInString.substring(1));
+            boolean conn = isNetworkAvailable();
+            if (!conn) {
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -506,9 +499,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage(getString(R.string.error_connection)).setPositiveButton(getString(R.string.error_ok), dialogClickListener).setCancelable(false)
                         .show();
-            }
-            else
-            {
+            } else {
                 try {
                     method.invoke(ShowRicettaActivity.this);
                 } catch (IllegalAccessException e) {
@@ -521,6 +512,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

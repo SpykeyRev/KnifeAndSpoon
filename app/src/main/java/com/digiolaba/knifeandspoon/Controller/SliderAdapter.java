@@ -47,14 +47,14 @@ public class SliderAdapter extends
     private List<Ricetta> ricettas = new ArrayList<>();
 
     public SliderAdapter(Activity activity, Context context, FirebaseUser fireUser, Utente actualUser) {
-        this.activity=activity;
+        this.activity = activity;
         this.context = context;
         this.fireUser = fireUser;
         this.actualUser = actualUser;
     }
 
-    public void setActualUser(Utente actualUser){
-        this.actualUser=actualUser;
+    public void setActualUser(Utente actualUser) {
+        this.actualUser = actualUser;
     }
 
     public void renewItems(List<SliderItem> sliderItems, List<Ricetta> ricettas) {
@@ -113,10 +113,10 @@ public class SliderAdapter extends
                             new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if(task.isSuccessful()){
+                                    if (task.isSuccessful()) {
                                         DocumentSnapshot result = task.getResult();
                                         List<String> preferiti = (List<String>) result.get("Preferiti");
-                                        Boolean found=false;
+                                        Boolean found = false;
                                         for (int i = 0; i < preferiti.size(); i++) {
                                             if (preferiti.get(i).equals(ricettas.get(position).getId())) {
                                                 found = true;

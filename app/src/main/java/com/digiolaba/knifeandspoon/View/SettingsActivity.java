@@ -66,7 +66,7 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
-        back=(ImageButton) findViewById(R.id.backButton);
+        back = (ImageButton) findViewById(R.id.backButton);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -278,7 +278,7 @@ public class SettingsActivity extends AppCompatActivity {
                             }
                         });
                     } else {
-                        Log.e("CIAO", "CIAO");
+                        Utils.showSnackbar(changeProPic, getString(R.string.error_message));
                     }
                 }
             }
@@ -286,6 +286,7 @@ public class SettingsActivity extends AppCompatActivity {
         result = Activity.RESULT_OK;
     }
 
+    //carica bottone approvazione se l'utente è admin
     private void loadAdminButton(Boolean isAdmin) {
         if (isAdmin) {
             reviewRicettaAdmin = (Button) findViewById(R.id.btnApproveRicettaAdmin);

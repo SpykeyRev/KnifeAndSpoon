@@ -85,12 +85,13 @@ public class RegisterActivity extends AppCompatActivity {
             checkIfNameExists();
         }
     }
-    public void getCheckName()
-    {
+
+    public void getCheckName() {
         checkName();
     }
 
 
+    //controlla se l'username è già stato usato da un altro utente
     private void checkIfNameExists() {
         final Context context = this;
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
@@ -113,6 +114,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+    //registrazione dell'utente su firebase
     private void registerUser() {
         List<String> preferiti = new ArrayList<String>();
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -138,7 +140,6 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onSuccess(Uri uri) {
                         user.put("Immagine", uri.toString());
                         FirebaseFirestore db = FirebaseFirestore.getInstance();
-                        // Add a new document with a generated ID
                         db.collection("Utenti")
                                 .add(user);
                         MainActivity.startActivity(RegisterActivity.this);
@@ -149,13 +150,11 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void checkConnection(final String methodInString)
-    {
+    private void checkConnection(final String methodInString) {
         try {
-            final Method method=getClass().getMethod("get"+methodInString.substring(0,1).toUpperCase()+methodInString.substring(1));
-            boolean conn=isNetworkAvailable();
-            if(!conn)
-            {
+            final Method method = getClass().getMethod("get" + methodInString.substring(0, 1).toUpperCase() + methodInString.substring(1));
+            boolean conn = isNetworkAvailable();
+            if (!conn) {
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -170,9 +169,7 @@ public class RegisterActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage(getString(R.string.error_connection)).setPositiveButton(getString(R.string.error_ok), dialogClickListener).setCancelable(false)
                         .show();
-            }
-            else
-            {
+            } else {
                 try {
                     method.invoke(RegisterActivity.this);
                 } catch (IllegalAccessException e) {
@@ -185,6 +182,7 @@ public class RegisterActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

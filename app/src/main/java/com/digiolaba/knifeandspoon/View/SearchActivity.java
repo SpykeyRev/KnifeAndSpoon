@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -57,7 +57,7 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         intentMain = getIntent();
 
-        back=(ImageButton) findViewById(R.id.backButton);
+        back = (ImageButton) findViewById(R.id.backButton);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,7 +74,6 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void searchEvent() {
-
         mSearchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,15 +99,16 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
+    //carica ricette richieste
     public void loadingListAndView() {
         if (mSearchBar.getText().length() <= 0) {
-            Utils.showSnackbar(listLayout, "Per favore inserisci qualcosa da ricercare");
+            Utils.showSnackbar(mSearchBar, getString(R.string.nothing_in_ricette_search));
         } else {
             final String SearchRicetta = mSearchBar.getText().toString();
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
             CollectionReference ricetteRef = rootRef.collection("Ricette");
             Query queryrRicettaApprovata = ricetteRef.whereEqualTo("isApproved", true);
-            ricettas=new ArrayList<Ricetta>();
+            ricettas = new ArrayList<Ricetta>();
             queryrRicettaApprovata.get().addOnCompleteListener(
                     new OnCompleteListener<QuerySnapshot>() {
                         @Override
@@ -140,9 +140,8 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
 
+    //carica graficamente le ricette ricercate
     private void loadRicettaView() {
-
-        Toast.makeText(SearchActivity.this, "Started Search", Toast.LENGTH_LONG).show();
         listLayout.removeAllViews();
         if (ricettas.size() != 0) {
             for (int i = 0; i < ricettas.size(); i++) {
@@ -226,7 +225,7 @@ public class SearchActivity extends AppCompatActivity {
             }
 
         } else {
-            Toast.makeText(SearchActivity.this, "Ops..Non è stata trovata alcuna ricetta", Toast.LENGTH_LONG).show();
+            Utils.showSnackbar(mSearchBar, getResources().getString(R.string.no_ricette_found));
         }
     }
 

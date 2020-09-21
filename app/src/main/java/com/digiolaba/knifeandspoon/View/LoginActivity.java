@@ -73,33 +73,25 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void configureGoogleClient() {
-        // Configure Google Sign In
+        // Configura Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                // for the requestIdToken, this is in the values.xml file that
-                // is generated from your google-services.json
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-
-        // Build a GoogleSignInClient with the options specified by gso.
         googleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        // Set the dimensions of the sign-in button.
         SignInButton signInButton = findViewById(R.id.btnLogin);
         signInButton.setSize(SignInButton.SIZE_WIDE);
 
-        // Initialize Firebase Auth
+        // Inizializza Firebase Auth
         firebaseAuth = FirebaseAuth.getInstance();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        // Check user if user is already logged in
+        // Controllo se l'utente è già loggato
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
-            Log.d(TAG, "Currently Signed in: " + currentUser.getEmail());
-            Utils.showToastMessage(context, "Currently Logged in: " + currentUser.getEmail());
             user = currentUser;
             checkIfUserExist(currentUser);
         }
@@ -110,53 +102,40 @@ public class LoginActivity extends AppCompatActivity {
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
-    public void getSignInToGoogle()
-    {
+    public void getSignInToGoogle() {
         signInToGoogle();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        // Risultato dal lancio dell'Intent da GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
-                // Google Sign In was successful, authenticate with Firebase
+                // Login tramite Google avvenuto con successo, autenticazione tramite Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                Utils.showToastMessage(context, "Google Sign in Succeeded");
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
-                Log.w(TAG, "Google sign in failed", e);
-                Utils.showToastMessage(context, "Google Sign in Failed " + e);
+                Utils.showToastMessage(context, "Login Tramite Google fallito. Riprovare ");
             }
         }
     }
 
+    //autenticazione tramite firebase
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
-
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-
         firebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
+                            // Login avvenuto con successo, si controlla se l'utente esista o meno
                             FirebaseUser user = firebaseAuth.getCurrentUser();
-
-                            Log.d(TAG, "signInWithCredential:success: currentUser: " + user.getEmail());
-
-                            Utils.showToastMessage(context, "Firebase Authentication Succeeded ");
                             checkIfUserExist(user);
                         } else {
-                            // If sign in fails, display a message to the user.
-
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-
-                            Utils.showToastMessage(context, "Firebase Authentication failed:" + task.getException());
+                            // errore
+                            Utils.showToastMessage(context, "Autenticazione fallita, riprovare");
                         }
                     }
                 });
@@ -198,32 +177,28 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "signInAnonymously:success");
+                    // Login avvenuto con successo
                     FirebaseUser user = firebaseAuth.getCurrentUser();
                     launchMainActivity();
 
                 } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInAnonymously:failure", task.getException());
-                    Toast.makeText(LoginActivity.this, "Authentication failed.",
+                    // errore
+                    Toast.makeText(LoginActivity.this, "Autenticazione fallita, riprovare",
                             Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
-    public void getSignInAnonymously()
-    {
+
+    public void getSignInAnonymously() {
         signInAnonymously();
     }
 
-    private void checkConnection(final String methodInString)
-    {
+    private void checkConnection(final String methodInString) {
         try {
-            final Method method=getClass().getMethod("get"+methodInString.substring(0,1).toUpperCase()+methodInString.substring(1));
-            boolean conn=isNetworkAvailable();
-            if(!conn)
-            {
+            final Method method = getClass().getMethod("get" + methodInString.substring(0, 1).toUpperCase() + methodInString.substring(1));
+            boolean conn = isNetworkAvailable();
+            if (!conn) {
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -238,9 +213,7 @@ public class LoginActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage(getString(R.string.error_connection)).setPositiveButton(getString(R.string.error_ok), dialogClickListener).setCancelable(false)
                         .show();
-            }
-            else
-            {
+            } else {
                 try {
                     method.invoke(LoginActivity.this);
                 } catch (IllegalAccessException e) {
@@ -253,6 +226,7 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

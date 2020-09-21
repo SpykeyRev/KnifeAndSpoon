@@ -97,8 +97,7 @@ public class RicetteToApproveActivity extends AppCompatActivity {
                                         (Timestamp) result.getDocuments().get(i).get("Timestamp")
                                 ));
                             }
-                            if(ricetteToReviewLayout.getChildCount()!=0)
-                            {
+                            if (ricetteToReviewLayout.getChildCount() != 0) {
                                 ricetteToReviewLayout.removeAllViews();
                             }
                             showRecipes(obj);
@@ -107,8 +106,8 @@ public class RicetteToApproveActivity extends AppCompatActivity {
                 }
         );
     }
-    public void getLoadRicetteToReview()
-    {
+
+    public void getLoadRicetteToReview() {
         loadRicetteToReview();
     }
 
@@ -129,12 +128,12 @@ public class RicetteToApproveActivity extends AppCompatActivity {
             builder.setMessage(getString(R.string.nothing_to_show_here_admin)).setPositiveButton(getString(R.string.perfect_exclamation_mark), dialogClickListener)
                     .show();
         } else {
-            FeedFragment feedFragment=new FeedFragment();
-            Bundle bundle=new Bundle();
+            FeedFragment feedFragment = new FeedFragment();
+            Bundle bundle = new Bundle();
             bundle.putSerializable("ricettas", (Serializable) ricettas);
-            bundle.putString("class",getClass().getSimpleName());
+            bundle.putString("class", getClass().getSimpleName());
             feedFragment.setArguments(bundle);
-            getSupportFragmentManager().beginTransaction().add(R.id.layoutRicetteToApprove,feedFragment).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.layoutRicetteToApprove, feedFragment).commit();
         }
     }
 
@@ -148,13 +147,11 @@ public class RicetteToApproveActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    private void checkConnection(final String methodInString)
-    {
+    private void checkConnection(final String methodInString) {
         try {
-            final Method method=getClass().getMethod("get"+methodInString.substring(0,1).toUpperCase()+methodInString.substring(1));
-            boolean conn=isNetworkAvailable();
-            if(!conn)
-            {
+            final Method method = getClass().getMethod("get" + methodInString.substring(0, 1).toUpperCase() + methodInString.substring(1));
+            boolean conn = isNetworkAvailable();
+            if (!conn) {
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -169,9 +166,7 @@ public class RicetteToApproveActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage(getString(R.string.error_connection)).setPositiveButton(getString(R.string.error_ok), dialogClickListener).setCancelable(false)
                         .show();
-            }
-            else
-            {
+            } else {
                 try {
                     method.invoke(RicetteToApproveActivity.this);
                 } catch (IllegalAccessException e) {
@@ -184,6 +179,7 @@ public class RicetteToApproveActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

@@ -20,12 +20,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.bumptech.glide.Glide;
 import com.digiolaba.knifeandspoon.Controller.SliderAdapter;
 import com.digiolaba.knifeandspoon.Controller.Utils;
@@ -71,17 +73,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private Utente actualUser;
-
-    public void MainActivity() {
-
-    }
-
-    public static void startActivity(Context context) {
-        Intent intent = new Intent(context, MainActivity.class);
-        context.startActivity(intent);
-    }
-
-
     private FirebaseAuth firebaseAuth;
     private GoogleSignInClient googleSignInClient;
     private SwipeRefreshLayout pullToRefresh;
@@ -96,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     private SliderAdapter adapter;
     private FirebaseUser fireUser;
     private static int LAUNCH_SETTINGS_ACTIVITY = 1998;
-    private String category_selected=null;
+    private String category_selected = null;
     private final List<Ricetta> obj = new ArrayList();
     private Boolean clickedCategoria = false;
     private ImageView antipastoTick;
@@ -107,6 +98,14 @@ public class MainActivity extends AppCompatActivity {
     private Handler handler;
     private Runnable runnable;
 
+    public void MainActivity() {
+
+    }
+
+    public static void startActivity(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        context.startActivity(intent);
+    }
 
 
     @Override
@@ -120,8 +119,6 @@ public class MainActivity extends AppCompatActivity {
                 refresh();
             }
         });
-        //findViewById(R.id.buttonLogout).setOnClickListener(this);
-        //findViewById(R.id.buttonDisconnect).setOnClickListener(this);
         fab_main = (FloatingActionButton) findViewById(R.id.fabOptions);
         fab_add = (ExtendedFloatingActionButton) findViewById(R.id.fabAdd);
         fab_search = (ExtendedFloatingActionButton) findViewById(R.id.fabSearch);
@@ -133,11 +130,11 @@ public class MainActivity extends AppCompatActivity {
         fab_anticlock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_anticlock);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinateLayout);
         layoutFeed = (LinearLayout) findViewById(R.id.layoutFeed);
-        antipastoTick=(ImageView)findViewById(R.id.antipastoTick);
-        primoTick=(ImageView)findViewById(R.id.primoTick);
-        secondoTick=(ImageView)findViewById(R.id.secondoTick);
-        contornoTick=(ImageView)findViewById(R.id.contornoTick);
-        dolceTick=(ImageView)findViewById(R.id.dolceTick);
+        antipastoTick = (ImageView) findViewById(R.id.antipastoTick);
+        primoTick = (ImageView) findViewById(R.id.primoTick);
+        secondoTick = (ImageView) findViewById(R.id.secondoTick);
+        contornoTick = (ImageView) findViewById(R.id.contornoTick);
+        dolceTick = (ImageView) findViewById(R.id.dolceTick);
         //Set Category listeners
         setCategoryListeners();
         //Setting up firebase for userInfo
@@ -156,47 +153,43 @@ public class MainActivity extends AppCompatActivity {
         loadImageSliderWithRicette();
         FABClickManagement();
         FABLongClickManagement();
-        handler  = new Handler();
-        runnable = new Runnable()
-        {
+        handler = new Handler();
+        runnable = new Runnable() {
             @Override
             public void run() {
-                if(isOpen)
+                if (isOpen)
                     fab_main.performClick();
             }
         };
     }
 
-    private void setCategoryListeners(){
-        RelativeLayout antipasto= (RelativeLayout) findViewById(R.id.antipasto_view);
-        RelativeLayout primo= (RelativeLayout) findViewById(R.id.primo_view);
-        RelativeLayout secondo= (RelativeLayout) findViewById(R.id.secondo_view);
-        RelativeLayout contorno= (RelativeLayout) findViewById(R.id.contorno_view);
-        RelativeLayout dolce= (RelativeLayout) findViewById(R.id.dolce_view);
-        ImageView[] ticks={antipastoTick,primoTick,secondoTick,contornoTick,dolceTick};
+    //filtro ricette per imageSlider
+    private void setCategoryListeners() {
+        RelativeLayout antipasto = (RelativeLayout) findViewById(R.id.antipasto_view);
+        RelativeLayout primo = (RelativeLayout) findViewById(R.id.primo_view);
+        RelativeLayout secondo = (RelativeLayout) findViewById(R.id.secondo_view);
+        RelativeLayout contorno = (RelativeLayout) findViewById(R.id.contorno_view);
+        RelativeLayout dolce = (RelativeLayout) findViewById(R.id.dolce_view);
+        ImageView[] ticks = {antipastoTick, primoTick, secondoTick, contornoTick, dolceTick};
         final List<ImageView> listImageViewToRemoveVerified = new ArrayList<ImageView>(Arrays.asList(ticks));
         antipasto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!clickedCategoria)
-                {
-                    category_selected="Antipasto";
+                if (!clickedCategoria) {
+                    category_selected = "Antipasto";
                     checkConnection("loadImageSliderWithCategoryRicette");
                     antipastoTick.setVisibility(View.VISIBLE);
-                    clickedCategoria=true;
-                }
-                else
-                {
-                    if(category_selected!="Antipasto"){
-                        for(int i=0;i<listImageViewToRemoveVerified.size();i++)
-                        {
+                    clickedCategoria = true;
+                } else {
+                    if (category_selected != "Antipasto") {
+                        for (int i = 0; i < listImageViewToRemoveVerified.size(); i++) {
                             listImageViewToRemoveVerified.get(i).setVisibility(View.GONE);
                         }
-                        category_selected="Antipasto";
+                        category_selected = "Antipasto";
                         checkConnection("loadImageSliderWithCategoryRicette");
                         antipastoTick.setVisibility(View.VISIBLE);
-                        clickedCategoria=true;
-                    }else{
+                        clickedCategoria = true;
+                    } else {
                         returnToAllRicetteImageSlider(listImageViewToRemoveVerified);
                     }
                 }
@@ -205,25 +198,21 @@ public class MainActivity extends AppCompatActivity {
         primo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!clickedCategoria)
-                {
-                    category_selected="Primo";
+                if (!clickedCategoria) {
+                    category_selected = "Primo";
                     checkConnection("loadImageSliderWithCategoryRicette");
                     primoTick.setVisibility(View.VISIBLE);
-                    clickedCategoria =true;
-                }
-                else
-                {
-                    if(category_selected!="Primo"){
-                        for(int i=0;i<listImageViewToRemoveVerified.size();i++)
-                        {
+                    clickedCategoria = true;
+                } else {
+                    if (category_selected != "Primo") {
+                        for (int i = 0; i < listImageViewToRemoveVerified.size(); i++) {
                             listImageViewToRemoveVerified.get(i).setVisibility(View.GONE);
                         }
-                        category_selected="Primo";
+                        category_selected = "Primo";
                         checkConnection("loadImageSliderWithCategoryRicette");
                         primoTick.setVisibility(View.VISIBLE);
-                        clickedCategoria=true;
-                    }else{
+                        clickedCategoria = true;
+                    } else {
                         returnToAllRicetteImageSlider(listImageViewToRemoveVerified);
                     }
                 }
@@ -233,25 +222,21 @@ public class MainActivity extends AppCompatActivity {
         secondo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!clickedCategoria)
-                {
-                    category_selected="Secondo";
+                if (!clickedCategoria) {
+                    category_selected = "Secondo";
                     checkConnection("loadImageSliderWithCategoryRicette");
                     secondoTick.setVisibility(View.VISIBLE);
-                    clickedCategoria =true;
-                }
-                else
-                {
-                    if(category_selected!="Secondo"){
-                        for(int i=0;i<listImageViewToRemoveVerified.size();i++)
-                        {
+                    clickedCategoria = true;
+                } else {
+                    if (category_selected != "Secondo") {
+                        for (int i = 0; i < listImageViewToRemoveVerified.size(); i++) {
                             listImageViewToRemoveVerified.get(i).setVisibility(View.GONE);
                         }
-                        category_selected="Secondo";
+                        category_selected = "Secondo";
                         checkConnection("loadImageSliderWithCategoryRicette");
                         secondoTick.setVisibility(View.VISIBLE);
-                        clickedCategoria=true;
-                    }else{
+                        clickedCategoria = true;
+                    } else {
                         returnToAllRicetteImageSlider(listImageViewToRemoveVerified);
                     }
                 }
@@ -260,24 +245,21 @@ public class MainActivity extends AppCompatActivity {
         contorno.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!clickedCategoria)
-                {
-                    category_selected="Contorno";
+                if (!clickedCategoria) {
+                    category_selected = "Contorno";
                     checkConnection("loadImageSliderWithCategoryRicette");
                     contornoTick.setVisibility(View.VISIBLE);
-                    clickedCategoria =true;
-                }
-                else {
-                    if(category_selected!="Contorno"){
-                        for(int i=0;i<listImageViewToRemoveVerified.size();i++)
-                        {
+                    clickedCategoria = true;
+                } else {
+                    if (category_selected != "Contorno") {
+                        for (int i = 0; i < listImageViewToRemoveVerified.size(); i++) {
                             listImageViewToRemoveVerified.get(i).setVisibility(View.GONE);
                         }
-                        category_selected="Contorno";
+                        category_selected = "Contorno";
                         checkConnection("loadImageSliderWithCategoryRicette");
                         contornoTick.setVisibility(View.VISIBLE);
-                        clickedCategoria=true;
-                    }else{
+                        clickedCategoria = true;
+                    } else {
                         returnToAllRicetteImageSlider(listImageViewToRemoveVerified);
                     }
                 }
@@ -286,25 +268,21 @@ public class MainActivity extends AppCompatActivity {
         dolce.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!clickedCategoria)
-                {
-                    category_selected="Dolce";
+                if (!clickedCategoria) {
+                    category_selected = "Dolce";
                     checkConnection("loadImageSliderWithCategoryRicette");
                     dolceTick.setVisibility(View.VISIBLE);
-                    clickedCategoria =true;
-                }
-                else
-                {
-                    if(category_selected!="Dolce"){
-                        for(int i=0;i<listImageViewToRemoveVerified.size();i++)
-                        {
+                    clickedCategoria = true;
+                } else {
+                    if (category_selected != "Dolce") {
+                        for (int i = 0; i < listImageViewToRemoveVerified.size(); i++) {
                             listImageViewToRemoveVerified.get(i).setVisibility(View.GONE);
                         }
-                        category_selected="Dolce";
+                        category_selected = "Dolce";
                         checkConnection("loadImageSliderWithCategoryRicette");
                         dolceTick.setVisibility(View.VISIBLE);
-                        clickedCategoria=true;
-                    }else{
+                        clickedCategoria = true;
+                    } else {
                         returnToAllRicetteImageSlider(listImageViewToRemoveVerified);
                     }
                 }
@@ -312,17 +290,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void returnToAllRicetteImageSlider(List<ImageView> listImageViewToRemoveVerified)
-    {
-        for(int i=0;i<listImageViewToRemoveVerified.size();i++)
-        {
+    private void returnToAllRicetteImageSlider(List<ImageView> listImageViewToRemoveVerified) {
+        for (int i = 0; i < listImageViewToRemoveVerified.size(); i++) {
             listImageViewToRemoveVerified.get(i).setVisibility(View.GONE);
         }
         checkConnection("loadImageSliderWithRicette");
         pullToRefresh.setRefreshing(true);
-        clickedCategoria=false;
+        clickedCategoria = false;
     }
 
+    //carica le corrette informazioni dell'utente attuale
     private void setUserInfo() {
         googleSignInClient = GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN);
         firebaseAuth = FirebaseAuth.getInstance();
@@ -332,14 +309,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loadAndShowUserInfo(){
+    private void loadAndShowUserInfo() {
         FirebaseFirestore.getInstance().collection("Utenti").whereEqualTo("Mail", firebaseAuth.getCurrentUser().getEmail()).get().addOnCompleteListener(
                 new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             QuerySnapshot result = task.getResult();
-                            actualUser=new Utente(
+                            actualUser = new Utente(
                                     result.getDocuments().get(0).getId(),
                                     result.getDocuments().get(0).get("Mail").toString(),
                                     result.getDocuments().get(0).get("Nome").toString(),
@@ -359,23 +336,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refresh() {
-        ImageView[] ticks={antipastoTick,primoTick,secondoTick,contornoTick,dolceTick};
+        ImageView[] ticks = {antipastoTick, primoTick, secondoTick, contornoTick, dolceTick};
         final List<ImageView> listImageViewToRemoveVerified = new ArrayList<ImageView>(Arrays.asList(ticks));
-        for(int i=0;i<listImageViewToRemoveVerified.size();i++)
-        {
+        for (int i = 0; i < listImageViewToRemoveVerified.size(); i++) {
             listImageViewToRemoveVerified.get(i).setVisibility(View.GONE);
         }
         checkConnection("loadImageSliderWithRicette");
-        if(!fireUser.isAnonymous())
-        loadAndShowUserInfo();
+        if (!fireUser.isAnonymous())
+            loadAndShowUserInfo();
     }
 
-    private void loadImageSliderWithCategoryRicette(){
+    //carica ricette filtrate
+    private void loadImageSliderWithCategoryRicette() {
         pullToRefresh.setRefreshing(true);
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         CollectionReference ricetteRef = rootRef.collection("Ricette");
-        Query queryrRicettaApprovata = ricetteRef.whereEqualTo("isApproved", true).whereEqualTo("Categoria",category_selected);
-        final List<Ricetta> filtered=new ArrayList<Ricetta>();
+        Query queryrRicettaApprovata = ricetteRef.whereEqualTo("isApproved", true).whereEqualTo("Categoria", category_selected);
+        final List<Ricetta> filtered = new ArrayList<Ricetta>();
         queryrRicettaApprovata.limit(10).get().addOnCompleteListener(
                 new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -414,7 +391,7 @@ public class MainActivity extends AppCompatActivity {
                                     adapter.addItem(sliderItem, filtered.get(i));
                                 }
                             }
-                            if(pullToRefresh.isRefreshing()){
+                            if (pullToRefresh.isRefreshing()) {
                                 pullToRefresh.setRefreshing(false);
                             }
                         }
@@ -423,16 +400,15 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
-    public void getLoadImageSliderWithCategoryRicette()
-    {
+    public void getLoadImageSliderWithCategoryRicette() {
         loadImageSliderWithCategoryRicette();
     }
 
-
+    //carica ricette imageSlider
     private void loadImageSliderWithRicette() {
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         CollectionReference ricetteRef = rootRef.collection("Ricette");
-        Query queryRicettaApprovata = ricetteRef.orderBy("Timestamp",Query.Direction.DESCENDING).whereEqualTo("isApproved", true);
+        Query queryRicettaApprovata = ricetteRef.orderBy("Timestamp", Query.Direction.DESCENDING).whereEqualTo("isApproved", true);
         obj.clear();
         queryRicettaApprovata.limit(10).get().addOnCompleteListener(
                 new OnCompleteListener<QuerySnapshot>() {
@@ -449,7 +425,7 @@ public class MainActivity extends AppCompatActivity {
                                         result.getDocuments().get(i).get("TempoPreparazione").toString(),
                                         result.getDocuments().get(i).get("NumeroPersone").toString(),
                                         result.getDocuments().get(i).get("Thumbnail").toString(),
-                                        (List<Map<String, Object>>)   result.getDocuments().get(i).get("Ingredienti"),
+                                        (List<Map<String, Object>>) result.getDocuments().get(i).get("Ingredienti"),
                                         (List<String>) result.getDocuments().get(i).get("Passaggi"),
                                         (Boolean) result.getDocuments().get(i).get("isApproved"),
                                         (Timestamp) result.getDocuments().get(i).get("Timestamp")
@@ -474,7 +450,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                             layoutFeed.removeAllViews();
                             loadFeed();
-                            if(pullToRefresh.isRefreshing()){
+                            if (pullToRefresh.isRefreshing()) {
                                 pullToRefresh.setRefreshing(false);
                             }
                         }
@@ -483,106 +459,30 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
-    public void getLoadImageSliderWithRicette()
-    {
+    public void getLoadImageSliderWithRicette() {
         loadImageSliderWithRicette();
     }
 
+    //carica feed ricette
     private void loadFeed() {
-        FeedFragment feedFragment=new FeedFragment();
-        Bundle bundle=new Bundle();
+        FeedFragment feedFragment = new FeedFragment();
+        Bundle bundle = new Bundle();
         bundle.putSerializable("ricettas", (Serializable) obj);
-        bundle.putString("class",getClass().getSimpleName());
-        if(fireUser.isAnonymous())
-        {
+        bundle.putString("class", getClass().getSimpleName());
+        if (fireUser.isAnonymous()) {
             bundle.putString("pathIdUser", "anonymous");
-        }
-        else
-        {
-            bundle.putString("pathIdUser", actualUser.getUserId());
+        } else {
+            try {
+                bundle.putString("pathIdUser", actualUser.getUserId());
+            } catch (Exception e) {
+                Utils.errorDialog(this, R.string.error_loading_actualuserId, R.string.error_ok);
+            }
+
         }
         feedFragment.setArguments(bundle);
-        getSupportFragmentManager().beginTransaction().add(R.id.layoutFeed,feedFragment).commit();
-        /*
-        for (int i = 0; i < obj.size(); i++) {
-            LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View addView = layoutInflater.inflate(R.layout.row_feed_layout, null);
-            TextView txtNomeRicettaFeed = (TextView) addView.findViewById(R.id.txtFeedNomeRicetta);
-            TextView txtTempoPreparazioneFeed = (TextView) addView.findViewById(R.id.txtFeedTempoPreparazione);
-            TextView txtPersoneFeed = (TextView) addView.findViewById(R.id.txtFeedPersone);
-            final ImageView ricettaImageFeed = (ImageView) addView.findViewById(R.id.imgFeedRicetta);
-            Picasso.get().load(obj.get(i).getThumbnail()).into(ricettaImageFeed);
-            txtNomeRicettaFeed.setText(obj.get(i).getTitle());
-            txtTempoPreparazioneFeed.setText(obj.get(i).getTempo().concat(" minuti"));
-            String feedPersone = "Per ".concat(Utils.personaOrPersone(obj.get(i).getPersone()));
-            txtPersoneFeed.setText(feedPersone);
-            RelativeLayout layoutContainer = (RelativeLayout) addView.findViewById(R.id.layoutFeedMainAndPic);
-            final int position = i;
-            layoutContainer.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        getSupportFragmentManager().beginTransaction().add(R.id.layoutFeed, feedFragment).commit();
 
-                    try {
-                        Intent intent = new Intent(MainActivity.this, ShowRicettaActivity.class);
-                        Bundle bundle = Utils.loadBundle(obj.get(position));
-                        //Casting from imageSlider to Drawable and conversion into byteArray
-                        Drawable d = ricettaImageFeed.getDrawable();
-                        Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
-                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
-                        byte[] bitmapdata = stream.toByteArray();
-                        bundle.putByteArray("Thumbnail", bitmapdata);
-                        bundle.putBoolean("isAdmin", false);
-                        checkPreferitiOnFirebase(obj.get(position).getId(),bundle);
-                    } catch (RuntimeException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            });
-            layoutFeed.addView(addView);
-        }*/
     }
-
- /*   private void checkPreferitiOnFirebase(final String idRicetta, final Bundle bundle)
-    {
-        final Intent intent = new Intent(MainActivity.this, ShowRicettaActivity.class);
-
-        if(fireUser.isAnonymous())
-        {
-            bundle.putBoolean("isFav",false);
-            bundle.putString("pathIdUser", "anonymous");
-            intent.putExtras(bundle);
-            startActivity(intent);
-        }
-        else
-        {
-            String documentIdUtente = actualUser.getUserId();
-            FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-            DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
-            final Boolean[] found = {false};
-            utentiRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    DocumentSnapshot documentSnapshots=task.getResult();
-                    List<String>preferiti=(List<String>) documentSnapshots.get("Preferiti");
-                    for (int i = 0; i < preferiti.size(); i++) {
-                        if (preferiti.get(i).equals(idRicetta)) {
-                            found[0] = true;
-                        }
-                    }
-                    bundle.putBoolean("isFav",found[0]);
-                    bundle.putString("pathIdUser", actualUser.getUserId());
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-                }
-            });
-        }
-
-
-    }*/
-
-
 
     private void FABClickManagement() {
         fab_add.setClickable(false);
@@ -597,11 +497,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 FABShowDifferentUsers();
-                handler.postDelayed(runnable,10000);
+                handler.postDelayed(runnable, 10000);
 
             }
         });
-
         fab_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -679,7 +578,6 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                     });
                                     break;
-
                                 case DialogInterface.BUTTON_NEGATIVE:
                                     //No button clicked
                                     break;
@@ -726,6 +624,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //mostra i fab nella maniera opportuna a seconda dell'utente
     private void FABShowDifferentUsers() {
         if (fireUser.isAnonymous()) {
             fab_add.setBackgroundColor(getColor(android.R.color.darker_gray));
@@ -832,13 +731,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void checkConnection(final String methodInString)
-    {
+    private void checkConnection(final String methodInString) {
         try {
-            final Method method=getClass().getMethod("get"+methodInString.substring(0,1).toUpperCase()+methodInString.substring(1));
-            boolean conn=isNetworkAvailable();
-            if(!conn)
-            {
+            final Method method = getClass().getMethod("get" + methodInString.substring(0, 1).toUpperCase() + methodInString.substring(1));
+            boolean conn = isNetworkAvailable();
+            if (!conn) {
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -853,9 +750,7 @@ public class MainActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage(getString(R.string.error_connection)).setPositiveButton(getString(R.string.error_ok), dialogClickListener).setCancelable(false)
                         .show();
-            }
-            else
-            {
+            } else {
                 try {
                     method.invoke(MainActivity.this);
                 } catch (IllegalAccessException e) {
@@ -868,6 +763,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

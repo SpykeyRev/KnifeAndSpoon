@@ -23,7 +23,7 @@ public class Ricetta implements Parcelable {
     private String categoria;
 
 
-    public Ricetta(String id, String authorId, String title, String categoria,String tempo, String persone, String thumbnail, List<Map<String, Object>> ingredienti, List<String> steps, Boolean isApproved,Timestamp timestamp) {
+    public Ricetta(String id, String authorId, String title, String categoria, String tempo, String persone, String thumbnail, List<Map<String, Object>> ingredienti, List<String> steps, Boolean isApproved, Timestamp timestamp) {
         this.id = id;
         this.authorId = authorId;
         this.title = title;
@@ -33,8 +33,8 @@ public class Ricetta implements Parcelable {
         this.tempo = tempo;
         this.persone = persone;
         this.isApproved = isApproved;
-        this.categoria=categoria;
-        this.timestamp=timestamp;
+        this.categoria = categoria;
+        this.timestamp = timestamp;
     }
 
     protected Ricetta(Parcel in) {
@@ -144,7 +144,7 @@ public class Ricetta implements Parcelable {
     }
 
     public void setTimestamp(Timestamp timestamp) {
-        this.timestamp=timestamp;
+        this.timestamp = timestamp;
     }
 
     @Override

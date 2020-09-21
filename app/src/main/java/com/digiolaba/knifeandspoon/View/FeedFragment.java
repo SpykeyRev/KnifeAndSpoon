@@ -34,35 +34,29 @@ import java.util.List;
 public class FeedFragment extends Fragment {
 
     public FeedFragment() {
-        // Required empty public constructor
     }
 
     private List<Ricetta> ricettas;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Bundle bundle=getArguments();
-        //if(bundle!=null)
-        //ricettas= (List<Ricetta>) bundle.getSerializable("ricettas");
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_feed, container, false);
-        Bundle bundle=getArguments();
-        if(bundle!=null)
-        {
-            loadFeed(view,bundle,inflater);
+        View view = inflater.inflate(R.layout.fragment_feed, container, false);
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            loadFeed(view, bundle, inflater);
 
         }
         return view;
     }
 
-    private void loadFeed(View view, final Bundle bundleExt, LayoutInflater inflater)
-    {
-        LinearLayout frameLayout=(LinearLayout) view.findViewById(R.id.feedContainer);
-        ricettas= (List<Ricetta>) bundleExt.getSerializable("ricettas");
+    private void loadFeed(View view, final Bundle bundleExt, LayoutInflater inflater) {
+        LinearLayout frameLayout = (LinearLayout) view.findViewById(R.id.feedContainer);
+        ricettas = (List<Ricetta>) bundleExt.getSerializable("ricettas");
         for (int i = 0; i < ricettas.size(); i++) {
             View addView = inflater.inflate(R.layout.row_feed_layout, null);
             TextView txtNomeRicettaFeed = (TextView) addView.findViewById(R.id.txtFeedNomeRicetta);
@@ -90,28 +84,22 @@ public class FeedFragment extends Fragment {
                         byte[] bitmapdata = stream.toByteArray();
                         bundle.putByteArray("Thumbnail", bitmapdata);
                         bundle.putString("ThumbnailURL", ricettas.get(position).getThumbnail());
-                        if(bundleExt.getString("class").equals("RicetteToApproveActivity"))
-                        {
+                        if (bundleExt.getString("class").equals("RicetteToApproveActivity")) {
                             bundle.putBoolean("isAdmin", true);
                             bundle.putString("pathIdUser", "admin");
                             intent.putExtras(bundle);
                             startActivity(intent);
-                        }
-                        else if(bundleExt.getString("class").equals("MainActivity"))
-                        {
+                        } else if (bundleExt.getString("class").equals("MainActivity")) {
 
-                            String actualUser=bundleExt.getString("pathIdUser");
-                            if(actualUser.equals("anonymous"))
-                            {
-                                bundle.putString("pathIdUser",actualUser);
-                                bundle.putBoolean("isFav",false);
+                            String actualUser = bundleExt.getString("pathIdUser");
+                            if (actualUser.equals("anonymous")) {
+                                bundle.putString("pathIdUser", actualUser);
+                                bundle.putBoolean("isFav", false);
                                 intent.putExtras(bundle);
                                 startActivity(intent);
-                            }
-                            else
-                            {
+                            } else {
                                 bundle.putString("pathIdUser", actualUser);
-                                checkPreferitiOnFirebase(ricettas.get(position).getId(),bundle,intent,actualUser);
+                                checkPreferitiOnFirebase(ricettas.get(position).getId(), bundle, intent, actualUser);
                             }
                         }
                     } catch (RuntimeException e) {
@@ -124,29 +112,27 @@ public class FeedFragment extends Fragment {
         }
     }
 
-    private void checkPreferitiOnFirebase(final String idRicetta, final Bundle bundle, final Intent intent, String documentIdUtente)
-    {
+    private void checkPreferitiOnFirebase(final String idRicetta, final Bundle bundle, final Intent intent, String documentIdUtente) {
 
-            FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-            DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
-            final Boolean[] found = {false};
-            utentiRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    DocumentSnapshot documentSnapshots=task.getResult();
-                    List<String>preferiti=(List<String>) documentSnapshots.get("Preferiti");
-                    for (int i = 0; i < preferiti.size(); i++) {
-                        if (preferiti.get(i).equals(idRicetta)) {
-                            found[0] = true;
-                        }
+        FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+        DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
+        final Boolean[] found = {false};
+        utentiRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot documentSnapshots = task.getResult();
+                List<String> preferiti = (List<String>) documentSnapshots.get("Preferiti");
+                for (int i = 0; i < preferiti.size(); i++) {
+                    if (preferiti.get(i).equals(idRicetta)) {
+                        found[0] = true;
                     }
-                    bundle.putBoolean("isFav",found[0]);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
                 }
-            });
-        }
-
+                bundle.putBoolean("isFav", found[0]);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+    }
 
 
 }

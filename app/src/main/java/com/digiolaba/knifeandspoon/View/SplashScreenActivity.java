@@ -38,30 +38,26 @@ public class SplashScreenActivity extends AppCompatActivity {
         checkConnection("launchCorrectActivity");
     }
 
-    private void checkConnection(final String methodInString)
-    {
-                try {
-                    final Method method=getClass().getMethod("get"+methodInString.substring(0,1).toUpperCase()+methodInString.substring(1));
-                    boolean conn=isNetworkAvailable();
-                    if(!conn)
-                    {
-                        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which) {
-                                    case DialogInterface.BUTTON_POSITIVE:
-                                        checkConnection(methodInString);
-                                        break;
+    private void checkConnection(final String methodInString) {
+        try {
+            final Method method = getClass().getMethod("get" + methodInString.substring(0, 1).toUpperCase() + methodInString.substring(1));
+            boolean conn = isNetworkAvailable();
+            if (!conn) {
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                checkConnection(methodInString);
+                                break;
 
-                                }
-                            }
-                        };
+                        }
+                    }
+                };
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage(getString(R.string.error_connection)).setPositiveButton(getString(R.string.error_ok), dialogClickListener).setCancelable(false)
                         .show();
-            }
-            else
-            {
+            } else {
                 try {
                     method.invoke(SplashScreenActivity.this);
                 } catch (IllegalAccessException e) {
@@ -74,6 +70,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -81,11 +78,13 @@ public class SplashScreenActivity extends AppCompatActivity {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    public void getLaunchCorrectActivity()
-    {
+    public void getLaunchCorrectActivity() {
         launchCorrectActivity();
     }
 
+    /*l'utente se non è loggato nell'app verrà reindirizzato a LoginActivity
+    se è loggato ma non ha finito la registrazione verrà reindirizzato a RegisterActivity
+    se è loggato e registrato allora verrà reindirizzato ala MainActivity*/
     private void launchCorrectActivity() {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();

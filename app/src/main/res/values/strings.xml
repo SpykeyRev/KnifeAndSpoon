@@ -113,6 +113,9 @@
     <string name="are_you_sure_about_that_inserimento">Sei sicuro di voler pubblicare questa ricetta?\nSuccessivamente non potrai più modificarla e/o eliminarla.</string>
     <string name="yes">Si</string>
     <string name="no">No</string>
+    <string name="no_ricette_found">"Ops...Non è stata trovata alcuna ricetta"</string>
+    <string name="nothing_in_ricette_search">Per favore inserisci qualcosa da ricercare</string>
+    <string name="error_loading_actualuserId">Qualcosa è andato storto, per favore fai uno swipe verso il basso per ricaricare</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

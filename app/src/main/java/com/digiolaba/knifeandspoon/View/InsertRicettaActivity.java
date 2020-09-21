@@ -243,8 +243,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
                         int rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
                         int rotationInDegrees = exifToDegrees(rotation);
                         Matrix matrix = new Matrix();
-                        if (rotation != 0)
-                        {
+                        if (rotation != 0) {
                             matrix.preRotate(rotationInDegrees);
                         }
                         bitmap = Bitmap.createBitmap(MediaStore.Images.Media.getBitmap(getContentResolver(), picUri), 0, 0, MediaStore.Images.Media.getBitmap(getContentResolver(), picUri).getWidth(), MediaStore.Images.Media.getBitmap(getContentResolver(), picUri).getHeight(), matrix, true);
@@ -271,9 +270,13 @@ public class InsertRicettaActivity extends AppCompatActivity {
     }
 
     private static int exifToDegrees(int exifOrientation) {
-        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) { return 90; }
-        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {  return 180; }
-        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {  return 270; }
+        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
+            return 90;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
+            return 180;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
+            return 270;
+        }
         return 0;
     }
 
@@ -498,7 +501,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
                     e.setText("0");
                 } else {
                     if (!hasFocus) {
-                        if (e.getText().toString().length() == 0 || e.getText().toString().trim().equals("") || Float.parseFloat(e.getText().toString())==0) {
+                        if (e.getText().toString().length() == 0 || e.getText().toString().trim().equals("") || Float.parseFloat(e.getText().toString()) == 0) {
                             Animation shake = AnimationUtils.loadAnimation(InsertRicettaActivity.this, R.anim.shake);
                             v.setAnimation(shake);
                             e.setError(getString(R.string.error_empty_thing));
@@ -522,43 +525,42 @@ public class InsertRicettaActivity extends AppCompatActivity {
             List<String> passaggi = getInfoPassaggi();
             if (ingredienti != null && passaggi != null) {
                 for (int i = 0; i < passaggi.size(); i++) {
-                        if (passaggi.get(i).toString().trim().equals("")) {
-                            passaggi.remove(passaggi.get(i));
+                    if (passaggi.get(i).toString().trim().equals("")) {
+                        passaggi.remove(passaggi.get(i));
                     }
                 }
-                Boolean error=false;
+                Boolean error = false;
                 for (int i = 0; i < ingredienti.size(); i++) {
-                    if(ingredienti.get(i).get("Nome").toString().trim().equals("")){
-                        error=true;
+                    if (ingredienti.get(i).get("Nome").toString().trim().equals("")) {
+                        error = true;
                         break;
-                    }else{
-                        if(ingredienti.get(i).get("Quantità").toString().trim().equals("")){
-                            error=true;
+                    } else {
+                        if (ingredienti.get(i).get("Quantità").toString().trim().equals("")) {
+                            error = true;
                             break;
-                        }else{
-                            if(!ingredienti.get(i).get("Unità misura").equals("q.b.")){
-                                if(Float.parseFloat(ingredienti.get(i).get("Quantità").toString())==0){
-                                    error=true;
+                        } else {
+                            if (!ingredienti.get(i).get("Unità misura").equals("q.b.")) {
+                                if (Float.parseFloat(ingredienti.get(i).get("Quantità").toString()) == 0) {
+                                    error = true;
                                     break;
                                 }
                             }
                         }
                     }
                 }
-                if (passaggi.size() == 0 || ingredienti.size() == 0 || error==true) {
+                if (passaggi.size() == 0 || ingredienti.size() == 0 || error == true) {
                     Utils.errorDialog(InsertRicettaActivity.this, R.string.error_no_passaggi_ingredienti, R.string.error_ok);
                 } else {
                     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             switch (which) {
-                                case DialogInterface.BUTTON_POSITIVE:
-                                {
+                                case DialogInterface.BUTTON_POSITIVE: {
                                     Map<String, Object> ricettaToPush = new HashMap<>();
                                     ricettaToPush.put("Autore", actualUser);
                                     ricettaToPush.put("Titolo", etTitolo.getText().toString().trim());
                                     ricettaToPush.put("Categoria", spCategoria.getSelectedItem().toString());
-                                    ricettaToPush.put("Timestamp",com.google.firebase.firestore.FieldValue.serverTimestamp());
+                                    ricettaToPush.put("Timestamp", com.google.firebase.firestore.FieldValue.serverTimestamp());
                                     ricettaToPush.put("TempoPreparazione", tempoPreparazione.getText().toString());
                                     ricettaToPush.put("NumeroPersone", numeroPersone.getText().toString());
                                     ricettaToPush.put("Passaggi", getInfoPassaggi());
@@ -630,7 +632,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
         StorageReference storageRef = storage.getReference();
         final StorageReference imageRef = storageRef.child(UUID.randomUUID().toString() + ".jpg");
         //Prepare dialogs
-        final Utils.LoadingDialog loadingDialog= new Utils.LoadingDialog(InsertRicettaActivity.this);
+        final Utils.LoadingDialog loadingDialog = new Utils.LoadingDialog(InsertRicettaActivity.this);
         loadingDialog.startLoadingDialog();
         //Publish recipe with image
         imageRef.putBytes(imgData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {

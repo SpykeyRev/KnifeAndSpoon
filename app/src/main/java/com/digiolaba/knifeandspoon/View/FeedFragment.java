@@ -54,6 +54,7 @@ public class FeedFragment extends Fragment {
         return view;
     }
 
+    //carica la ui cliccabile della ricetta
     private void loadFeed(View view, final Bundle bundleExt, LayoutInflater inflater) {
         LinearLayout frameLayout = (LinearLayout) view.findViewById(R.id.feedContainer);
         ricettas = (List<Ricetta>) bundleExt.getSerializable("ricettas");
@@ -84,13 +85,14 @@ public class FeedFragment extends Fragment {
                         byte[] bitmapdata = stream.toByteArray();
                         bundle.putByteArray("Thumbnail", bitmapdata);
                         bundle.putString("ThumbnailURL", ricettas.get(position).getThumbnail());
+                        //se l'utente (admin) vuole approvare una ricetta (e quindi proviene da RicetteToApproveActivity)
                         if (bundleExt.getString("class").equals("RicetteToApproveActivity")) {
                             bundle.putBoolean("isAdmin", true);
                             bundle.putString("pathIdUser", "admin");
                             intent.putExtras(bundle);
                             startActivity(intent);
                         } else if (bundleExt.getString("class").equals("MainActivity")) {
-
+                            //se proviene da MainActivity
                             String actualUser = bundleExt.getString("pathIdUser");
                             if (actualUser.equals("anonymous")) {
                                 bundle.putString("pathIdUser", actualUser);
@@ -108,12 +110,13 @@ public class FeedFragment extends Fragment {
 
                 }
             });
+            //aggiunta della view al LinearLayout frameLayout
             frameLayout.addView(addView);
         }
     }
 
+    //controlla se la ricetta è preferita dall'utente
     private void checkPreferitiOnFirebase(final String idRicetta, final Bundle bundle, final Intent intent, String documentIdUtente) {
-
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         DocumentReference utentiRef = rootRef.collection("Utenti").document(documentIdUtente);
         final Boolean[] found = {false};

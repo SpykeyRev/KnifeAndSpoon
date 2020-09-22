@@ -504,6 +504,7 @@ public class MainActivity extends AppCompatActivity {
         fab_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //se l'utente è anonimo al click del FAB di aggiunta gli verrà chiesto di accedere tramite Google, poichè la funzionalità è riservata agli utenti registrati
                 if (fireUser.isAnonymous()) {
                     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                         @Override
@@ -536,6 +537,7 @@ public class MainActivity extends AppCompatActivity {
                     builder.setMessage(getString(R.string.anonymous_try_add)).setPositiveButton(getString(R.string.let_me_register), dialogClickListener)
                             .setNegativeButton(getString(R.string.cancel), dialogClickListener).show();
                 } else {
+                    //se l'utente è registrato allora  verrà reindirizzatto all'activity di inserimento
                     Intent intent = new Intent(MainActivity.this, InsertRicettaActivity.class);
                     intent.putExtra("actualUseridentifier", actualUser.getUserId());
                     startActivity(intent);
@@ -557,6 +559,7 @@ public class MainActivity extends AppCompatActivity {
         fab_favourite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //se l'utente è anonimo al click del FAB dei preferiti gli verrà chiesto di accedere tramite Google, poichè la funzionalità è riservata agli utenti registrati
                 if (fireUser.isAnonymous()) {
                     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                         @Override
@@ -588,6 +591,7 @@ public class MainActivity extends AppCompatActivity {
                     builder.setMessage(getString(R.string.anonymous_try_fav)).setPositiveButton(getString(R.string.let_me_register), dialogClickListener)
                             .setNegativeButton(getString(R.string.cancel), dialogClickListener).show();
                 } else {
+                    //se l'utente è registrato allora verrà reindirizzato all'activity dei preferiti
                     Intent intent = new Intent(MainActivity.this, FavouriteActivity.class);
                     intent.putExtra("pathIdUser", actualUser.getUserId());
                     startActivity(intent);
@@ -627,6 +631,7 @@ public class MainActivity extends AppCompatActivity {
     //mostra i fab nella maniera opportuna a seconda dell'utente
     private void FABShowDifferentUsers() {
         if (fireUser.isAnonymous()) {
+            //se l'utente è anonimo verranno impostati come grigi i FAB di aggiunta e preferiti e non verrà mostrato il FAB impostazioni
             fab_add.setBackgroundColor(getColor(android.R.color.darker_gray));
             fab_favourite.setBackgroundColor(getColor(android.R.color.darker_gray));
             if (isOpen) {
@@ -656,6 +661,7 @@ public class MainActivity extends AppCompatActivity {
                 isOpen = true;
             }
         } else if (!fireUser.isAnonymous()) {
+            //se l'utente è registrato
             if (isOpen) {
                 fab_add.startAnimation(fab_close);
                 fab_search.startAnimation(fab_close);
@@ -693,6 +699,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //inizio metodi per gestione long click sui FAB
     private void FABLongClickManagement() {
         fab_main.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -730,6 +737,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    //fine metodi per gestione long click sui FAB
 
     private void checkConnection(final String methodInString) {
         try {

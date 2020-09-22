@@ -253,7 +253,6 @@ public class InsertRicettaActivity extends AppCompatActivity {
                         } catch (IOException ex) {
                             ex.printStackTrace();
                         }
-                        e.printStackTrace();
                     }
                 } else {
                     bitmap = (Bitmap) intent.getExtras().get("data");
@@ -262,8 +261,6 @@ public class InsertRicettaActivity extends AppCompatActivity {
 
             if (bitmap != null) {
                 Glide.with(InsertRicettaActivity.this).load(bitmap).centerCrop().into(img_piatto);
-                //img_piatto.setImageBitmap(bitmap);
-
             }
 
         }
@@ -343,7 +340,6 @@ public class InsertRicettaActivity extends AppCompatActivity {
                 result.add(perm);
             }
         }
-
         return result;
     }
 
@@ -387,7 +383,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
         });
     }
 
-
+    //metodo per creare la ui per aggiungere un ingrediente, con i dovuti controlli per l'unità di misura "q.b."
     private void addIngrediente() {
         addIngrediente.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -439,6 +435,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
         spUnitMisura.setAdapter(items);
     }
 
+    //metodo per la creazione della ui un passaggio
     private void addPassaggio() {
         addPassaggio.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -512,6 +509,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
         });
     }
 
+    //metodo per il controllo dei dati inseriti nei campi
     private void pubblicaRicetta() {
         //disabilita pulsante
         if (etTitolo.getText().toString().trim().equals("")) {
@@ -587,6 +585,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
         }
     }
 
+    //salva in una lista di mappe tutti gli ingredienti scritti
     private List<Map> getInfoIngredienti() {
         List<Map> ingredienti = new ArrayList<Map>();
         for (int i = 0; i < allIngredienti.size(); i++) {
@@ -598,13 +597,12 @@ public class InsertRicettaActivity extends AppCompatActivity {
             } catch (Exception e) {
                 return null;
             }
-
-
             ingredienti.add(mappaIngrediente);
         }
         return ingredienti;
     }
 
+    //salva in una lista di stringhe tutti i passaggi scritti
     private List<String> getInfoPassaggi() {
         List<String> mappaDescrizione = new ArrayList<String>();
         for (int i = 0; i < allDescrizione.size(); i++) {
@@ -617,6 +615,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
         return mappaDescrizione;
     }
 
+    //upload ricetta
     private void publishToFirebase(final Map ricetta) {
         //Disable publish button
         publish.setEnabled(false);

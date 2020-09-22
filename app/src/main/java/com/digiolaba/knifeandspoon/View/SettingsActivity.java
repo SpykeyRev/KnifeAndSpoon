@@ -252,6 +252,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+    //carica immagine a firebase
     private void loadImageToFirebase(final byte[] imgData) {
         String documentID = id;
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();

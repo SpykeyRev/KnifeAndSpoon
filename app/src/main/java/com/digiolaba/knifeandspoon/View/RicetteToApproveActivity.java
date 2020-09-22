@@ -70,7 +70,7 @@ public class RicetteToApproveActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
+    //carica le ricette da approvare
     private void loadRicetteToReview() {
         final List<Ricetta> obj = new ArrayList();
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
@@ -112,6 +112,7 @@ public class RicetteToApproveActivity extends AppCompatActivity {
     }
 
     private void showRecipes(final List<Ricetta> ricettas) {
+        //se non ci sono ricette da approvare
         if (ricettas.size() == 0) {
             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                 @Override
@@ -128,6 +129,7 @@ public class RicetteToApproveActivity extends AppCompatActivity {
             builder.setMessage(getString(R.string.nothing_to_show_here_admin)).setPositiveButton(getString(R.string.perfect_exclamation_mark), dialogClickListener)
                     .show();
         } else {
+            //carica la ui di "pulsanti" delle ricette da approvare
             FeedFragment feedFragment = new FeedFragment();
             Bundle bundle = new Bundle();
             bundle.putSerializable("ricettas", (Serializable) ricettas);

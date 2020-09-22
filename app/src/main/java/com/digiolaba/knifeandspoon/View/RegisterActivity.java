@@ -108,6 +108,7 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 }
                 if (task.getResult().size() == 0) {
+                    //se il nome non è già stato usato
                     registerUser();
                 }
             }

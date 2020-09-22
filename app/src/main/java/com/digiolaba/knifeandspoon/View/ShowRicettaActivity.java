@@ -152,6 +152,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
         return extras;
     }
 
+    //imposta preferiti su firebase
     private void setPreferiti() {
         String documentIdUtente = infoToShow.get("pathIdUser").toString();
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
@@ -199,6 +200,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
         setPreferiti();
     }
 
+    //mostra informazioni utente autore della ricetta
     private void getAndShowUsername(String autore) {
         FirebaseFirestore.getInstance().collection("Utenti").document(autore).get().addOnCompleteListener(
                 new OnCompleteListener<DocumentSnapshot>() {
@@ -225,6 +227,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
         /**/
     }
 
+    //carica gli ingredienti
     private void loadIngredienti(List<Map<String, Object>> ingredienti) {
         for (int i = 0; i < ingredienti.size(); i++) {
             LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -243,6 +246,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
         }
     }
 
+    //impostazione del testo dell'ingrediente in base alla quantità e unità misura
     private String getCorrectUtForm(String ut, String qt) {
         Float quant = Float.parseFloat(qt);
         String correctForm = "";
@@ -274,6 +278,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
         return correctForm;
     }
 
+    //caricamento ui dei passaggi
     private void loadPassaggi(List<String> passaggi) {
         for (int i = 0; i < passaggi.size(); i++) {
             LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -286,8 +291,11 @@ public class ShowRicettaActivity extends AppCompatActivity {
         }
     }
 
+    //controllo per impostare il pulsante dei preferiti
     private void fabFavouriteSetter() {
+        //se non è un utente anonimo
         if (!(infoToShow.get("pathIdUser").toString().equals("anonymous"))) {
+            //se l'utente non proviene da RicetteToApproveActivity, quindi è stata selezionata una ricetta approvata
             if (!infoToShow.getBoolean("isAdmin")) {
                 if (!isFavourite[0]) {
                     fab_favourite.setImageResource(R.drawable.favorite);
@@ -310,10 +318,13 @@ public class ShowRicettaActivity extends AppCompatActivity {
                     }
                 });
             } else {
+                //se l'utente (admin) proviene da RicetteToApproveActivity non deve essere visualizzato il pulsante dei preferiti
                 fab_favourite.setVisibility(View.GONE);
             }
         } else {
+            //se l'utente è anonimo
             fab_favourite.setBackgroundTintList(getColorStateList(android.R.color.darker_gray));
+            //al click verrà chiesto di loggarsi tramite Google, poichè la funzionalità è riservata agli utenti registrati
             fab_favourite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -404,6 +415,7 @@ public class ShowRicettaActivity extends AppCompatActivity {
     }
 
     private void changeBooleanIsApproved() {
+        //aggiorna il campo isApproved a true su firebase
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         final DocumentReference ricetteRef = rootRef.collection("Ricette").document((String) infoToShow.get("Id"));
         ricetteRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -415,6 +427,9 @@ public class ShowRicettaActivity extends AppCompatActivity {
                         ricetteRef.update("isApproved", true);
                         adminRedirect();
                     } else {
+                        /*se due utenti admin accedono alla stessa ricetta e il primo la rimuove e il secondo la approva si genererebbe un'eccezione:
+                        poichè la ricetta non esiste più non è possibile modificare i suoi campi
+                         */
                         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -427,7 +442,6 @@ public class ShowRicettaActivity extends AppCompatActivity {
                         };
                         AlertDialog.Builder builder = new AlertDialog.Builder(ShowRicettaActivity.this);
                         builder.setMessage("C'è stato un errore").setPositiveButton("Ricarica", dialogClickListener).show();
-                        Log.e("Update error", "Failed with: ", task.getException());
                     }
                 }
             }
@@ -448,10 +462,15 @@ public class ShowRicettaActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot documentSnapshot = task.getResult();
                     if (documentSnapshot.exists()) {
+                        //rimuove dallo storage l'immagine della ricetta
                         photoRef.delete();
+                        //rimuove dal db la ricetta
                         ricetteRef.delete();
                         adminRedirect();
                     } else {
+                        /*se due utenti admin accedono alla stessa ricetta e il primo la rimuove e il secondo la rimuove si genererebbe un'eccezione:
+                        poichè la ricetta non esiste più non è possibile modificare i suoi campi
+                         */
                         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -464,7 +483,6 @@ public class ShowRicettaActivity extends AppCompatActivity {
                         };
                         AlertDialog.Builder builder = new AlertDialog.Builder(ShowRicettaActivity.this);
                         builder.setMessage("C'è stato un errore").setPositiveButton("Ricarica", dialogClickListener).show();
-                        Log.e("Update error", "Failed with: ", task.getException());
                     }
                 }
             }

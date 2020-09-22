@@ -152,8 +152,10 @@ public class LoginActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 boolean isEmpty = task.getResult().isEmpty();
                                 if (isEmpty) {
+                                    //l'utente non si è mai registrato
                                     launchRegisterActivity();
                                 } else {
+                                    //l'utente è già registrato
                                     launchMainActivity();
                                 }
                             }

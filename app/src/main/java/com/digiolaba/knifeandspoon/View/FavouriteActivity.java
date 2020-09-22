@@ -91,6 +91,7 @@ public class FavouriteActivity extends AppCompatActivity {
                     DocumentSnapshot result = task.getResult();
                     final List<String> preferiti = (List<String>) result.get("Preferiti");
                     final List<String> deletedPreferiti = new ArrayList<>();
+                    //se non esistono preferiti
                     if (preferiti.size() == 0) {
                         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                             @Override

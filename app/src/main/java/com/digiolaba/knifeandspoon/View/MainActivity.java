@@ -466,7 +466,7 @@ public class MainActivity extends AppCompatActivity {
     //carica feed ricette
     private void loadFeed() {
         FeedFragment feedFragment = new FeedFragment();
-        Bundle bundle = new Bundle();
+        final Bundle bundle = new Bundle();
         bundle.putSerializable("ricettas", (Serializable) obj);
         bundle.putString("class", getClass().getSimpleName());
         if (fireUser.isAnonymous()) {
@@ -475,6 +475,18 @@ public class MainActivity extends AppCompatActivity {
             try {
                 bundle.putString("pathIdUser", actualUser.getUserId());
             } catch (Exception e) {
+                FirebaseFirestore.getInstance().collection("Utenti").whereEqualTo("Mail", firebaseAuth.getCurrentUser().getEmail()).get().addOnCompleteListener(
+                        new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    QuerySnapshot result = task.getResult();
+                                    bundle.putString("pathIdUser", result.getDocuments().get(0).getId());
+                                }
+                            }
+                        }
+                );
+
                 refresh();
             }
         }

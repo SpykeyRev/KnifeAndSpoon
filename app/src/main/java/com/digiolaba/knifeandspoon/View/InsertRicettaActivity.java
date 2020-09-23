@@ -397,6 +397,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
                 checkEmptyEditText(addView, R.id.etNomeIngrediente);
                 loadSpinnerUnitaMisura(addView, spinner);
                 checkEmptyQuantitaEditText(addView, R.id.etQuantita, spinner);
+                final boolean[] qbSelected = {false};
                 spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -404,10 +405,15 @@ public class InsertRicettaActivity extends AppCompatActivity {
                             etQuantita.setText("0");
                             etQuantita.setEnabled(false);
                             t.setVisibility(View.GONE);
+                            qbSelected[0] =true;
                         } else {
-                            etQuantita.setText("");
-                            etQuantita.setEnabled(true);
-                            t.setVisibility(View.VISIBLE);
+                            if(qbSelected[0])
+                            {
+                                etQuantita.setText("");
+                                etQuantita.setEnabled(true);
+                                t.setVisibility(View.VISIBLE);
+                                qbSelected[0]=false;
+                            }
                         }
                     }
 

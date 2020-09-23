@@ -101,7 +101,7 @@ public class SearchActivity extends AppCompatActivity {
 
     //carica ricette richieste
     public void loadingListAndView() {
-        if (mSearchBar.getText().length() <= 0) {
+        if (mSearchBar.getText().toString().trim().length() <= 0) {
             Utils.showSnackbar(mSearchBar, getString(R.string.nothing_in_ricette_search));
         } else {
             final String SearchRicetta = mSearchBar.getText().toString();

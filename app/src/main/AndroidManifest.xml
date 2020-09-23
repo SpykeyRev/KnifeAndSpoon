@@ -20,6 +20,7 @@
         <activity
             android:name=".View.FavouriteActivity"
             android:label="@string/title_activity_favourite"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".View.RicetteToApproveActivity"
@@ -37,10 +38,12 @@
         <activity
             android:name=".View.SearchActivity"
             android:label="SearchActivity"
+            android:screenOrientation="portrait"
             android:parentActivityName=".View.MainActivity" />
         <activity
             android:name=".View.ShowRicettaActivity"
             android:label="@string/title_activity_show_ricetta"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".View.SplashScreenActivity"

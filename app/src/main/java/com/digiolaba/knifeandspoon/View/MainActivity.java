@@ -475,9 +475,8 @@ public class MainActivity extends AppCompatActivity {
             try {
                 bundle.putString("pathIdUser", actualUser.getUserId());
             } catch (Exception e) {
-                Utils.errorDialog(this, R.string.error_loading_actualuserId, R.string.error_ok);
+                refresh();
             }
-
         }
         feedFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction().add(R.id.layoutFeed, feedFragment).commit();

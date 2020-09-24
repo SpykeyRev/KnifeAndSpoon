@@ -239,6 +239,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
                 if (getPickImageResultUri(intent) != null) {
                     Uri picUri = getPickImageResultUri(intent);
                     try {
+                        //rotazione immagine all'angolo corretto
                         ExifInterface exif = new ExifInterface(picUri.getPath());
                         int rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
                         int rotationInDegrees = exifToDegrees(rotation);
@@ -253,12 +254,12 @@ public class InsertRicettaActivity extends AppCompatActivity {
                         } catch (IOException ex) {
                             ex.printStackTrace();
                         }
+                        e.printStackTrace();
                     }
                 } else {
                     bitmap = (Bitmap) intent.getExtras().get("data");
                 }
             }
-
             if (bitmap != null) {
                 Glide.with(InsertRicettaActivity.this).load(bitmap).centerCrop().into(img_piatto);
             }
@@ -360,6 +361,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
         }
     }
 
+    //cambia il titolo della toolbar con il titolo presente nella relativa edit text
     private void changeToolbatTitle() {
         etTitolo.addTextChangedListener(new TextWatcher() {
             @Override
@@ -373,7 +375,6 @@ public class InsertRicettaActivity extends AppCompatActivity {
                     collapsingToolbarLayout.setTitle(getResources().getString(R.string.title_activity_insert_ricetta));
                 } else {
                     collapsingToolbarLayout.setTitle(etTitolo.getText().toString());
-
                 }
             }
 
@@ -463,6 +464,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
         });
     }
 
+    //se ho un focus su una edit text e poi imposto il focus su un'altra, lasciando vuoto il precedente, allora mostro l'errore
     private void checkEmptyMainEditText(final EditText e) {
         e.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -478,7 +480,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
         });
     }
 
-
+    //se ho un focus su una edit text e poi imposto il focus su un'altra, lasciando vuoto il precedente, allora mostro l'errore
     private void checkEmptyEditText(View v, int id_et) {
         final EditText e = (EditText) v.findViewById(id_et);
         e.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -495,6 +497,7 @@ public class InsertRicettaActivity extends AppCompatActivity {
         });
     }
 
+    //controllo sul testo inserito sulla editText quantità
     private void checkEmptyQuantitaEditText(View v, int id_et, final Spinner spinner) {
         final EditText e = (EditText) v.findViewById(id_et);
         e.setOnFocusChangeListener(new View.OnFocusChangeListener() {

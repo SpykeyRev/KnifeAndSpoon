@@ -47,6 +47,10 @@ public class Utente {
         return this.id;
     }
 
+    public void setUserId(String id) {
+        this.id = id;
+    }
+
     public String getUserMail() {
         return this.mail;
     }

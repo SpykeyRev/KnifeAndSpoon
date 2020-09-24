@@ -481,12 +481,12 @@ public class MainActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 if (task.isSuccessful()) {
                                     QuerySnapshot result = task.getResult();
-                                    bundle.putString("pathIdUser", result.getDocuments().get(0).getId());
+                                    actualUser.setUserId(result.getDocuments().get(0).getId());
+                                    bundle.putString("pathIdUser", actualUser.getUserId());
                                 }
                             }
                         }
                 );
-
                 refresh();
             }
         }

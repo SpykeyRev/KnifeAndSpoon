@@ -156,7 +156,14 @@ public class InsertRicettaActivity extends AppCompatActivity {
             }
             case R.id.publishRicetta: {
                 publish = item;
-                pubblicaRicetta();
+                if(actualUser==null)
+                {
+                    homeRedirectError();
+                }
+                else
+                {
+                    pubblicaRicetta();
+                }
                 return true;
             }
             default: {
@@ -165,28 +172,60 @@ public class InsertRicettaActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        if ((etTitolo.getText().toString().trim().equals("") && numeroPersone.getText().toString().trim().equals("") && tempoPreparazione.getText().toString().trim().equals("") && allDescrizione.size() == 0 && allIngredienti.size() == 0)) {
-            closeActivity();
-        } else {
-            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    switch (which) {
-                        case DialogInterface.BUTTON_POSITIVE:
-                            closeActivity();
-                            break;
+    public void homeRedirectError()
+    {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        startActivity(intent);
+                        closeActivity();
+                        break;
 
-                        case DialogInterface.BUTTON_NEGATIVE:
-                            //No button clicked
-                            break;
+                    default:
+                    {
+                        startActivity(intent);
+                        closeActivity();
+                        break;
                     }
                 }
-            };
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Sei sicuro di voler tornare indietro?").setPositiveButton("Si", dialogClickListener)
-                    .setNegativeButton("No", dialogClickListener).show();
+            }
+        };
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Si è verificato un errore. Verrai reindirizzato alla homepage").setPositiveButton("OK", dialogClickListener).setCancelable(false).show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(actualUser==null)
+        {
+            homeRedirectError();
+        }
+        else
+        {
+            if ((etTitolo.getText().toString().trim().equals("") && numeroPersone.getText().toString().trim().equals("") && tempoPreparazione.getText().toString().trim().equals("") && allDescrizione.size() == 0 && allIngredienti.size() == 0)) {
+                closeActivity();
+            } else {
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                closeActivity();
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                //No button clicked
+                                break;
+                        }
+                    }
+                };
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Sei sicuro di voler tornare indietro?").setPositiveButton("Si", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener).show();
+            }
         }
     }
 
